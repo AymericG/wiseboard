@@ -37,7 +37,7 @@ export class Comment extends AbstractControl {
 
         const borderItem = ctx.renderer.createPath(ctx.shape, `M${l + c},${t} L${r},${t} L${r},${b} L${l},${b} L${l},${t + c} L${l + c},${t} L${l + c},${t + c} L${l},${t + c} z`, ctx.bounds);
 
-        ctx.renderer.setBackgroundColor(borderItem, 0xfff9b7);
+        ctx.renderer.setBackgroundColor(borderItem, CommonTheme.YELLOW);
         ctx.renderer.setStrokeColor(borderItem, 0);
         ctx.renderer.setStrokeStyle(borderItem, 'round', 'round');
 
