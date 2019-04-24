@@ -25,8 +25,8 @@ const MODE_RESIZE = 2;
 const MODE_MOVE = 3;
 const MODE_ROTATE = 1;
 
-const TRANSFORMER_STROKE_COLOR = '#080';
-const TRANSFORMER_FILL_COLOR = '#0f0';
+const TRANSFORMER_STROKE_COLOR = '#ccc';
+const TRANSFORMER_FILL_COLOR = '#fff';
 
 export interface TransformAdornerProps {
     // The current zoom value.
@@ -342,8 +342,8 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
             const offset = resizeShape['offset'];
 
             this.renderer.setTransform(resizeShape, {
-                x: position.x - 7 + offset.x * (size.x + 4),
-                y: position.y - 7 + offset.y * (size.y + 4),
+                x: position.x - 6 + offset.x * (size.x + 0),
+                y: position.y - 6 + offset.y * (size.y + 0),
                 rx: position.x,
                 ry: position.y,
                 rotation
@@ -380,7 +380,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     private createMoveShape() {
-        const moveShape = this.renderer.createRectangle(1);
+        const moveShape = this.renderer.createRectangle(1, 1);
 
         this.renderer.setStrokeColor(moveShape, TRANSFORMER_STROKE_COLOR);
         this.renderer.setBackgroundColor(moveShape, 'none');
@@ -409,10 +409,10 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         const xs = [-0.5, 0.0, 0.5, -0.5, 0.5, -0.5, 0.0, 0.5];
         const as = [315, 0, 45, 270, 90, 215, 180, 135];
 
-        const size = { w: 14, h: 14 };
+        const size = { w: 12, h: 12 };
 
         for (let i = 0; i < xs.length; i++) {
-            const resizeShape = this.renderer.createRectangle(1);
+            const resizeShape = this.renderer.createRectangle(1, 1);
 
             this.renderer.setTransform(resizeShape, size);
             this.renderer.setStrokeColor(resizeShape, TRANSFORMER_STROKE_COLOR);
