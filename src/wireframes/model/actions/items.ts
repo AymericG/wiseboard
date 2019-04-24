@@ -199,7 +199,7 @@ export function items(rendererService: RendererService, serializer: Serializer):
     return reducer;
 }
 
-export function calculateSelection(items: DiagramItem[], diagram: Diagram, isSingleSelection?: boolean, isCtrl?: boolean): string[] {
+export function calculateSelection(items: DiagramItem[], diagram: Diagram, isSingleSelection?: boolean, isCtrl?: boolean, isShift?: boolean): string[] {
     if (!items) {
         return [];
     }
@@ -225,7 +225,7 @@ export function calculateSelection(items: DiagramItem[], diagram: Diagram, isSin
             const item = items[0];
             const itemId = item.id;
 
-            if (isCtrl) {
+            if (isCtrl || isShift) {
                 if (!item.isLocked) {
                     if (diagram.selectedItemIds.contains(itemId)) {
                         return diagram.selectedItemIds.remove(itemId).toArray();

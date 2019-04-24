@@ -68,11 +68,8 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
     }
 
     public onMouseDown(event: SvgEvent, next: () => void) {
-        if (!event.event.shiftKey) {
-            const selection = this.selectSingle(event, this.props.selectedDiagram);
-
-            this.props.selectItems(this.props.selectedDiagram, selection);
-        }
+        const selection = this.selectSingle(event, this.props.selectedDiagram);
+        this.props.selectItems(this.props.selectedDiagram, selection);
 
         if (!event.element) {
             this.dragStart = event.position;
@@ -124,7 +121,7 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
 
     private selectSingle(event: SvgEvent, diagram: Diagram): string[] {
         if (event.shape && event.shape.bounds(diagram).aabb.contains(event.position)) {
-            return calculateSelection([event.shape], diagram, true, event.event.ctrlKey);
+            return calculateSelection([event.shape], diagram, true, event.event.ctrlKey, event.event.shiftKey);
         } else {
             return [];
         }
