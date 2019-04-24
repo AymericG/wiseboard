@@ -141,11 +141,13 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                         </Tabs>
                     </Layout.Sider>
                     <Layout.Content className='editor-content'>
-                        <EditorViewContainer spacing={40} />
-                        <div className='editor-bottom-right'>
+                        <div className='editor-top-right'>
                             <div className='editor-toolbox'>
                                 <LoadingMenuContainer />
                             </div>
+                        </div>
+                        <EditorViewContainer spacing={40} />
+                        <div className='editor-bottom-right'>
                             <div className='editor-toolbox'>
                                 <HistoryMenuContainer />
                             </div>
