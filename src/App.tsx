@@ -118,9 +118,6 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                 <Layout.Header>
                     <img className='logo' src={logo} alt='mydraft.cc' />
 
-                    <HistoryMenuContainer />
-                    <span className='menu-separator' />
-
                     <LockMenuContainer />
                     <span className='menu-separator' />
 
@@ -149,7 +146,14 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                     </Layout.Sider>
                     <Layout.Content className='editor-content'>
                         <EditorViewContainer spacing={40} />
-                        <div className='editor-toolbox'><UIMenuContainer /></div>
+                        <div className='editor-bottom-right'>
+                            <div className='editor-toolbox'>
+                                <HistoryMenuContainer />
+                            </div>
+                            <div className='editor-toolbox'>
+                                <UIMenuContainer />
+                            </div>
+                        </div>
                     </Layout.Content>
                     <Layout.Sider width={330} className='sidebar-right'
                         collapsed={!showRightSidebar}

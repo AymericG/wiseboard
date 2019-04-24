@@ -40,7 +40,7 @@ class HistoryMenu extends React.PureComponent<HistoryMenuProps> {
         return (
             <>
                 <Tooltip title='Undo (CTRL + Z)'>
-                    <Button className='menu-item' size='large'
+                    <Button className='menu-item right-border'
                         disabled={!canUndo}
                         onClick={this.doUndo}>
                         <i className='icon-undo' />
