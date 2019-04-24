@@ -60,7 +60,7 @@ class LoadingMenu extends React.PureComponent<LoadingMenuProps> {
                 <Title text={title} />
 
                 <Tooltip title='New Diagram (CTRL + N)'>
-                    <Button className='menu-item' size='large'
+                    <Button className='menu-item right-border'
                         onClick={this.doNewDiagram}>
                         <i className='icon-new' />&nbsp;New
                     </Button>
@@ -68,8 +68,9 @@ class LoadingMenu extends React.PureComponent<LoadingMenuProps> {
 
                 <Shortcut onPressed={this.doNewDiagram} keys='ctrl+n' />
 
-                <Tooltip title='New Diagram (CTRL + S)'>
-                    <Button type='primary' size='large'
+                <Tooltip title='Save Diagram (CTRL + S)'>
+                    <Button
+                        className='menu-item'
                         onClick={this.doSaveDiagram}>
                         <i className='icon-save' />&nbsp;Save
                     </Button>
@@ -77,13 +78,13 @@ class LoadingMenu extends React.PureComponent<LoadingMenuProps> {
 
                 <Shortcut onPressed={this.doSaveDiagram} keys='ctrl+s' />
 
-                <Button className='menu-item' size='large' onClick={this.doOpenInfoDialog}>
+                {/* <Button className='menu-item' onClick={this.doOpenInfoDialog}>
                     <Icon type='question-circle-o' />
                 </Button>
 
                 <Modal title='About' visible={showInfoDialog} onOk={this.doCloseInfoDialog} onCancel={this.doCloseInfoDialog}>
                     <div dangerouslySetInnerHTML={{__html: text }} />
-                </Modal>
+                </Modal> */}
             </>
         );
     }

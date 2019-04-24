@@ -125,10 +125,6 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                     <span className='menu-separator' />
 
                     <ClipboardMenuContainer />
-
-                    <span style={{ float: 'right' }}>
-                        <LoadingMenuContainer />
-                    </span>
                 </Layout.Header>
                 <Layout className='content'>
                     <Layout.Sider width={320} className='sidebar-left'
@@ -147,6 +143,9 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                     <Layout.Content className='editor-content'>
                         <EditorViewContainer spacing={40} />
                         <div className='editor-bottom-right'>
+                            <div className='editor-toolbox'>
+                                <LoadingMenuContainer />
+                            </div>
                             <div className='editor-toolbox'>
                                 <HistoryMenuContainer />
                             </div>
