@@ -11,8 +11,6 @@ import { routerMiddleware, routerReducer } from 'react-router-redux';
 import { applyMiddleware, combineReducers, compose, createStore, Reducer } from 'redux';
 import thunk from 'redux-thunk';
 
-import { UserReport } from '@app/core';
-
 import * as Reducers from '@app/wireframes/model/actions';
 
 import {
@@ -93,7 +91,6 @@ const Root = (
             </RendererContext.Provider>
         </SerializerContext.Provider>
 
-        <UserReport />
     </DragDropContextProvider>
 );
 
