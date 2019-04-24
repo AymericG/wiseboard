@@ -39,7 +39,7 @@ class HistoryMenu extends React.PureComponent<HistoryMenuProps> {
 
         return (
             <>
-                <Tooltip mouseEnterDelay={1} title='Undo (CTRL + Z)'>
+                <Tooltip title='Undo (CTRL + Z)'>
                     <Button className='menu-item' size='large'
                         disabled={!canUndo}
                         onClick={this.doUndo}>
@@ -49,7 +49,7 @@ class HistoryMenu extends React.PureComponent<HistoryMenuProps> {
 
                 <Shortcut keys='ctrl+z' disabled={!canUndo} onPressed={this.doUndo} />
 
-                <Tooltip mouseEnterDelay={1} title='Redo (CTRL + Y)'>
+                <Tooltip title='Redo (CTRL + Y)'>
                     <Button className='menu-item' size='large'
                         disabled={!canRedo}
                         onClick={this.doRedo}>

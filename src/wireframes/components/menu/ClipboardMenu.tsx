@@ -90,7 +90,7 @@ class ClipboardMenu extends React.PureComponent<ClipboardMenuProps, ClipboardMen
             <SerializerContext.Consumer>
                 {serializer =>
                     <>
-                        <Tooltip mouseEnterDelay={1} title='Copy items (CTRL + C)'>
+                        <Tooltip title='Copy items (CTRL + C)'>
                             <Button className='menu-item' size='large'
                                 disabled={!canCopy}
                                 onClick={() => this.doCopy(serializer)}>
@@ -100,7 +100,7 @@ class ClipboardMenu extends React.PureComponent<ClipboardMenuProps, ClipboardMen
 
                         <Shortcut disabled={!canCopy} onPressed={() => this.doCopy(serializer)} keys='ctrl+c' />
 
-                        <Tooltip mouseEnterDelay={1} title='Cut items (CTRL + X)'>
+                        <Tooltip title='Cut items (CTRL + X)'>
                             <Button className='menu-item' size='large'
                                 disabled={!canCopy}
                                 onClick={() => this.doCut(serializer)}>
@@ -110,7 +110,7 @@ class ClipboardMenu extends React.PureComponent<ClipboardMenuProps, ClipboardMen
 
                         <Shortcut disabled={!canCopy} onPressed={() => this.doCut(serializer)} keys='ctrl+x' />
 
-                        <Tooltip mouseEnterDelay={1} title='Paste items (CTRL + V)'>
+                        <Tooltip title='Paste items (CTRL + V)'>
                             <Button className='menu-item' size='large'
                                 disabled={!this.state.clipboard}
                                 onClick={this.doPaste}>

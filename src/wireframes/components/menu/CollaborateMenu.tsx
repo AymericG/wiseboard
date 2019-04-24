@@ -19,7 +19,7 @@ export class CollaborateMenu extends React.PureComponent<{}, CollaborateMenuStat
 
     public render() {
         return (
-            <Tooltip mouseEnterDelay={1} title='Collaborate together'>
+            <Tooltip title='Collaborate together'>
                 <button ref={this.doSaveButton} className='menu-item ant-btn menu-item ant-btn-lg' onClick={this.doCollaborate}>
                     <Icon type='team' />
                 </button>

@@ -53,7 +53,7 @@ class LockMenu extends React.PureComponent<LockMenuProps> {
             <>
                 <Shortcut disabled={!selectedItem} onPressed={this.doToggle} keys='ctl+l' />
 
-                <Tooltip mouseEnterDelay={1} title='Lock or unlock item (CTRL + L)'>
+                <Tooltip title='Lock or unlock item (CTRL + L)'>
                     <Button className='menu-item' size='large'
                         disabled={!selectedItem}
                         onClick={this.doToggle}>

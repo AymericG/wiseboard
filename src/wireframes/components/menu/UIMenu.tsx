@@ -35,7 +35,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
 
         return (
             <>
-                <Tooltip mouseEnterDelay={1} title='Zoom Out (ALT + [-])'>
+                <Tooltip title='Zoom Out (ALT + [-])'>
                     <Button className='menu-item' size='large'
                         disabled={!canZoomOut}
                         onClick={this.doZoomOut}>
@@ -47,7 +47,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
 
                 <span className='menu-item'>{zoom * 100}</span>
 
-                <Tooltip mouseEnterDelay={1} title='Zoom In (ALT + [+])'>
+                <Tooltip title='Zoom In (ALT + [+])'>
                     <Button className='menu-item' size='large'
                         disabled={!canZoomIn}
                         onClick={this.doZoomIn}>

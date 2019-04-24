@@ -90,7 +90,7 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
 
         return (
             <>
-                <Tooltip mouseEnterDelay={1} title='Group items (CTRL + G)'>
+                <Tooltip title='Group items (CTRL + G)'>
                     <Button className='menu-item' size='large'
                         disabled={!canGroup}
                         onClick={this.doGroup}>
@@ -100,7 +100,7 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
 
                 <Shortcut disabled={!canGroup} onPressed={this.doGroup} keys='ctrl+g' />
 
-                <Tooltip mouseEnterDelay={1} title='Ungroup items (CTRL + SHIFT + G)'>
+                <Tooltip title='Ungroup items (CTRL + SHIFT + G)'>
                     <Button className='menu-item' size='large'
                         disabled={!canUngroup}
                         onClick={this.doUngroup}>
@@ -110,7 +110,7 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
 
                 <Shortcut disabled={!canUngroup} onPressed={this.doUngroup} keys='ctrl+shift+g' />
 
-                <Tooltip mouseEnterDelay={1} title='Delete selected items (DELETE)'>
+                <Tooltip title='Delete selected items (DELETE)'>
                     <Button className='menu-item' size='large'
                         disabled={!canRemove}
                         onClick={this.doRemove}>
