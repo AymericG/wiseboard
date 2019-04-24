@@ -14,9 +14,10 @@ import {
     LoadingMenuContainer,
     LockMenuContainer,
     ShapesContainer,
-    UIMenuContainer,
-    VisualPropertiesContainer
+    VisualPropertiesContainer,
+    UIMenuContainer
 } from '@app/wireframes/components';
+
 
 import {
     loadDiagramAsync,
@@ -127,9 +128,6 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                     <span className='menu-separator' />
 
                     <ClipboardMenuContainer />
-                    <span className='menu-separator' />
-
-                    <UIMenuContainer />
 
                     <span style={{ float: 'right' }}>
                         <LoadingMenuContainer />
@@ -151,6 +149,7 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                     </Layout.Sider>
                     <Layout.Content className='editor-content'>
                         <EditorViewContainer spacing={40} />
+                        <div className='editor-toolbox'><UIMenuContainer /></div>
                     </Layout.Content>
                     <Layout.Sider width={330} className='sidebar-right'
                         collapsed={!showRightSidebar}

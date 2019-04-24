@@ -150,6 +150,7 @@ class EditorView extends React.Component<EditorViewProps> {
                         <EditorContainer rendererService={renderer} />
                     }
                 </RendererContext.Consumer>
+
             </div>
         );
     }

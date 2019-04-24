@@ -180,10 +180,9 @@ $sidebar-size: 320px;
     &-item > button {
         & {
             @include opacity(.8);
-            color: $color-dark-foreground !important;
+            color: $color-dark-foreground;
             border: 0;
-            background: transparent !important;
-            height: 60px;
+            background: transparent;
         }
 
         &:hover {
@@ -193,5 +192,46 @@ $sidebar-size: 320px;
         &:disabled {
             @include opacity(.4);
         }
+    }
+}
+
+.ant-btn {
+    height: auto;
+    padding-top: .5rem;
+    padding-bottom: .5rem; 
+}
+
+.editor-toolbox {
+    position: absolute;
+    right: 2rem; 
+    bottom: 2rem; 
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
+
+    button.menu-item, .menu-item > button {
+        color: $color-theme-grey;
+
+        &:hover {
+            background-color: $color-theme-grey;
+            color: $color-dark-foreground; 
+        }
+    }
+
+    span.menu-item {
+        color: $color-theme-grey;
+        padding: 0 .5rem;
+    }
+
+    .menu-item:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: 1px solid #efefef;
+    }
+
+    .menu-item:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: 1px solid #efefef;
     }
 }

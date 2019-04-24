@@ -36,7 +36,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
         return (
             <>
                 <Tooltip title='Zoom Out (ALT + [-])'>
-                    <Button className='menu-item' size='large'
+                    <Button className='menu-item'
                         disabled={!canZoomOut}
                         onClick={this.doZoomOut}>
                         <Icon type='minus-circle-o' />
@@ -45,10 +45,10 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
 
                 <Shortcut disabled={!canZoomOut} onPressed={this.doZoomOut} keys='alt+-' />
 
-                <span className='menu-item'>{zoom * 100}</span>
+                <span className='menu-item'>{zoom * 100}%</span>
 
                 <Tooltip title='Zoom In (ALT + [+])'>
-                    <Button className='menu-item' size='large'
+                    <Button className='menu-item'
                         disabled={!canZoomIn}
                         onClick={this.doZoomIn}>
                         <Icon type='plus-circle-o' />
