@@ -130,7 +130,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         this.canResizeX = false;
         this.canResizeY = false;
 
-        for (let item of this.props.selectedItems) {
+        for (let item of selectedItems) {
             if (item instanceof DiagramShape) {
                 if (item.constraint) {
                     if (!item.constraint.calculateSizeX()) {
@@ -360,7 +360,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         this.renderer.setVisibility(this.rotateShape, true);
         this.renderer.setTransform(this.rotateShape, {
             x: position.x - 8,
-            y: position.y - 8 - size.y * 0.5 - 30,
+            y: position.y - 8 - size.y * 0.5 - 20,
             rx: position.x,
             ry: position.y,
             rotation
@@ -437,7 +437,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
 
         const style = {
             left: this.transform.position.x,
-            top: this.transform.position.y - this.transform.size.y / 2 - 90
+            top: this.transform.position.y - this.transform.size.y / 2 - 70
         };
         return <div
             className='editor-floating-toolbox'
