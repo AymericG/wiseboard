@@ -8,11 +8,10 @@ import {
     EditorViewContainer,
     HistoryMenuContainer,
     IconsContainer,
-    LayoutPropertiesContainer,
     LoadingMenuContainer,
     ShapesContainer,
-    VisualPropertiesContainer,
-    UIMenuContainer
+    UIMenuContainer,
+    VisualPropertiesContainer
 } from '@app/wireframes/components';
 
 import {
@@ -144,10 +143,7 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                         collapsed={!showRightSidebar}
                         collapsedWidth={0}>
 
-                        <Collapse bordered={false} defaultActiveKey={['layout', 'visual', 'custom']}>
-                            <Collapse.Panel key='layout' header='Layout'>
-                                <LayoutPropertiesContainer />
-                            </Collapse.Panel>
+                        <Collapse bordered={false} defaultActiveKey={['visual', 'custom']}>
                             <Collapse.Panel key='visual' header='Visual'>
                                 <VisualPropertiesContainer />
                             </Collapse.Panel>

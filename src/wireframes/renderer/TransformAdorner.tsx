@@ -12,7 +12,8 @@ import {
 } from '@app/wireframes/model';
 
 import {
-    ArrangeMenuContainer
+    ArrangeMenuContainer,
+    LayoutMenuContainer
 } from '@app/wireframes/components';
 
 import { InteractionOverlays } from './interaction-overlays';
@@ -93,7 +94,6 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     public componentWillReceiveProps(nextProps: TransformAdornerProps) {
-        console.log('componentWillReceiveProps');
         if (this.props.selectedDiagram.selectedItemIds !== nextProps.selectedDiagram.selectedItemIds) {
             this.rotation = Rotation.ZERO;
         }
@@ -431,9 +431,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     public render(): any {
-        
-        console.log('render');
-        if (!this.transform || this.props.selectedItems.length == 0) {
+        if (!this.transform || this.props.selectedItems.length === 0) {
             return null;
         }
 
@@ -441,9 +439,11 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
             left: this.transform.position.x,
             top: this.transform.position.y - this.transform.size.y / 2 - 90
         };
-        return <div 
-            className='editor-floating-toolbox' 
+        return <div
+            className='editor-floating-toolbox'
             style={style}>
+
+            <LayoutMenuContainer />
             <ArrangeMenuContainer />
         </div>;
     }
