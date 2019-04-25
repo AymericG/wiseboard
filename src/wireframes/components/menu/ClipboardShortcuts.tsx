@@ -1,4 +1,3 @@
-import { Button, Tooltip } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -19,7 +18,7 @@ import {
 
 import { SerializerContext } from '@app/context';
 
-interface ClipboardMenuProps {
+interface ClipboardShortcutsProps {
     // The selected diagram.
     selectedDiagram: Diagram | null;
 
@@ -33,7 +32,7 @@ interface ClipboardMenuProps {
     pasteItems: (diagram: Diagram, json: string, offset?: number) => any;
 }
 
-interface ClipboardMenuState {
+interface ClipboardShortcutsState {
     // The current clipboard value.
     clipboard?: string;
 
@@ -43,8 +42,8 @@ interface ClipboardMenuState {
 
 const OFFSET = 50;
 
-class ClipboardMenu extends React.PureComponent<ClipboardMenuProps, ClipboardMenuState> {
-    constructor(props: ClipboardMenuProps) {
+class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, ClipboardShortcutsState> {
+    constructor(props: ClipboardShortcutsProps) {
         super(props);
 
         this.state = { offset: 0 };
@@ -90,34 +89,8 @@ class ClipboardMenu extends React.PureComponent<ClipboardMenuProps, ClipboardMen
             <SerializerContext.Consumer>
                 {serializer =>
                     <>
-                        <Tooltip title='Copy items (CTRL + C)'>
-                            <Button className='menu-item' size='large'
-                                disabled={!canCopy}
-                                onClick={() => this.doCopy(serializer)}>
-                                <i className='icon-copy' />
-                            </Button>
-                        </Tooltip>
-
                         <Shortcut disabled={!canCopy} onPressed={() => this.doCopy(serializer)} keys='ctrl+c' />
-
-                        <Tooltip title='Cut items (CTRL + X)'>
-                            <Button className='menu-item' size='large'
-                                disabled={!canCopy}
-                                onClick={() => this.doCut(serializer)}>
-                                <i className='icon-cut' />
-                            </Button>
-                        </Tooltip>
-
                         <Shortcut disabled={!canCopy} onPressed={() => this.doCut(serializer)} keys='ctrl+x' />
-
-                        <Tooltip title='Paste items (CTRL + V)'>
-                            <Button className='menu-item' size='large'
-                                disabled={!this.state.clipboard}
-                                onClick={this.doPaste}>
-                                <i className='icon-paste' />
-                            </Button>
-                        </Tooltip>
-
                         <Shortcut disabled={!this.state.clipboard} onPressed={this.doPaste} keys='ctrl+v' />
                     </>
                 }
@@ -137,7 +110,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
     removeItems, pasteItems
 }, dispatch);
 
-export const ClipboardMenuContainer = connect(
+export const ClipboardShortcutsContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(ClipboardMenu);
+)(ClipboardShortcuts);

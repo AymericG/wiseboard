@@ -213,12 +213,36 @@ $sidebar-size: 320px;
     top: 1rem; 
 }
 
+.editor-floating-toolbox {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    transform: translate(-50%);
+    background-color: #293845;
+    padding: .25rem;
+
+    button.menu-item {
+        &:hover {
+            background-color: #000;
+            color: #fff;
+        }
+    }
+
+    .ant-btn-disabled, .ant-btn.disabled, .ant-btn[disabled], .ant-btn-disabled:hover, .ant-btn.disabled:hover, .ant-btn[disabled]:hover, .ant-btn-disabled:focus, .ant-btn.disabled:focus, .ant-btn[disabled]:focus, .ant-btn-disabled:active, .ant-btn.disabled:active, .ant-btn[disabled]:active, .ant-btn-disabled.active, .ant-btn.disabled.active, .ant-btn[disabled].active {
+        background-color: transparent;
+        color: #fff;
+    }
+}
+
+.editor-floating-toolbox, .editor-toolbox {
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
+}
+
 .editor-toolbox {
     margin-left: 2rem;
     display: inline-block;
-    border-radius: 4px;
     background-color: #fff;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
 
     button.menu-item, .menu-item > button {
         color: $color-theme-grey;
@@ -250,4 +274,13 @@ $sidebar-size: 320px;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
+}
+
+.menu-separator {
+    background-color: #efefef;
+}
+
+.ant-btn:hover, .ant-btn:focus {
+    color: $color-brand-primary;
+    border-color: $color-brand-primary;
 }

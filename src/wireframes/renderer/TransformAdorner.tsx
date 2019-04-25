@@ -11,6 +11,10 @@ import {
     Transform
 } from '@app/wireframes/model';
 
+import {
+    ArrangeMenuContainer
+} from '@app/wireframes/components';
+
 import { InteractionOverlays } from './interaction-overlays';
 
 import {
@@ -89,41 +93,40 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     public componentWillReceiveProps(nextProps: TransformAdornerProps) {
+        console.log('componentWillReceiveProps');
         if (this.props.selectedDiagram.selectedItemIds !== nextProps.selectedDiagram.selectedItemIds) {
             this.rotation = Rotation.ZERO;
         }
 
         this.manipulationMode = 0;
         this.manipulated = false;
-    }
 
-    public componentDidUpdate() {
-        if (this.hasSelection()) {
-            this.calculateInitializeTransform();
-            this.calculateResizeRestrictions();
+        if (this.hasSelection(nextProps.selectedItems)) {
+            this.calculateInitializeTransform(nextProps.selectedItems, nextProps.selectedDiagram);
+            this.calculateResizeRestrictions(nextProps.selectedItems);
             this.layoutShapes();
         } else {
             this.hideShapes();
         }
     }
 
-    private hasSelection(): boolean {
-        return this.props.selectedItems.length > 0;
+    private hasSelection(selectedItems: DiagramItem[]): boolean {
+        return selectedItems.length > 0;
     }
 
-    private calculateInitializeTransform() {
+    private calculateInitializeTransform(selectedItems: DiagramItem[], selectedDiagram: Diagram) {
         let transform: Transform;
 
-        if (this.props.selectedItems.length === 1) {
-            transform = this.props.selectedItems[0].bounds(this.props.selectedDiagram);
+        if (selectedItems.length === 1) {
+            transform = selectedItems[0].bounds(selectedDiagram);
         } else {
-            transform = Transform.createFromTransformationsAndRotations(this.props.selectedItems.map(x => x.bounds(this.props.selectedDiagram)), this.rotation);
+            transform = Transform.createFromTransformationsAndRotations(selectedItems.map(x => x.bounds(selectedDiagram)), this.rotation);
         }
 
         this.transform = transform;
     }
 
-    private calculateResizeRestrictions() {
+    private calculateResizeRestrictions(selectedItems: DiagramItem[]) {
         this.canResizeX = false;
         this.canResizeY = false;
 
@@ -428,6 +431,20 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     public render(): any {
-        return null;
+        
+        console.log('render');
+        if (!this.transform || this.props.selectedItems.length == 0) {
+            return null;
+        }
+
+        const style = {
+            left: this.transform.position.x,
+            top: this.transform.position.y - this.transform.size.y / 2 - 90
+        };
+        return <div 
+            className='editor-floating-toolbox' 
+            style={style}>
+            <ArrangeMenuContainer />
+        </div>;
     }
 }

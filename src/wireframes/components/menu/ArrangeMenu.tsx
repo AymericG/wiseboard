@@ -90,36 +90,36 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
 
         return (
             <>
-                <Tooltip title='Group items (CTRL + G)'>
-                    <Button className='menu-item' size='large'
+                {canGroup && <Tooltip title='Group items (CTRL + G)'>
+                    <Button className='menu-item'
                         disabled={!canGroup}
                         onClick={this.doGroup}>
                         <i className='icon-group' />
                     </Button>
-                </Tooltip>
+                </Tooltip>}
 
-                <Shortcut disabled={!canGroup} onPressed={this.doGroup} keys='ctrl+g' />
+                {canGroup && <Shortcut disabled={!canGroup} onPressed={this.doGroup} keys='ctrl+g' />}
 
-                <Tooltip title='Ungroup items (CTRL + SHIFT + G)'>
-                    <Button className='menu-item' size='large'
+                {canUngroup && <Tooltip title='Ungroup items (CTRL + SHIFT + G)'>
+                    <Button className='menu-item'
                         disabled={!canUngroup}
                         onClick={this.doUngroup}>
                         <i className='icon-ungroup' />
                     </Button>
-                </Tooltip>
+                </Tooltip>}
 
-                <Shortcut disabled={!canUngroup} onPressed={this.doUngroup} keys='ctrl+shift+g' />
+                {canUngroup && <Shortcut disabled={!canUngroup} onPressed={this.doUngroup} keys='ctrl+shift+g' />}
 
-                <Tooltip title='Delete selected items (DELETE)'>
-                    <Button className='menu-item' size='large'
+                {canRemove && <Tooltip title='Delete selected items (DELETE)'>
+                    <Button className='menu-item'
                         disabled={!canRemove}
                         onClick={this.doRemove}>
                         <i className='icon-delete' />
                     </Button>
-                </Tooltip>
+                </Tooltip>}
 
-                <Shortcut disabled={!canRemove} onPressed={this.doRemove} keys='del' />
-                <Shortcut disabled={!canRemove} onPressed={this.doRemove} keys='backspace' />
+                {canRemove && <Shortcut disabled={!canRemove} onPressed={this.doRemove} keys='del' />}
+                {canRemove && <Shortcut disabled={!canRemove} onPressed={this.doRemove} keys='backspace' />}
 
                 <Shortcut disabled={!this.props.selectedDiagram} onPressed={this.doSelectAll} keys='ctrl+a' />
             </>

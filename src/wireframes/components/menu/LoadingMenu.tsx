@@ -1,4 +1,4 @@
-import { Button, Icon, Modal, Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -12,8 +12,6 @@ import {
     toggleInfoDialog,
     UIStateInStore
 } from '@app/wireframes/model';
-
-const text = require('@app/legal.html');
 
 interface LoadingMenuProps {
     // The current read token.
@@ -44,16 +42,16 @@ class LoadingMenu extends React.PureComponent<LoadingMenuProps> {
         this.props.saveDiagramAsync();
     }
 
-    private doOpenInfoDialog = () => {
-        this.props.toggleInfoDialog(true);
-    }
+    // private doOpenInfoDialog = () => {
+    //     this.props.toggleInfoDialog(true);
+    // }
 
-    private doCloseInfoDialog = () => {
-        this.props.toggleInfoDialog(false);
-    }
+    // private doCloseInfoDialog = () => {
+    //     this.props.toggleInfoDialog(false);
+    // }
 
     public render() {
-        const { showInfoDialog, title } = this.props;
+        const { /*showInfoDialog,*/ title } = this.props;
 
         return (
             <>

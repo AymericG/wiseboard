@@ -2,7 +2,7 @@ export * from './assets/Icons';
 export * from './assets/Shapes';
 
 export * from './menu/ArrangeMenu';
-export * from './menu/ClipboardMenu';
+export * from './menu/ClipboardShortcuts';
 export * from './menu/CollaborateMenu';
 export * from './menu/HistoryMenu';
 export * from './menu/LoadingMenu';

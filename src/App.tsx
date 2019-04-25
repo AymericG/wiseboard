@@ -4,20 +4,16 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import {
-    ArrangeMenuContainer,
-    ClipboardMenuContainer,
     CustomPropertiesContainer,
     EditorViewContainer,
     HistoryMenuContainer,
     IconsContainer,
     LayoutPropertiesContainer,
     LoadingMenuContainer,
-    LockMenuContainer,
     ShapesContainer,
     VisualPropertiesContainer,
     UIMenuContainer
 } from '@app/wireframes/components';
-
 
 import {
     loadDiagramAsync,
@@ -75,8 +71,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
     selectTab
 }, dispatch);
 
-const logo = require('./images/logo-square-64.png');
-
 class App extends React.PureComponent<AppProps & AppOwnProps> {
     constructor(props: AppProps & AppOwnProps) {
         super(props);
@@ -115,17 +109,6 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
 
         return (
             <Layout>
-                <Layout.Header>
-                    <img className='logo' src={logo} alt='mydraft.cc' />
-
-                    <LockMenuContainer />
-                    <span className='menu-separator' />
-
-                    <ArrangeMenuContainer />
-                    <span className='menu-separator' />
-
-                    <ClipboardMenuContainer />
-                </Layout.Header>
                 <Layout className='content'>
                     <Layout.Sider width={320} className='sidebar-left'
                         collapsed={!showLeftSidebar}
@@ -146,6 +129,7 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                                 <LoadingMenuContainer />
                             </div>
                         </div>
+
                         <EditorViewContainer spacing={40} />
                         <div className='editor-bottom-right'>
                             <div className='editor-toolbox'>

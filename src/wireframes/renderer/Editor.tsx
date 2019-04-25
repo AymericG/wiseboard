@@ -8,6 +8,10 @@ import './Editor.scss';
 import { ImmutableList, sizeInPx, Vec2 } from '@app/core';
 
 import {
+    ClipboardShortcutsContainer
+} from '@app/wireframes/components';
+
+import {
     changeItemsAppearance,
     Diagram,
     DiagramGroup,
@@ -197,6 +201,8 @@ class Editor extends React.Component<EditorProps> {
 
                         {this.interactionService && selectedDiagram && (
                             <>
+                                <ClipboardShortcutsContainer />
+
                                 <TransformAdorner
                                     adorners={this.adornersTransform}
                                     interactionService={this.interactionService}
