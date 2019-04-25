@@ -1,17 +1,15 @@
-import { Button, Collapse, Layout, Tabs } from 'antd';
+import { Button, Layout, Tabs } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import {
-    CustomPropertiesContainer,
     EditorViewContainer,
     HistoryMenuContainer,
     IconsContainer,
     LoadingMenuContainer,
     ShapesContainer,
-    UIMenuContainer,
-    VisualPropertiesContainer
+    UIMenuContainer
 } from '@app/wireframes/components';
 
 import {
@@ -19,7 +17,6 @@ import {
     newDiagram,
     selectTab,
     toggleLeftSidebar,
-    toggleRightSidebar,
     UIStateInStore
 } from '@app/wireframes/model';
 
@@ -31,9 +28,6 @@ interface AppOwnProps {
 interface AppProps {
     // Show left sidebar.
     showLeftSidebar: boolean;
-
-    // Show right sidebar.
-    showRightSidebar: boolean;
 
     // The selected tabs
     selectedTab: string;
@@ -57,8 +51,7 @@ interface AppProps {
 const mapStateToProps = (state: UIStateInStore, props: AppOwnProps) => {
     return {
         selectedTab: state.ui.selectedTab,
-        showLeftSidebar: state.ui.showLeftSidebar,
-        showRightSidebar: state.ui.showRightSidebar
+        showLeftSidebar: state.ui.showLeftSidebar
     };
 };
 
@@ -66,7 +59,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
     loadDiagramAsync,
     newDiagram,
     toggleLeftSidebar,
-    toggleRightSidebar,
     selectTab
 }, dispatch);
 
@@ -99,12 +91,8 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
         this.props.toggleLeftSidebar();
     }
 
-    private doToggleRightSidebar = () => {
-        this.props.toggleRightSidebar();
-    }
-
     public render() {
-        const { selectedTab, showLeftSidebar, showRightSidebar } = this.props;
+        const { selectedTab, showLeftSidebar } = this.props;
 
         return (
             <Layout>
@@ -139,19 +127,6 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                             </div>
                         </div>
                     </Layout.Content>
-                    <Layout.Sider width={330} className='sidebar-right'
-                        collapsed={!showRightSidebar}
-                        collapsedWidth={0}>
-
-                        <Collapse bordered={false} defaultActiveKey={['visual', 'custom']}>
-                            <Collapse.Panel key='visual' header='Visual'>
-                                <VisualPropertiesContainer />
-                            </Collapse.Panel>
-                            <Collapse.Panel key='custom' header='Custom'>
-                                <CustomPropertiesContainer />
-                            </Collapse.Panel>
-                        </Collapse>
-                    </Layout.Sider>
 
                     <Button icon={toggleIcon(showLeftSidebar)}
                         className={toggleClass(showLeftSidebar, 'left')}
@@ -159,11 +134,6 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                         shape='circle'
                         onClick={this.doToggleLeftSidebar} />
 
-                    <Button icon={toggleIcon(!showRightSidebar)}
-                        className={toggleClass(showRightSidebar, 'right')}
-                        size='small'
-                        shape='circle'
-                        onClick={this.doToggleRightSidebar} />
                 </Layout>
             </Layout>
         );

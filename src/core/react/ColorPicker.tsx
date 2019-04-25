@@ -14,6 +14,8 @@ interface ColorPickerProps {
     // The selected color.
     value?: Color | string | null;
 
+    className?: string;
+
     // The color palette.
     palette?: ColorPalette;
 
@@ -95,7 +97,7 @@ export class ColorPicker extends React.PureComponent<ColorPickerProps, ColorPick
     }
 
     public render() {
-        const { activeColorTab, disabled } = this.props;
+        const { activeColorTab, className, disabled } = this.props;
 
         const selectedPalette = this.props.palette || ColorPalette.colors();
 
@@ -108,32 +110,19 @@ export class ColorPicker extends React.PureComponent<ColorPickerProps, ColorPick
         };
 
         const content = (
-            <Tabs size='small' className='color-picker-tabs' animated={false} activeKey={activeColorTab} onChange={this.doSelectTab}>
-                <Tabs.TabPane key='palette' tab='Palette'>
-                    <div className='color-picker-colors'>
-                        {selectedPalette.colors.map(c =>
-                            <div className={colorClassName(c)} key={c.toString()}>
-                                <div className='color-picker-color-inner' onClick={() => this.doSelectColor(c)} style={{background: c.toString()}}></div>
-                            </div>
-                        )}
-                    </div>
-                </Tabs.TabPane>
-                <Tabs.TabPane key='advanced' tab='Advanced'>
-                    <SketchPicker color={this.state.colorHex} onChange={this.doSelectColorResult} disableAlpha={true} width='210px' />
-
-                    <Button onClick={this.doConfirmCoclor}>Apply</Button>
-                </Tabs.TabPane>
-            </Tabs>
+            <div className='color-picker-colors'>
+                {selectedPalette.colors.map(c =>
+                    <div className={colorClassName(c)} key={c.toString()} onClick={() => this.doSelectColor(c)} style={{background: c.toString()}} />
+                )}
+            </div>
         );
 
         const placement = this.props.popoverPlacement || 'left';
 
         return (
             <Popover content={content} visible={this.state.visible} placement={placement} trigger='click' onVisibleChange={this.doSetVisibility}>
-                <Button disabled={disabled} className='color-picker-button' onClick={this.doToggle}>
-                    <div className='color-picker-color'>
-                        <div className='color-picker-color-inner' style={{ background: this.state.colorHex }}></div>
-                    </div>
+                <Button disabled={disabled} className={className ? className + ' color-picker-button' : 'color-picker-button'}  onClick={this.doToggle}>
+                    <div className='color-picker-color' style={{ background: this.state.colorHex }} />
                 </Button>
             </Popover>
         );

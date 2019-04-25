@@ -4,8 +4,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import './VisualProperties.scss';
-
 import { Color, ColorPicker } from '@app/core';
 
 import {
@@ -22,7 +20,7 @@ import {
     UniqueValue
 } from '@app/wireframes/model';
 
-interface VisualPropertiesProps {
+interface AppearanceMenuProps {
     // The selected diagram.
     selectedDiagramId: string | null;
 
@@ -80,7 +78,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
 const DEFINED_STROKE_THICKNESSES = [1, 2, 4, 6, 8];
 const DEFINED_FONT_SIZES = [4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 60];
 
-class VisualProperties extends React.PureComponent<VisualPropertiesProps> {
+class AppearanceMenu extends React.PureComponent<AppearanceMenuProps> {
     private textAlignment = (value: string): ButtonType => {
         return value === this.props.textAlignment.value ? 'primary' : undefined;
     }
@@ -138,9 +136,18 @@ class VisualProperties extends React.PureComponent<VisualPropertiesProps> {
 
         return (
             <>
-                {selectedDiagramId &&
+                {selectedDiagramId && selectedItems.length > 0 &&
                     <>
-                        <div style={{display: (selectedItems.length > 0 ? 'block' : 'none') }}>
+                        <ColorPicker
+                            popoverPlacement='bottom'
+                            className='menu-item'
+                            activeColorTab={selectedColorTab}
+                            disabled={backgroundColor.empty}
+                            value={backgroundColor.value}
+                            onChange={this.doChangeBackgroundColor}
+                            onActiveColorTabChanged={this.doSelectColorTab} />
+
+                        {/* <div style={{display: (selectedItems.length > 0 ? 'block' : 'none') }}>
                             <div className='property-subsection visual-properties'>
                                 <Row className='property'>
                                     <Col span={12} className='property-label'>
@@ -187,9 +194,7 @@ class VisualProperties extends React.PureComponent<VisualPropertiesProps> {
                                         Background Color
                                     </Col>
                                     <Col span={12} className='property-value'>
-                                        <ColorPicker activeColorTab={selectedColorTab} disabled={backgroundColor.empty} value={backgroundColor.value}
-                                            onChange={this.doChangeBackgroundColor}
-                                            onActiveColorTabChanged={this.doSelectColorTab} />
+                                        
                                     </Col>
                                 </Row>
                                 <Row className='property'>
@@ -211,7 +216,7 @@ class VisualProperties extends React.PureComponent<VisualPropertiesProps> {
                                     </Col>
                                 </Row>
                             </div>
-                        </div>
+                        </div> */}
                     </>
                 }
             </>
@@ -219,7 +224,7 @@ class VisualProperties extends React.PureComponent<VisualPropertiesProps> {
     }
 }
 
-export const VisualPropertiesContainer = connect(
+export const AppearanceMenuContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(VisualProperties);
+)(AppearanceMenu);

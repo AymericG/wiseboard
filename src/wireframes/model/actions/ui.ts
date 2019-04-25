@@ -38,11 +38,6 @@ export const toggleLeftSidebar = () => {
     return { type: TOGGLE_LEFT_SIDEBAR };
 };
 
-export const TOGGlE_RIGHT_SIDEBAR = 'TOGGle_RIGHT_SIDEBAR';
-export const toggleRightSidebar = () => {
-    return { type: TOGGlE_RIGHT_SIDEBAR };
-};
-
 export function toastMiddleware() {
     const middleware: Middleware = () => (next: Dispatch<AnyAction>) => (action: any) => {
         switch (action.type) {
@@ -73,8 +68,6 @@ export function ui(initialState: UIState): Reducer<UIState> {
                 return { ...state, showInfoDialog: action.isOpen };
             case TOGGLE_LEFT_SIDEBAR:
                 return { ...state, showLeftSidebar: !state.showLeftSidebar };
-            case TOGGlE_RIGHT_SIDEBAR:
-                return { ...state, showRightSidebar: !state.showRightSidebar };
             default:
                 return state;
         }

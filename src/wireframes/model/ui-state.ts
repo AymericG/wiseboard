@@ -14,9 +14,6 @@ export interface UIState {
     // Indicates if the left sidebar is open.
     showLeftSidebar: boolean;
 
-    // Indicates if the right sidebar is open.
-    showRightSidebar: boolean;
-
     // The selected tab on the left sidebar.
     selectedTab: string;
 
@@ -34,7 +31,6 @@ export const createInitialUIState: () => UIState = () => {
         selectedTab: 'shapes',
         showInfoDialog: false,
         showLeftSidebar: true,
-        showRightSidebar: true,
         selectedColorTab: 'palette'
     };
 };

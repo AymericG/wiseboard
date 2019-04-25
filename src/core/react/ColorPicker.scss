@@ -1,40 +1,34 @@
 @import '_mixins';
 @import '_vars';
 
-$size: 24px;
+$size-sm: 14px;
+$size-md: 22px;
 
 .color-picker {
-    &-button {
-        &, & button {
-            padding: 2px !important;
-        }
-    }
-
     &-colors {
         @include clearfix;
         max-width: 210px;
         min-width: 210px;
+
+        .color-picker-color {
+            margin-right: .25rem;
+            @include circle($size-md);
+        }
     }
 
     &-color {
-        & {
-            @include circle($size);
-            float: left;
-            border: 2px solid $color-border;
-            background: $color-dark-foreground;
-            margin: 1px;
-        }
+        vertical-align: -2px;
+        @include circle($size-sm);
+        cursor: pointer;
+        display: inline-block;
+        border: 2px solid #fff;
+        background: $color-dark-foreground;
 
         &.rect {
             @include border-radius(0);
             background: transparent;
             border-color: transparent;
             float: none;
-        }
-
-        &-inner {
-            @include circle($size - 6px);
-            margin: 1px;
         }
 
         &:hover {
@@ -44,12 +38,6 @@ $size: 24px;
         &.selected {
             border-color: $color-theme-blue;
         }
-    }
-
-    &-tabs {
-        margin-top: -10px;
-        min-height: 375px;
-        max-height: 375px;
     }
 }
 

@@ -6,5 +6,9 @@ export const CommonTheme = {
     CONTROL_BORDER_RADIUS: 4,
     CONTROL_TEXT_COLOR: 0x252525,
 
-    YELLOW: '#FFEE6A'
+    YELLOW: '#FFEE6A',
+    PURPLE: '#5905F8',
+    CYAN: '#22EBCB',
+    PINK: '#FC0CEB'
+
 };

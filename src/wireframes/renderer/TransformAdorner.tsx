@@ -13,6 +13,7 @@ import {
 
 import {
     ArrangeMenuContainer,
+    CustomPropertiesMenuContainer,
     LayoutMenuContainer
 } from '@app/wireframes/components';
 
@@ -443,6 +444,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
             className='editor-floating-toolbox'
             style={style}>
 
+            <CustomPropertiesMenuContainer />
             <LayoutMenuContainer />
             <ArrangeMenuContainer />
         </div>;
