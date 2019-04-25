@@ -1,7 +1,7 @@
 export * from './assets/Icons';
 export * from './assets/Shapes';
 
-export * from './menu/AppearanceMenu';
+// export * from './menu/AppearanceMenu';
 export * from './menu/ArrangeMenu';
 export * from './menu/ClipboardShortcuts';
 export * from './menu/CollaborateMenu';

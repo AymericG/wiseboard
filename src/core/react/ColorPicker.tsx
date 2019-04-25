@@ -1,7 +1,6 @@
-import { Button, Popover, Tabs } from 'antd';
+import { Button, Popover } from 'antd';
 import { TooltipPlacement } from 'antd/lib/tooltip';
 import * as React from 'react';
-import { ColorResult, SketchPicker } from 'react-color';
 
 import './ColorPicker.scss';
 
@@ -66,16 +65,6 @@ export class ColorPicker extends React.PureComponent<ColorPickerProps, ColorPick
         this.setState(s => ({ ...s, visible: !s.visible }));
     }
 
-    private doSelectColorResult = (color: ColorResult) => {
-        this.setState({ visible: true, colorHex: color.hex });
-    }
-
-    private doSelectTab = (key: string) => {
-        if (this.props.onActiveColorTabChanged) {
-            this.props.onActiveColorTabChanged(key);
-        }
-    }
-
     private doSelectColor = (color: Color) => {
         if (this.props.onChange) {
             this.props.onChange(color);
@@ -84,20 +73,8 @@ export class ColorPicker extends React.PureComponent<ColorPickerProps, ColorPick
         this.setState({ visible: false, colorHex: color.toString() });
     }
 
-    private doConfirmCoclor = () => {
-        if (this.props.onChange) {
-            const color = this.state.colorHex;
-
-            if (color) {
-                this.props.onChange(Color.fromValue(this.state.colorHex));
-            }
-        }
-
-        this.setState({ visible: false });
-    }
-
     public render() {
-        const { activeColorTab, className, disabled } = this.props;
+        const { className, disabled } = this.props;
 
         const selectedPalette = this.props.palette || ColorPalette.colors();
 

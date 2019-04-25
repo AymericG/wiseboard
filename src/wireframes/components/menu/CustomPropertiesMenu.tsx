@@ -1,4 +1,4 @@
-import { InputNumber, Select, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -21,7 +21,7 @@ import {
     UIStateInStore
 } from '@app/wireframes/model';
 
-import { CustomSlider } from './CustomSlider';
+import { NumberPicker } from '@app/core/react/NumberPicker';
 import { SelectPicker } from '@app/core/react/SelectPicker';
 
 interface CustomPropertiesMenuProps {
@@ -49,19 +49,24 @@ const CustomPropertiesMenu = (props: CustomPropertiesMenuProps) => {
 
     return selectedShape && selectedDiagramId ? (
         <>
-            {selectedDiagramId && selectedConfigurables.map(c => 
+            {selectedDiagramId && selectedConfigurables.map(c =>
                 <Tooltip title={c.label} key={c.name}>
                     {c instanceof SliderConfigurable &&
-                        <CustomSlider value={selectedShape.appearance.get(c.name)}
+                        <NumberPicker
+                            className='menu-item'
+                            asSlider={true}
+                            value={selectedShape.appearance.get(c.name)}
                             min={c.min}
                             max={c.max}
-                            onChange={value => props.changeItemsAppearance(selectedDiagramId, [selectedShape], c.name, value)} />
+                            onChange={(value: number) => props.changeItemsAppearance(selectedDiagramId, [selectedShape], c.name, value)} />
                     }
                     {c instanceof NumberConfigurable &&
-                        <InputNumber value={selectedShape.appearance.get(c.name)}
+                        <NumberPicker
+                            className='menu-item'
+                            value={selectedShape.appearance.get(c.name)}
                             min={c.min}
                             max={c.max}
-                            onChange={value => props.changeItemsAppearance(selectedDiagramId, [selectedShape], c.name, value)} />
+                            onChange={(value: number) => props.changeItemsAppearance(selectedDiagramId, [selectedShape], c.name, value)} />
                     }
                     {c instanceof SelectionConfigurable &&
                         <SelectPicker
@@ -74,7 +79,7 @@ const CustomPropertiesMenu = (props: CustomPropertiesMenuProps) => {
                         <ColorPicker
                             className='menu-item'
                             popoverPlacement='bottom'
-                            activeColorTab={selectedColorTab} 
+                            activeColorTab={selectedColorTab}
                             value={selectedShape.appearance.get(c.name)}
                             onChange={value => props.changeItemsAppearance(selectedDiagramId, [selectedShape], c.name, value.toNumber())}
                             onActiveColorTabChanged={key => props.selectColorTab(key)} />

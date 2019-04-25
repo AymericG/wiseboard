@@ -1,14 +1,18 @@
-import { Button, Popover } from 'antd';
+import { Button, InputNumber, Popover } from 'antd';
 import { TooltipPlacement } from 'antd/lib/tooltip';
 import * as React from 'react';
 
+import { CustomSlider } from '@app/wireframes/components/menu/CustomSlider';
+
+
 import './SelectPicker.scss';
 
-interface SelectPickerProps {
+interface NumberPickerProps {
     // The selected color.
-    value?: string | null;
-
-    options: string[];
+    value?: number | null;
+    min: number;
+    max: number;
+    asSlider?: boolean;
 
     className?: string;
 
@@ -19,22 +23,22 @@ interface SelectPickerProps {
     disabled?: boolean;
 
     // Triggered when the color has changed.
-    onChange?: (value: string) => void;
+    onChange?: (value: number) => void;
 }
 
 interface SelectPickerState {
     visible: boolean;
 
-    value: string;
+    value: number;
 }
 
-export class SelectPicker extends React.PureComponent<SelectPickerProps, SelectPickerState> {
-    constructor(props: SelectPickerProps) {
+export class NumberPicker extends React.PureComponent<NumberPickerProps, SelectPickerState> {
+    constructor(props: NumberPickerProps) {
         super(props);
         this.state = { visible: false, value: props.value };
     }
 
-    public componentWillReceiveProps(newProps: SelectPickerProps) {
+    public componentWillReceiveProps(newProps: NumberPickerProps) {
         this.setState(s => ({ ...s, value: newProps.value }));
     }
 
@@ -46,7 +50,7 @@ export class SelectPicker extends React.PureComponent<SelectPickerProps, SelectP
         this.setState(s => ({ ...s, visible: !s.visible }));
     }
 
-    private doSelectItem = (value: string) => {
+    private doSetValue = (value: number) => {
         if (this.props.onChange) {
             this.props.onChange(value);
         }
@@ -55,29 +59,15 @@ export class SelectPicker extends React.PureComponent<SelectPickerProps, SelectP
     }
 
     public render() {
-        const { className, disabled, options } = this.props;
+        const { asSlider, className, disabled, min, max } = this.props;
 
-        const itemClassName = (value: string) => {
-            if (value === this.state.value) {
-                return 'select-picker-item selected';
-            } else {
-                return 'select-picker-item';
-            }
-        };
-
-        const content = (
-            <ul className='select-picker-items'>
-                {options.map(c =>
-                    <li
-                        className={itemClassName(c)}
-                        key={c.toString()}
-                        onClick={() => this.doSelectItem(c)}
-                        style={{background: c.toString()}}>
-                        {c}
-                    </li>
-                )}
-            </ul>
-        );
+        const content = !asSlider ? <InputNumber value={this.state.value}
+                min={min}
+                max={max}
+                onChange={value => this.doSetValue(value)} /> : <CustomSlider value={this.state.value}
+                min={min}
+                max={max}
+                onChange={(value: number) => this.doSetValue(value)} />;
 
         const placement = this.props.popoverPlacement || 'bottom';
 

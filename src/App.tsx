@@ -38,9 +38,6 @@ interface AppProps {
     // Show or hide the left sidebar.
     toggleLeftSidebar: () =>  any;
 
-    // Show or hide the right sidebar.
-    toggleRightSidebar: () =>  any;
-
     // Creates a new diagram.
     newDiagram: (navigate: boolean) =>  any;
 

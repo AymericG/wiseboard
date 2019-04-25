@@ -200,6 +200,10 @@ $sidebar-size: 320px;
     padding: .25rem .5rem; 
 }
 
+.ant-slider {
+    min-width: 100px;
+}
+
 .editor-bottom-right {
     position: absolute;
     right: 1rem; 
