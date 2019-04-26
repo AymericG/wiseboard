@@ -31,6 +31,7 @@ export interface AbstractRenderer {
     createSinglelineText(config?: RendererText, bounds?: Rect2): RendererElement;
 
     createMultilineText(config?: RendererText, bounds?: Rect2): RendererElement;
+    createFittedText(config?: RendererText, bounds?: Rect2): RendererElement;
 
     createGroup(items: RendererElement[], clipItem?: RendererElement): RendererElement;
 

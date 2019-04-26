@@ -183,6 +183,25 @@ export class SVGRenderer implements AbstractRenderer {
         return element;
     }
 
+    public createFittedText(config?: RendererText, bounds?: Rect2): RendererElement {
+        let element: svg.Element;
+
+        if (config instanceof DiagramShape) {
+            element = SVGHelper.createFittedText(this.container, bounds,
+                config.appearance.get(DiagramShape.APPEARANCE_TEXT),
+                config.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE),
+                config.appearance.get(DiagramShape.APPEARANCE_TEXT_ALIGNMENT));
+        } else if (config) {
+            element = SVGHelper.createFittedText(this.container, bounds, config.text, config.fontSize, config.alignment);
+        } else {
+            element = SVGHelper.createFittedText(this.container, bounds, '');
+        }
+
+        SVGHelper.transform(element, { rect: bounds });
+
+        return element;
+    }
+
     public createRaster(source: string, bounds?: Rect2): RendererElement {
         const element = this.container.image().load(source);
 

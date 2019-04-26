@@ -1,13 +1,20 @@
-import { DiagramShape } from '@app/wireframes/model';
+import { ColorConfigurable, Configurable, DiagramShape } from '@app/wireframes/model';
 
 import { AbstractContext, AbstractControl } from '@app/wireframes/shapes/utils/abstract-control';
 import { CommonTheme } from './_theme';
+
+const COLOR_KEY = 'COLOR';
 
 const DEFAULT_APPEARANCE = {};
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT] = 'Lorem ipsum dolor sit amet, alii rebum postea eam ex. Et mei laoreet officiis, summo sensibus id mei.';
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT_ALIGNMENT] = 'left';
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FONT_SIZE] = CommonTheme.CONTROL_FONT_SIZE;
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_STROKE_THICKNESS] = 1;
+DEFAULT_APPEARANCE[COLOR_KEY] = CommonTheme.YELLOW;
+
+const CONFIGURABLE: Configurable[] = [
+    new ColorConfigurable(COLOR_KEY, 'Color')
+];
 
 export class Comment extends AbstractControl {
     public defaultAppearance() {
@@ -19,7 +26,7 @@ export class Comment extends AbstractControl {
     }
 
     public createDefaultShape(shapeId: string): DiagramShape {
-        return DiagramShape.createShape(shapeId, this.identifier(), 170, 150, undefined, DEFAULT_APPEARANCE);
+        return DiagramShape.createShape(shapeId, this.identifier(), 170, 150, CONFIGURABLE, DEFAULT_APPEARANCE);
     }
 
     protected renderInternal(ctx: AbstractContext) {
@@ -37,7 +44,7 @@ export class Comment extends AbstractControl {
 
         const borderItem = ctx.renderer.createPath(ctx.shape, `M${l + c},${t} L${r},${t} L${r},${b} L${l},${b} L${l},${t + c} L${l + c},${t} L${l + c},${t + c} L${l},${t + c} z`, ctx.bounds);
 
-        ctx.renderer.setBackgroundColor(borderItem, CommonTheme.YELLOW);
+        ctx.renderer.setBackgroundColor(borderItem, ctx.shape.appearance.get(COLOR_KEY));
         ctx.renderer.setStrokeColor(borderItem, 0);
         ctx.renderer.setStrokeStyle(borderItem, 'round', 'round');
 
@@ -45,8 +52,8 @@ export class Comment extends AbstractControl {
     }
 
     private createText(ctx: AbstractContext) {
-        const textItem = ctx.renderer.createMultilineText(ctx.shape, ctx.bounds.deflate(10, 20));
-
+        // const textItem = ctx.renderer.createMultilineText(ctx.shape, ctx.bounds.deflate(10, 20));
+        const textItem = ctx.renderer.createFittedText(ctx.shape, ctx.bounds.deflate(10, 20));
         ctx.add(textItem);
     }
 }
