@@ -3,6 +3,20 @@
 
 // sass-lint:disable no-ids
 
+@font-face {
+    font-family: 'Gennaro Palmieri Sharpie 2016';
+    src: url('style/GennaroPalmieriSharpie2016.woff2') format('woff2'),
+        url('style/GennaroPalmieriSharpie2016.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.sharpie {
+    font-family: 'Gennaro Palmieri Sharpie 2016';
+    line-height: 1;
+}
+
+
 #root {
     height: 100%;
 }

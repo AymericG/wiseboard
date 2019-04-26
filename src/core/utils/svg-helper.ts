@@ -48,10 +48,9 @@ export module SVGHelper {
         const element = container.element('foreignObject', svg.Parent);
 
         const div = document.createElement('div');
-        div.className = 'no-select';
+        div.className = 'no-select sharpie';
         div.style.textAlign = alignment || 'center';
 //        div.style.fontSize = sizeInPx(fontSize || 10);
-//        div.style.fontFamily = 'inherit';
         div.style.overflow = 'hidden';
         div.style.width = bounds.width + 'px';
         div.style.height = bounds.height + 'px';
