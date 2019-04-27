@@ -14,7 +14,7 @@ export class EditorState {
     }
 
     public static empty(): EditorState {
-        return new EditorState(ImmutableIdMap.empty<Diagram>(), null, new Vec2(1200, 1000));
+        return new EditorState(ImmutableIdMap.empty<Diagram>(), null, new Vec2(2500, 2500));
     }
 
     public addDiagram(diagram: Diagram): EditorState {
