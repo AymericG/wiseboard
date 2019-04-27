@@ -58,6 +58,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
                 </Tooltip>
 
                 <Shortcut disabled={!canZoomIn} onPressed={this.doZoomIn} keys='=' />
+                <Shortcut disabled={!canZoomIn} onPressed={this.doZoomIn} keys='+' />
             </>
         );
     }

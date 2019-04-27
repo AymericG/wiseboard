@@ -32,6 +32,8 @@ interface ArrangeMenuProps {
     // Indicates if items can be removed.
     canRemove: boolean;
 
+    canUnselect: boolean;
+
     // The selected diagram.
     selectedDiagram: Diagram | null;
 
@@ -87,8 +89,16 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
         }
     }
 
+    private doUnselectAll = () => {
+        const selectedDiagram = this.props.selectedDiagram;
+
+        if (selectedDiagram) {
+            this.props.selectItems(selectedDiagram, []);
+        }
+    }
+
     public render() {
-        const { canGroup, canRemove, canUngroup } = this.props;
+        const { canGroup, canRemove, canUngroup, canUnselect } = this.props;
 
         return (
             <>
@@ -124,6 +134,8 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
                 {canRemove && <Shortcut disabled={!canRemove} onPressed={this.doRemove} keys='backspace' />}
 
                 <Shortcut disabled={!this.props.selectedDiagram} onPressed={this.doSelectAll} keys='ctrl+a' />
+                {<Shortcut disabled={!canUnselect} onPressed={this.doUnselectAll} keys='esc' />}
+
             </>
         );
     }
@@ -140,7 +152,8 @@ const mapStateToProps = (state: EditorStateInStore) => {
         selectedItems: items,
         canGroup: items.length > 1,
         canRemove: items.length > 0,
-        canUngroup: groups.length > 0
+        canUngroup: groups.length > 0,
+        canUnselect: items.length > 0
     };
 };
 
