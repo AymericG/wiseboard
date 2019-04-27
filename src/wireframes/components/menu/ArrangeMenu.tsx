@@ -5,6 +5,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { MathHelper, Shortcut } from '@app/core';
 
+import { withShortcut } from '@app/core/utils/tooltip-helper';
+
 import {
     calculateSelection,
     Diagram,
@@ -90,7 +92,7 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
 
         return (
             <>
-                {canGroup && <Tooltip title='Group items (CTRL + G)'>
+                {canGroup && <Tooltip title={withShortcut('Group items', ['Ctrl', 'G'])}>
                     <Button className='menu-item'
                         disabled={!canGroup}
                         onClick={this.doGroup}>
@@ -100,7 +102,7 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
 
                 {canGroup && <Shortcut disabled={!canGroup} onPressed={this.doGroup} keys='ctrl+g' />}
 
-                {canUngroup && <Tooltip title='Ungroup items (CTRL + SHIFT + G)'>
+                {canUngroup && <Tooltip title={withShortcut('Ungroup items', ['Ctrl', 'Shift', 'G'])}>
                     <Button className='menu-item'
                         disabled={!canUngroup}
                         onClick={this.doUngroup}>
@@ -110,7 +112,7 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
 
                 {canUngroup && <Shortcut disabled={!canUngroup} onPressed={this.doUngroup} keys='ctrl+shift+g' />}
 
-                {canRemove && <Tooltip title='Delete selected items (DELETE)'>
+                {canRemove && <Tooltip title={withShortcut('Delete selected items', ['Del'])}>
                     <Button className='menu-item'
                         disabled={!canRemove}
                         onClick={this.doRemove}>

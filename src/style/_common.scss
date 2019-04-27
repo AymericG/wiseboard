@@ -3,6 +3,10 @@
 
 // sass-lint:disable no-ids
 
+body {
+    color: #000;
+}
+
 @font-face {
     font-family: 'Gennaro Palmieri Sharpie 2016';
     src: url('style/GennaroPalmieriSharpie2016.woff2') format('woff2'),
@@ -327,4 +331,18 @@ $sidebar-size: 320px;
       
 .editor-content::-webkit-scrollbar-button {
     display: none;
+}
+
+.key {
+    font-size: .7rem;
+    font-weight: bold;
+    background-color: #666;
+    color: #fff;
+    padding: .1rem .25rem;
+    border-radius: 2px;
+    margin-left: .25rem;
+}
+
+.key:first-child {
+    margin-left: .5rem;
 }

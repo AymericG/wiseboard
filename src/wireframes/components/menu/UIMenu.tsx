@@ -7,6 +7,8 @@ import { Shortcut } from '@app/core';
 
 import { setZoom, UIStateInStore } from '@app/wireframes/model';
 
+import { withShortcut } from '@app/core/utils/tooltip-helper';
+
 interface UIMenuProps {
     // Indicates if you can zoom in.
     canZoomIn: boolean;
@@ -35,7 +37,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
 
         return (
             <>
-                <Tooltip title='Zoom Out (ALT + [-])'>
+                <Tooltip title={withShortcut('Zoom Out', ['-'])}>
                     <Button className='menu-item right-border'
                         disabled={!canZoomOut}
                         onClick={this.doZoomOut}>
@@ -43,11 +45,11 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
                     </Button>
                 </Tooltip>
 
-                <Shortcut disabled={!canZoomOut} onPressed={this.doZoomOut} keys='alt+-' />
+                <Shortcut disabled={!canZoomOut} onPressed={this.doZoomOut} keys='-' />
 
                 <span className='menu-item menu-item-label'>{zoom * 100}%</span>
 
-                <Tooltip title='Zoom In (ALT + [+])'>
+                <Tooltip title={withShortcut('Zoom In', ['+'])}>
                     <Button className='menu-item left-border'
                         disabled={!canZoomIn}
                         onClick={this.doZoomIn}>
@@ -55,7 +57,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
                     </Button>
                 </Tooltip>
 
-                <Shortcut disabled={!canZoomIn} onPressed={this.doZoomIn} keys='alt+plus' />
+                <Shortcut disabled={!canZoomIn} onPressed={this.doZoomIn} keys='=' />
             </>
         );
     }

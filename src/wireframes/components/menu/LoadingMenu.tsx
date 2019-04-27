@@ -5,6 +5,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Shortcut, Title } from '@app/core';
 
+import { withShortcut } from '@app/core/utils/tooltip-helper';
+
 import {
     LoadingStateInStore,
     newDiagram,
@@ -57,7 +59,9 @@ class LoadingMenu extends React.PureComponent<LoadingMenuProps> {
             <>
                 <Title text={title} />
 
-                <Tooltip title='New Diagram (CTRL + N)'>
+                <Tooltip
+                    title={withShortcut('New Board', ['Ctrl', 'N'])}
+                    placement='bottom'>
                     <Button className='menu-item right-border'
                         onClick={this.doNewDiagram}>
                         <i className='icon-new' />&nbsp;New
@@ -66,7 +70,7 @@ class LoadingMenu extends React.PureComponent<LoadingMenuProps> {
 
                 <Shortcut onPressed={this.doNewDiagram} keys='ctrl+n' />
 
-                <Tooltip title='Save Diagram (CTRL + S)'>
+                <Tooltip title={withShortcut('Save Board', ['Ctrl', 'S'])} placement='bottom'>
                     <Button
                         className='menu-item'
                         onClick={this.doSaveDiagram}>

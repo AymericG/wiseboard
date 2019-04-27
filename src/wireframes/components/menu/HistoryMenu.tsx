@@ -5,6 +5,8 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Shortcut } from '@app/core';
 
+import { withShortcut } from '@app/core/utils/tooltip-helper';
+
 import {
     EditorStateInStore,
     redo,
@@ -39,7 +41,7 @@ class HistoryMenu extends React.PureComponent<HistoryMenuProps> {
 
         return (
             <>
-                <Tooltip title='Undo (CTRL + Z)'>
+                <Tooltip title={withShortcut('Undo', ['Ctrl', 'Z'])}>
                     <Button className='menu-item right-border'
                         disabled={!canUndo}
                         onClick={this.doUndo}>
@@ -49,7 +51,7 @@ class HistoryMenu extends React.PureComponent<HistoryMenuProps> {
 
                 <Shortcut keys='ctrl+z' disabled={!canUndo} onPressed={this.doUndo} />
 
-                <Tooltip title='Redo (CTRL + Y)'>
+                <Tooltip title={withShortcut('Redo', ['Ctrl', 'Y'])}>
                     <Button className='menu-item' size='large'
                         disabled={!canRedo}
                         onClick={this.doRedo}>
