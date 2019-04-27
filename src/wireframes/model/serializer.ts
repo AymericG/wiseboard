@@ -25,13 +25,12 @@ export class Serializer {
         const input = JSON.parse(json);
 
         const idMap: { [id: string]: string } = {};
-
         for (const jsonShape of input.visuals) {
-            idMap[jsonShape.id] = MathHelper.guid();
+            idMap[jsonShape.id] = jsonShape.id;
         }
 
         for (const jsonGroup of input.groups) {
-            idMap[jsonGroup.id] = MathHelper.guid();
+            idMap[jsonGroup.id] = jsonGroup.id;
         }
 
         for (const jsonShape of input.visuals) {
@@ -49,18 +48,18 @@ export class Serializer {
         return new DiagramItemSet(g, s);
     }
 
-    public serializeSet(set: DiagramItemSet): string {
+    public serializeSet(set: DiagramItemSet, changeIds: boolean): string {
         const output: any = { visuals: [], groups: [] };
 
         for (let visual of set.allVisuals) {
             const shape = <DiagramShape>visual;
-            const json = Serializer.serializeShape(shape);
+            const json = Serializer.serializeShape(shape, changeIds);
 
             output.visuals.push(json);
         }
 
         for (let group of set.allGroups) {
-            const json = Serializer.serializeGroup(group);
+            const json = Serializer.serializeGroup(group, changeIds);
 
             output.groups.push(json);
         }
@@ -74,8 +73,8 @@ export class Serializer {
             Serializer.deserializeRotation(input));
     }
 
-    private static serializeGroup(group: DiagramGroup) {
-        const output = { id: group.id };
+    private static serializeGroup(group: DiagramGroup, changeIds: boolean) {
+        const output = { id: changeIds ? MathHelper.guid() : group.id };
 
         Serializer.serializeChildIds(group.childIds, output);
         Serializer.serializeRotation(group.rotation, output);
@@ -94,8 +93,8 @@ export class Serializer {
         return shape;
     }
 
-    private static serializeShape(shape: DiagramShape): any {
-        const output = { id: shape.id };
+    private static serializeShape(shape: DiagramShape, changeIds: boolean): any {
+        const output = { id: changeIds ? MathHelper.guid() : shape.id };
 
         Serializer.serializeRenderer(shape.renderer, output);
         Serializer.serializeTransform(shape.transform, output);

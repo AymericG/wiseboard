@@ -189,7 +189,9 @@ export function items(rendererService: RendererService, serializer: Serializer):
                         }
                     }
 
-                    return diagram.addVisual(configured).selectItems([configured.id]);
+                    return diagram
+                        .addVisual(configured)
+                        .selectItems([configured.id]);
                 });
             default:
                 return state;

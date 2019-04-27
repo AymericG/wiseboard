@@ -49,7 +49,7 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
         this.state = { offset: 0 };
     }
 
-    private doCopy = (serializer: Serializer) => {
+    private doCopy = (serializer: Serializer, changeIds = false) => {
         const { selectedDiagram, selectedItems } = this.props;
 
         if (selectedDiagram) {
@@ -58,7 +58,7 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                     selectedItems,
                     selectedDiagram);
 
-            this.setState({ offset: 0, clipboard: serializer.serializeSet(set) });
+            this.setState({ offset: 0, clipboard: serializer.serializeSet(set, changeIds) });
         }
     }
 
@@ -89,7 +89,7 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
             <SerializerContext.Consumer>
                 {serializer =>
                     <>
-                        <Shortcut disabled={!canCopy} onPressed={() => this.doCopy(serializer)} keys='ctrl+c' />
+                        <Shortcut disabled={!canCopy} onPressed={() => this.doCopy(serializer, true)} keys='ctrl+c' />
                         <Shortcut disabled={!canCopy} onPressed={() => this.doCut(serializer)} keys='ctrl+x' />
                         <Shortcut disabled={!this.state.clipboard} onPressed={this.doPaste} keys='ctrl+v' />
                     </>

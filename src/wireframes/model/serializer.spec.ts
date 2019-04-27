@@ -56,7 +56,7 @@ describe('Serializer', () => {
 
         const oldSet = DiagramItemSet.createFromDiagram([oldDiagram.items.last.id], oldDiagram) !;
 
-        const json = serializer.serializeSet(oldSet);
+        const json = serializer.serializeSet(oldSet, false);
 
         const newSet = serializer.deserializeSet(json);
         const newShape1 = <DiagramShape>newSet.allVisuals[0];
