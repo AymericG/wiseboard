@@ -8,7 +8,9 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Route, Router } from 'react-router';
 import { routerMiddleware, routerReducer } from 'react-router-redux';
+
 import { applyMiddleware, combineReducers, compose, createStore, Reducer } from 'redux';
+import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import * as Reducers from '@app/wireframes/model/actions';
@@ -40,6 +42,7 @@ const reducers: Reducer<EditorState>[] = [
 ];
 
 const editorReducer: Reducer<EditorState> = (state: EditorState, action: any) => {
+    console.log('new action', action);
     for (const nested of reducers) {
         const newState = nested(state, action);
 
@@ -72,7 +75,7 @@ const store = createStore(
             routing: routerReducer,
                  ui: Reducers.ui(createInitialUIState())
     }), undoableReducer, editorReducer),
-    composeEnhancers(applyMiddleware(thunk, Reducers.toastMiddleware(), routerMiddleware(history)))
+    composeEnhancers(applyMiddleware(logger, thunk, Reducers.toastMiddleware(), routerMiddleware(history)))
 );
 
 import { AppContainer } from './App';
