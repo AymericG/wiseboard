@@ -30,6 +30,8 @@ export class SVGRenderer implements AbstractRenderer {
         this.measureDiv.style.visibility = 'hidden';
         this.measureDiv.style.width = 'auto';
         this.measureDiv.style.whiteSpace = 'nowrap';
+        this.measureDiv.style.zIndex = -1;
+        this.measureDiv.style.top = 0;
 
         document.body.appendChild(this.measureDiv);
     }
