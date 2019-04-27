@@ -134,7 +134,7 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                             </div>
                         </div>
 
-                        <EditorViewContainer spacing={40}/>
+                        <EditorViewContainer spacing={40} editorContent={this.editorContent}/>
                         <div className='editor-bottom-right'>
                             <div className='editor-toolbox'>
                                 <HistoryMenuContainer />

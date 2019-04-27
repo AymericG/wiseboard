@@ -23,6 +23,8 @@ import {
 import { EditorContainer } from '@app/wireframes/renderer/Editor';
 
 export interface EditorViewProps {
+    editorContent: React.RefObject<any>;
+
     // The width of the canvas.
     zoomedWidth: number;
 
@@ -147,7 +149,7 @@ class EditorView extends React.Component<EditorViewProps> {
             <div className='editor-view' style={calculateStyle()}>
                 <RendererContext.Consumer>
                     {renderer =>
-                        <EditorContainer rendererService={renderer} />
+                        <EditorContainer rendererService={renderer} editorContent={this.props.editorContent} />
                     }
                 </RendererContext.Consumer>
 

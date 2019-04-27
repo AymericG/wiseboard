@@ -32,12 +32,15 @@ import {
 
 import { CanvasView }           from './CanvasView';
 import { InteractionService }   from './interaction-service';
+import { NavigationAdorner }    from './NavigationAdorner';
 import { SelectionAdorner }     from './SelectionAdorner';
 import { ShapeRef }             from './shape-ref';
 import { TextAdorner }          from './TextAdorner';
 import { TransformAdorner }     from './TransformAdorner';
 
 export interface EditorProps {
+    editorContent: React.RefObject<any>;
+
     // The renderer service.
     rendererService: RendererService;
 
@@ -203,6 +206,13 @@ class Editor extends React.Component<EditorProps> {
                             <>
                                 <ClipboardShortcutsContainer />
 
+                                <NavigationAdorner
+                                    editorContent={this.props.editorContent}
+                                    interactionService={this.interactionService}
+                                    selectedDiagram={selectedDiagram}
+                                    selectedItems={selectedItemsWithLocked}
+                                    selectItems={selectItems} />
+
                                 <TransformAdorner
                                     adorners={this.adornersTransform}
                                     interactionService={this.interactionService}
@@ -225,6 +235,8 @@ class Editor extends React.Component<EditorProps> {
                                     selectedDiagram={selectedDiagram}
                                     selectedItems={selectedItems}
                                     zoom={zoom} />
+                                
+
                             </>
                         )}
                     </div>
