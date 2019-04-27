@@ -1,6 +1,7 @@
 export interface LoadingState {
     // Indicates if the loading operation is in progress.
     isLoading: boolean;
+    isLoaded: boolean;
 
     // Indicates if the saving operation is in progress.
     isSaving: boolean;
@@ -18,6 +19,7 @@ export interface LoadingStateInStore {
 
 export const createInitialLoadingState: () => LoadingState = () => {
     return {
+        isLoaded: false,
         isLoading: false,
         isSaving: false
     };

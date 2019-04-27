@@ -83,7 +83,6 @@ export const saveDiagramAsync = (navigate = true) => {
         const readToken = state.loading.readToken || 'default';
 
         const body = JSON.stringify(state.editor.actions);
-        console.log(state.editor.actions);
 
         localStorage.setItem(`${url}/${readToken}`, body);
         let putPromise = Promise.resolve({ readToken, writeToken });
@@ -143,19 +142,19 @@ export function loading(initialState: LoadingState): Reducer<LoadingState> {
     const reducer: Reducer<LoadingState> = (state = initialState, action: any) => {
         switch (action.type) {
             case NEW_DIAGRAM:
-                return { isSaving: false, isLoading: true };
+                return { isSaving: false, isLoading: true, isLoaded: false };
             case LOADING_STARTED:
-                return { isSaving: false, isLoading: true };
+                return { isSaving: false, isLoading: true, isLoaded: false };
             case LOADING_FAILED:
-                return { isSaving: false, isLoading: false };
+                return { ...state, isSaving: false, isLoading: false };
             case LOADING_SUCCEEDED:
-                return { isSaving: false, isLoading: false, readToken: action.readToken, writeToken: null };
+                return { isSaving: false, isLoading: false, isLoaded: true, readToken: action.readToken, writeToken: null };
             case SAVING_STARTED:
-                return { isLoading: false, isSaving: true };
+                return { ...state, isLoading: false, isSaving: true};
             case SAVING_FAILED:
-                return { isLoading: false, isSaving: false };
+                return { ...state, isLoading: false, isSaving: false };
             case SAVING_SUCCEEDED:
-                return { isLoading: false, isSaving: false, readToken: action.readToken, writeToken: action.writeToken };
+                return { ...state, isLoading: false, isSaving: false, readToken: action.readToken, writeToken: action.writeToken };
             default:
                 return state;
         }

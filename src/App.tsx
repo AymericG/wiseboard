@@ -2,6 +2,7 @@ import { Button, Layout, Tabs } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
+import { LoadingStateInStore } from './wireframes/model/loading-state';
 
 import {
     EditorViewContainer,
@@ -19,6 +20,7 @@ import {
     toggleLeftSidebar,
     UIStateInStore
 } from '@app/wireframes/model';
+import ReactDOM = require('react-dom');
 
 interface AppOwnProps {
     // The read token of the diagram.
@@ -31,6 +33,8 @@ interface AppProps {
 
     // The selected tabs
     selectedTab: string;
+
+    isLoaded: boolean;
 
     // Select a tab.
     selectTab: (key: string) => any;
@@ -45,10 +49,11 @@ interface AppProps {
     loadDiagramAsync: (token: string, navigate: boolean) => any;
 }
 
-const mapStateToProps = (state: UIStateInStore, props: AppOwnProps) => {
+const mapStateToProps = (state: UIStateInStore & LoadingStateInStore, props: AppOwnProps) => {
     return {
         selectedTab: state.ui.selectedTab,
-        showLeftSidebar: state.ui.showLeftSidebar
+        showLeftSidebar: state.ui.showLeftSidebar,
+        isLoaded: state.loading.isLoaded
     };
 };
 
@@ -60,9 +65,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
 }, dispatch);
 
 class App extends React.PureComponent<AppProps & AppOwnProps> {
+    private editorContent: any;
+
     constructor(props: AppProps & AppOwnProps) {
         super(props);
 
+        this.editorContent = React.createRef();
         props.newDiagram(false);
 
         if (props.token && props.token.length > 0) {
@@ -78,6 +86,10 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                 props.newDiagram(false);
             }
         }
+
+        if (props.isLoaded && !this.props.isLoaded) {
+            this.zoomToCenter();
+        }
     }
 
     private doSelectTab = (key: string) => {
@@ -86,6 +98,14 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
 
     private doToggleLeftSidebar = () => {
         this.props.toggleLeftSidebar();
+    }
+
+    private zoomToCenter() {
+        const element: any = ReactDOM.findDOMNode(this.editorContent.current);
+
+        if (!element) { return; }
+        element.scrollLeft = element.scrollWidth / 2 - element.clientWidth / 2;
+        element.scrollTop = element.scrollHeight / 2 - element.clientHeight / 2;
     }
 
     public render() {
@@ -107,14 +127,14 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                             </Tabs.TabPane>
                         </Tabs>
                     </Layout.Sider>
-                    <Layout.Content className='editor-content'>
+                    <Layout.Content className='editor-content' ref={this.editorContent}>
                         <div className='editor-top-right'>
                             <div className='editor-toolbox'>
                                 <LoadingMenuContainer />
                             </div>
                         </div>
 
-                        <EditorViewContainer spacing={40} />
+                        <EditorViewContainer spacing={40}/>
                         <div className='editor-bottom-right'>
                             <div className='editor-toolbox'>
                                 <HistoryMenuContainer />

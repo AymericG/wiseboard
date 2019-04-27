@@ -285,6 +285,7 @@ $sidebar-size: 320px;
         &:hover {
             background-color: $color-theme-grey;
             color: $color-dark-foreground; 
+            border-color: transparent;
         }
     }
 

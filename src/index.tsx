@@ -42,7 +42,6 @@ const reducers: Reducer<EditorState>[] = [
 ];
 
 const editorReducer: Reducer<EditorState> = (state: EditorState, action: any) => {
-    console.log('new action', action);
     for (const nested of reducers) {
         const newState = nested(state, action);
 

@@ -5,7 +5,7 @@ import * as svg from 'svg.js';
 
 import './Editor.scss';
 
-import { ImmutableList, sizeInPx, Vec2 } from '@app/core';
+import { ImmutableList, Vec2 } from '@app/core';
 
 import {
     ClipboardShortcutsContainer
@@ -193,7 +193,7 @@ class Editor extends React.Component<EditorProps> {
         return (
             <>
                 {selectedDiagram &&
-                    <div className='editor' style={{ position: 'relative', width: sizeInPx(w), height: sizeInPx(h) }}>
+                    <div className='editor' style={{ position: 'relative'/*, width: sizeInPx(w), height: sizeInPx(h)*/ }}>
                         <CanvasView onInit={this.initDiagramScope}
                             zoom={zoom}
                             zoomedWidth={zoomedWidth}
