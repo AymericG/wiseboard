@@ -11,13 +11,15 @@ import {
     ALIGN_V_CENTER,
     ALIGN_V_TOP,
     alignItems,
+    BRING_TO_FRONT,
     DiagramItem,
     DISTRIBUTE_H,
     DISTRIBUTE_V,
     EditorStateInStore,
     getDiagramId,
     getSelectedItems,
-    orderItems
+    orderItems,
+    SEND_TO_BACK
 } from '@app/wireframes/model';
 
 interface LayoutMenuProps {
@@ -44,11 +46,11 @@ interface LayoutMenuProps {
 }
 
 const LayoutMenu = (props: LayoutMenuProps) => {
-    // const doOrder = (mode: string) => {
-    //     if (props.selectedDiagramId) {
-    //         props.orderItems(mode, props.selectedDiagramId, props.selectedItems);
-    //     }
-    // };
+    const doOrder = (mode: string) => {
+        if (props.selectedDiagramId) {
+            props.orderItems(mode, props.selectedDiagramId, props.selectedItems);
+        }
+    };
 
     const doAlign = (mode: string) => {
         if (props.selectedDiagramId) {
@@ -67,12 +69,12 @@ const LayoutMenu = (props: LayoutMenuProps) => {
     const doDistributeH = () => doAlign(DISTRIBUTE_H);
     const doDistributeV = () => doAlign(DISTRIBUTE_V);
 
-    // const doBringToFront  = () => doOrder(BRING_TO_FRONT);
+    const doBringToFront  = () => doOrder(BRING_TO_FRONT);
     // const doBringForwards = () => doOrder(BRING_FORWARDS);
     // const doSendBackwards = () => doOrder(SEND_BACKWARDS);
-    // const doSendToBack    = () => doOrder(SEND_TO_BACK);
+    const doSendToBack    = () => doOrder(SEND_TO_BACK);
 
-    const { canAlign, canDistribute, selectedDiagramId } = props;
+    const { canAlign, canDistribute, canOrder, selectedDiagramId } = props;
 
     return selectedDiagramId ? (
         <>
@@ -122,25 +124,28 @@ const LayoutMenu = (props: LayoutMenuProps) => {
                     </Button>
                 </Tooltip>
             </div>}
-            {/* <div className='properties-subsection layout-properties'>
+            {<div className='editor-toolbox-group'>
                 <Tooltip title='Bring to front'>
-                    <Button disabled={!canOrder} onClick={doBringToFront}>
+                    <Button disabled={!canOrder} className='menu-item' onClick={doBringToFront}>
                         <i className='icon-bring-to-front' />
                     </Button>
                 </Tooltip>
+                <Tooltip title='Send to back'>
+                    <Button disabled={!canOrder} className='menu-item' onClick={doSendToBack}>
+                        <i className='icon-send-to-back'></i>
+                    </Button>
+                </Tooltip>
+            </div>}
+
+            {/* <div className='properties-subsection layout-properties'>
                 <Tooltip title='Bring forwards'>
-                    <Button disabled={!canOrder} onClick={doBringForwards}>
+                    <Button disabled={!canOrder} className='menu-item' onClick={doBringForwards}>
                         <i className='icon-bring-forwards' />
                     </Button>
                 </Tooltip>
                 <Tooltip title='Send backwards'>
-                    <Button disabled={!canOrder} onClick={doSendBackwards}>
+                    <Button disabled={!canOrder} className='menu-item' onClick={doSendBackwards}>
                         <i className='icon-send-backwards'></i>
-                    </Button>
-                </Tooltip>
-                <Tooltip title='Send to back'>
-                    <Button disabled={!canOrder} onClick={doSendToBack}>
-                        <i className='icon-send-to-back'></i>
                     </Button>
                 </Tooltip>
             </div> */}
