@@ -320,9 +320,13 @@ $sidebar-size: 320px;
     background-color: #efefef;
 }
 
-.ant-btn:hover, .ant-btn:focus {
+.ant-btn:hover {
     color: $color-brand-primary;
     border-color: $color-brand-primary;
+}
+
+.ant-btn:focus {
+    border-color: #efefef;
 }
 
 .editor-content::-webkit-scrollbar {

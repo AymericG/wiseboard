@@ -19,6 +19,20 @@ import {
     RendererWidth
 } from './abstract-renderer';
 
+import 'svg.filter.js';
+
+const dropShadowFilter = new SVG.Filter();
+const blur = dropShadowFilter
+    .offset(0, 2)
+    .gaussianBlur(3)
+    .colorMatrix('matrix', [
+    0,   0,   1,   0,   0,
+    0,   0,   1,   0,   0,
+    0,   0,   1,   0,   0,
+    0,   0,   0,   0.3,   0  ]);
+dropShadowFilter.blend(dropShadowFilter.source, blur);
+
+
 export class SVGRenderer implements AbstractRenderer {
     private measureDiv: HTMLDivElement;
     private container: svg.Container;
@@ -30,8 +44,8 @@ export class SVGRenderer implements AbstractRenderer {
         this.measureDiv.style.visibility = 'hidden';
         this.measureDiv.style.width = 'auto';
         this.measureDiv.style.whiteSpace = 'nowrap';
-        this.measureDiv.style.zIndex = -1;
-        this.measureDiv.style.top = 0;
+        this.measureDiv.style.zIndex = '-1';
+        this.measureDiv.style.top = '0';
 
         document.body.appendChild(this.measureDiv);
     }
@@ -265,6 +279,11 @@ export class SVGRenderer implements AbstractRenderer {
             e.attr('stroke', c);
         }
 
+        return this;
+    }
+
+    public setShadow(element: RendererElement): AbstractRenderer {
+        element.filter(dropShadowFilter);
         return this;
     }
 

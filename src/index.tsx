@@ -66,16 +66,16 @@ const history = createBrowserHistory();
 const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose;
 
 const store = createStore(
-    Reducers.rootLoading(
+    Reducers.autoPersistable(Reducers.rootLoading(
         combineReducers({
              assets: Reducers.assets(createInitialAssetsState(rendererService)),
              editor: undoableReducer,
             loading: Reducers.loading(createInitialLoadingState()),
             routing: routerReducer,
                  ui: Reducers.ui(createInitialUIState())
-    }), undoableReducer, editorReducer),
-    composeEnhancers(applyMiddleware(logger, thunk, Reducers.toastMiddleware(), routerMiddleware(history)))
-);
+    }), undoableReducer, editorReducer)),
+    composeEnhancers(applyMiddleware(logger, thunk, Reducers.toastMiddleware(), routerMiddleware(history))
+));
 
 import { AppContainer } from './App';
 

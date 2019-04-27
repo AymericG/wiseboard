@@ -1,6 +1,7 @@
 export * from './alignment';
 export * from './appearance';
 export * from './assets';
+export * from './autoPersistable';
 export * from './diagrams';
 export * from './loading';
 export * from './grouping';

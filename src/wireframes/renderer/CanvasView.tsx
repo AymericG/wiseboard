@@ -27,7 +27,6 @@ export class CanvasView extends React.Component<CanvasViewProps> {
 
         if (element) {
             this.document = svg(this.docElement);
-
             if (document) {
                 this.document.style({ position: 'relative', overflow: 'visible' });
             }
@@ -53,7 +52,9 @@ export class CanvasView extends React.Component<CanvasViewProps> {
             const w = zoomedWidth / props.zoom;
             const h = zoomedHeight / props.zoom;
 
-            this.document.size(zoomedWidth, zoomedHeight).viewbox(0, 0, w, h);
+            this.document
+                .size(zoomedWidth, zoomedHeight)
+                .viewbox(0, 0, w, h);
         }
     }
 

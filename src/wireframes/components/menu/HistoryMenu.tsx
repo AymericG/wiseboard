@@ -52,7 +52,7 @@ class HistoryMenu extends React.PureComponent<HistoryMenuProps> {
                 <Shortcut keys='ctrl+z' disabled={!canUndo} onPressed={this.doUndo} />
 
                 <Tooltip title={withShortcut('Redo', ['Ctrl', 'Y'])}>
-                    <Button className='menu-item' size='large'
+                    <Button className='menu-item'
                         disabled={!canRedo}
                         onClick={this.doRedo}>
                         <i className='icon-redo' />

@@ -41,6 +41,8 @@ export interface AbstractRenderer {
 
     setStrokeColor(element: RendererElement, color: RendererColor): AbstractRenderer;
 
+    setShadow(element: RendererElement): AbstractRenderer;
+
     setStrokeStyle(element: RendererElement, cap: string, join: string): AbstractRenderer;
 
     setFontFamily(element: RendererElement, fontFamily: string): AbstractRenderer;
