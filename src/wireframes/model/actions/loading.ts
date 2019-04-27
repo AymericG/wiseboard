@@ -40,15 +40,23 @@ export const loadDiagramAsync = (token: string, navigate = true) => {
         if (token && token.length > 0 && token !== state.loading.readToken) {
             dispatch({ type: LOADING_STARTED });
 
-            fetch(`${url}/${token}`)
+            const value = localStorage.getItem(`${url}/${token}`);
+            let promise: Promise<any[]> = null;
+            if (value) {
+                promise = Promise.resolve(JSON.parse(value));
+            } else {
+                promise = Promise.resolve([]);
+            }
+
+            /*fetch(`${url}/${token}`)
                 .then(response => {
                     if (response.ok) {
                         return response.json();
                     } else {
                         throw Error('Failed to load diagram');
                     }
-                })
-                .then(response => {
+                })*/
+                promise.then(response => {
                     dispatch({ type: LOADING_SUCCEEDED, readToken: token, actions: response });
 
                     dispatch(showInfoToast('Succeeded to load diagram.'));
@@ -72,25 +80,30 @@ export const saveDiagramAsync = (navigate = true) => {
         const state = getState();
 
         const writeToken = state.loading.writeToken;
-        const readToken = state.loading.readToken;
+        const readToken = state.loading.readToken || 'default';
 
         const body = JSON.stringify(state.editor.actions);
+        console.log(state.editor.actions);
 
-        let putPromise: Promise<{ readToken: string, writeToken: string }>;
+        localStorage.setItem(`${url}/${readToken}`, body);
+        let putPromise = Promise.resolve({ readToken, writeToken });
 
-        if (readToken && writeToken) {
-            putPromise = fetch(`${url}/${readToken}/${writeToken}`, {
-                method: 'PUT',
-                headers: {
-                    ContentType: 'text/json'
-                },
-                body
-            }).then(() => ({ readToken, writeToken }));
-        } else {
-            putPromise = Promise.reject({});
-        }
+        // TODO: bring this back when we implement server
+        // let putPromise: Promise<{ readToken: string, writeToken: string }>;
 
-        putPromise.catch(() =>
+        // if (readToken && writeToken) {
+        //     putPromise = fetch(`${url}/${readToken}/${writeToken}`, {
+        //         method: 'PUT',
+        //         headers: {
+        //             ContentType: 'text/json'
+        //         },
+        //         body
+        //     }).then(() => ({ readToken, writeToken }));
+        // } else {
+        //     putPromise = Promise.reject({});
+        // }
+
+        putPromise/*.catch(() =>
             fetch(`${url}/`, {
                 method: 'POST',
                 headers: {
@@ -104,7 +117,7 @@ export const saveDiagramAsync = (navigate = true) => {
                 } else {
                     throw Error('Failed to save diagram');
                 }
-            }))
+            }))*/
         .then(r => {
             dispatch({ type: SAVING_SUCCEEDED, writeToken: r.writeToken, readToken: r.readToken });
 
