@@ -38,6 +38,7 @@
 }
 
 .ant-layout {
+    background-color: #fff;
     &-header {
         padding-left: 100px;
         padding-right: 0;
@@ -317,4 +318,12 @@ $sidebar-size: 320px;
 .ant-btn:hover, .ant-btn:focus {
     color: $color-brand-primary;
     border-color: $color-brand-primary;
+}
+
+.editor-content::-webkit-scrollbar {
+    display: none;
+}
+      
+.editor-content::-webkit-scrollbar-button {
+    display: none;
 }
