@@ -432,14 +432,15 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     public render(): any {
+        const { zoom } = this.props;
+
         if (!this.transform || this.props.selectedItems.length === 0) {
             return null;
         }
+        const left = this.transform.position.x * zoom;
+        const top = zoom * (this.transform.position.y - this.transform.size.y / 2 - 70);
 
-        const style = {
-            left: this.transform.position.x,
-            top: this.transform.position.y - this.transform.size.y / 2 - 70
-        };
+        const style = { left, top };
         return <div
             className='editor-floating-toolbox'
             style={style}>
