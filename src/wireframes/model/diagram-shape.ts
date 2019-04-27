@@ -17,6 +17,7 @@ export class DiagramShape extends DiagramVisual {
     public static readonly APPEARANCE_TEXT_DISABLED = 'TEXT_DISABLED';
     public static readonly APPEARANCE_FONT_FAMILY = 'FONT_FAMILY';
     public static readonly APPEARANCE_FONT_SIZE = 'FONT_SIZE';
+    public static readonly APPEARANCE_FONT_WEIGHT = 'FONT_WEIGHT';
     public static readonly APPEARANCE_FOREGROUND_COLOR = 'BACKGROUND_COLOR';
     public static readonly APPEARANCE_BACKGROUND_COLOR = 'FOREGROUND_COLOR';
     public static readonly APPEARANCE_ICON_FONT_FAMILY = 'ICON_FONT_FAMILY';

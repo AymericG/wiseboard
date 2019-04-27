@@ -31,12 +31,17 @@ export module SVGHelper {
     export const ZERO_POINT = new svg.Point(0, 0);
     export const IDENTITY_MATRIX = new svg.Matrix(1, 0, 0, 1, 0, 0);
 
-    export function createSinglelineText(container: svg.Container, text: string, fontSize?: number, alignment?: string) {
-        return createText(container, text, fontSize, alignment, 'middle');
+    export function createSinglelineText(
+        container: svg.Container,
+        text: string,
+        fontSize?: number,
+        fontWeight?: string,
+        alignment?: string) {
+        return createText(container, text, fontSize, fontWeight, alignment, 'middle');
     }
 
     export function createMultilineText(container: svg.Container, text: string, fontSize?: number, alignment?: string) {
-        return createText(container, text, fontSize, alignment, 'top');
+        return createText(container, text, fontSize, 'normal', alignment, 'top');
     }
 
     export function createFittedText(container: svg.Container, bounds: Rect2, text: string, fontSize?: number, alignment?: string) {
@@ -66,7 +71,7 @@ export module SVGHelper {
         return element;
     }
 
-    export function createText(container: svg.Container, text: string, fontSize?: number, alignment?: string, verticalAlign?: string) {
+    export function createText(container: svg.Container, text: string, fontSize?: number, fontWeight?: string, alignment?: string, verticalAlign?: string) {
         fontSize = fontSize || 10;
 
         const element = container.element('foreignObject', svg.Parent);
@@ -74,6 +79,7 @@ export module SVGHelper {
         const div = document.createElement('div');
         div.className = 'no-select';
         div.style.textAlign = alignment || 'center';
+        div.style.fontWeight = fontWeight || 'normal';
         div.style.fontSize = sizeInPx(fontSize || 10);
         div.style.fontFamily = 'inherit';
         div.style.overflow = 'hidden';

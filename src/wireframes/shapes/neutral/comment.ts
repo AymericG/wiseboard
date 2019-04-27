@@ -6,7 +6,7 @@ import { CommonTheme } from './_theme';
 const COLOR_KEY = 'COLOR';
 
 const DEFAULT_APPEARANCE = {};
-DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT] = 'Lorem ipsum dolor sit amet, alii rebum postea eam ex. Et mei laoreet officiis, summo sensibus id mei.';
+DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT] = '';
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT_ALIGNMENT] = 'left';
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FONT_SIZE] = CommonTheme.CONTROL_FONT_SIZE;
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_STROKE_THICKNESS] = 1;

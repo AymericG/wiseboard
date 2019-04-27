@@ -152,9 +152,10 @@ export class SVGRenderer implements AbstractRenderer {
             element = SVGHelper.createSinglelineText(this.container,
                 config.appearance.get(DiagramShape.APPEARANCE_TEXT),
                 config.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE),
+                config.appearance.get(DiagramShape.APPEARANCE_FONT_WEIGHT),
                 config.appearance.get(DiagramShape.APPEARANCE_TEXT_ALIGNMENT));
         } else if (config) {
-            element = SVGHelper.createSinglelineText(this.container, config.text, config.fontSize, config.alignment);
+            element = SVGHelper.createSinglelineText(this.container, config.text, config.fontSize, config.fontWeight, config.alignment);
         } else {
             element = SVGHelper.createMultilineText(this.container, '');
         }

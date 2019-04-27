@@ -6,7 +6,7 @@ import {
 
 import { DiagramShape, Transform } from '@app/wireframes/model';
 
-export interface TextConfig { text: string; fontSize?: number; alignment?: string; }
+export interface TextConfig { text: string; fontSize?: number; fontWeight?: string; alignment?: string; }
 
 export type RendererColor = string | number | Color | DiagramShape;
 export type RendererElement = any;
