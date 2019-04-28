@@ -6,7 +6,7 @@ import { DiagramShape } from '@app/wireframes/model';
 
 export class SvgEvent {
     constructor(
-        public readonly event: MouseEvent | KeyboardEvent,
+        public readonly event: MouseEvent | KeyboardEvent | MouseWheelEvent,
         public readonly position: Vec2,
         public readonly element?: Element | null,
         public readonly shape?: DiagramShape | null
@@ -46,6 +46,8 @@ export class InteractionService {
     private readonly interactionHandlers: InteractionHandler[] = [];
     private isDragging = false;
 
+    private supportsWheelEvent = false;
+
     constructor(
         private readonly adornerLayers: svg.Element[], renderings: svg.Element, private readonly diagram: svg.Doc
     ) {
@@ -81,9 +83,21 @@ export class InteractionService {
             }
         });
 
-        window.document.addEventListener('mousewheel', (event: MouseEvent) => {
+        const onMouseWheel = (event: MouseWheelEvent) => {
+            if (event.ctrlKey) {
+                event.preventDefault();
+            }
+            if (event.type === 'wheel') {
+                this.supportsWheelEvent = true;
+            } else if (this.supportsWheelEvent) {
+                return; // only execute once when both wheel and DOMMouseScroll are supported 
+            }
             this.invokeEvent(event, h => h.onMouseWheel ? h.onMouseWheel.bind(h) : null);
-        });
+        };
+        // window.document.addEventListener('mousewheel', onMouseWheel);
+        window.document.addEventListener('wheel', onMouseWheel, { passive: false });
+        window.document.addEventListener('DOMMouseScroll', onMouseWheel, { passive: false });
+        
 
         window.document.addEventListener('mouseup', (event: MouseEvent) => {
             if (this.isDragging) {

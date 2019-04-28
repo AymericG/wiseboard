@@ -9,6 +9,8 @@ import { setZoom, UIStateInStore } from '@app/wireframes/model';
 
 import { withShortcut } from '@app/core/utils/tooltip-helper';
 
+import { maxZoom, minZoom } from '@app/constants';
+
 interface UIMenuProps {
     // Indicates if you can zoom in.
     canZoomIn: boolean;
@@ -66,8 +68,8 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
 
 const mapStateToProps = (state: UIStateInStore) => {
     return {
-        canZoomIn: state.ui.zoom < 2,
-        canZoomOut: state.ui.zoom > .25,
+        canZoomIn: state.ui.zoom < maxZoom,
+        canZoomOut: state.ui.zoom > minZoom,
         zoom: state.ui.zoom
     };
 };

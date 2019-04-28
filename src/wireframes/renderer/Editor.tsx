@@ -26,6 +26,7 @@ import {
     RendererService,
     selectItems,
     setInteractionMode,
+    setZoom,
     Transform,
     transformItems,
     UIStateInStore
@@ -72,6 +73,8 @@ export interface EditorProps {
 
     // A function to select a set of items.
     selectItems: (diagram: Diagram, itemIds: string[]) => any;
+
+    setZoom: (zoom: number) => any;
 
     // A function to change the appearance of a visual.
     changeItemsAppearance: (diagram: Diagram, visuals: DiagramVisual[], key: string, val: any) => any;
@@ -191,6 +194,7 @@ class Editor extends React.Component<EditorProps> {
             selectItems,
             selectedItemsWithLocked,
             setInteractionMode,
+            setZoom,
             transformItems,
             zoom,
             zoomedHeight,
@@ -228,7 +232,10 @@ class Editor extends React.Component<EditorProps> {
                                     interactionService={this.interactionService}
                                     selectedDiagram={selectedDiagram}
                                     selectedItems={selectedItemsWithLocked}
-                                    selectItems={selectItems} />
+                                    selectItems={selectItems} 
+                                    zoom={zoom}
+                                    setZoom={setZoom}
+                                    />
 
                                 <TransformAdorner
                                     adorners={this.adornersTransform}
@@ -280,7 +287,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    selectItems, changeItemsAppearance, transformItems, setInteractionMode
+    selectItems, changeItemsAppearance, transformItems, setInteractionMode, setZoom
 }, dispatch);
 
 export const EditorContainer = connect(
