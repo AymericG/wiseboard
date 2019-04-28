@@ -97,7 +97,13 @@ class Editor extends React.Component<EditorProps> {
     }
 
     private initDiagramScope = (doc: svg.Doc) => {
-        this.diagramTools = doc.rect().fill('transparent');
+
+        // create grid pattern
+        const pattern = doc.pattern(20, 20, (add: any) => {
+            add.circle(1).fill('none').stroke({ color: '#999', width: '1'});
+        });
+        
+        this.diagramTools = doc.rect().fill(pattern);
         this.diagramRendering = doc.group();
         this.adornersSelect = doc.group();
         this.adornersTransform = doc.group();
