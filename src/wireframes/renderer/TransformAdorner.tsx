@@ -160,6 +160,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
             next();
         }
 
+        // second hitTest call is necessary to get click and drag working.
         hitItem = this.hitTest(event.position);
 
         if (!hitItem) {
@@ -215,24 +216,26 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
             return;
         }
 
-        if (this.manipulationMode !== 0) {
-            this.manipulated = true;
-
-            if (this.manipulationMode === MODE_MOVE) {
-                this.move(delta, event.event.shiftKey);
-            } else if (this.manipulationMode === MODE_ROTATE) {
-                this.rotate(event, event.event.shiftKey);
-            } else {
-                this.resize(delta, event.event.shiftKey);
-            }
-
-            this.layoutShapes();
+        if (this.manipulationMode === 0) {
+            return; 
         }
+
+        this.manipulated = true;
+
+        if (this.manipulationMode === MODE_MOVE) {
+            this.move(delta, event.event.shiftKey);
+        } else if (this.manipulationMode === MODE_ROTATE) {
+            this.rotate(event, event.event.shiftKey);
+        } else {
+            this.resize(delta, event.event.shiftKey);
+        }
+
+        this.layoutShapes();
     }
 
     private move(delta: Vec2, shiftKey: boolean) {
         const snapResult =
-            this.snapManager.snapMoving(this.props.selectedDiagram, this.props.viewSize, this.startTransform, delta, shiftKey);
+            this.snapManager.snapMoving(this.props.selectedDiagram, this.props.viewSize, this.startTransform, delta, !shiftKey /* snap to grid by default */);
 
         this.transform = this.startTransform.moveBy(snapResult.delta);
 
@@ -269,7 +272,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     private resize(delta: Vec2, shiftKey: boolean) {
         const startRotation = this.startTransform.rotation;
 
-        const deltaSize = this.getResizeDeltaSize(startRotation, delta, shiftKey);
+        const deltaSize = this.getResizeDeltaSize(startRotation, delta, !shiftKey /* snap to grid by default */);
         const deltaPos = this.getResizeDeltaPos(startRotation, deltaSize);
 
         this.transform = this.startTransform.resizeAndMoveBy(deltaSize, deltaPos);
@@ -284,7 +287,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         const delta = Vec2.rotated(cummulativeTranslation.mul(2), Vec2.ZERO, angle.negate()).mul(this.resizeDragOffset);
 
         const snapResult =
-            this.snapManager.snapResizing(this.props.selectedDiagram, this.props.viewSize, this.startTransform, delta, shiftKey,
+            this.snapManager.snapResizing(this.props.selectedDiagram, this.props.viewSize, this.startTransform, delta, !shiftKey /* snap to grid by default */,
                 this.resizeDragOffset.x,
                 this.resizeDragOffset.y);
 

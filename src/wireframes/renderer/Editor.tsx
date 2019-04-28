@@ -39,7 +39,7 @@ import { ShapeRef }             from './shape-ref';
 import { TextAdorner }          from './TextAdorner';
 import { TransformAdorner }     from './TransformAdorner';
 
-import { InteractionMode } from '@app/constants';
+import { gridSize, InteractionMode } from '@app/constants';
 
 export interface EditorProps {
     editorContent: React.RefObject<any>;
@@ -99,7 +99,7 @@ class Editor extends React.Component<EditorProps> {
     private initDiagramScope = (doc: svg.Doc) => {
 
         // create grid pattern
-        const pattern = doc.pattern(20, 20, (add: any) => {
+        const pattern = doc.pattern(gridSize, gridSize, (add: any) => {
             add.circle(1).fill('none').stroke({ color: '#999', width: '1'});
         });
         

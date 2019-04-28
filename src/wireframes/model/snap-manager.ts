@@ -8,6 +8,8 @@ import { Diagram } from './diagram';
 import { DiagramShape } from './diagram-shape';
 import { Transform } from './transform';
 
+import { gridSize } from '@app/constants';
+
 export interface SnapResult {
     snapModeX?: SnapMode;
     snapModeY?: SnapMode;
@@ -20,10 +22,10 @@ export interface SnapResult {
 export enum SnapMode { LeftTop, Center, RightBottom }
 
 const ROTATE_SNAP = 90 / 4;
-const MOVE_SNAP_GRID = 10;
+const MOVE_SNAP_GRID = gridSize;
 const MOVE_SNAP_SHAPE = 5;
 const RESIZE_SNAP_SHAPE = 5;
-const RESIZE_SNAP_GRID = 10;
+const RESIZE_SNAP_GRID = gridSize;
 const RESIZE_MINIMUM = 1;
 
 export class SnapManager {

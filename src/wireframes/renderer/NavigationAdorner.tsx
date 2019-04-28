@@ -56,22 +56,8 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         // 
     }
 
-    public onMouseDown(event: SvgEvent, next: () => void) {
-        if (this.props.interactionMode !== InteractionMode.Drag && !this.isSpaceDown) {
-            next();
-            return;
-        }
-
-        this.dragStartX = (event.event as MouseEvent).pageX;
-        this.dragStartY = (event.event as MouseEvent).pageY;
-        
-        const element: any = ReactDOM.findDOMNode(this.props.editorContent.current);    
-        this.scrollLeftStart = element.scrollLeft;
-        this.scrollTopStart = element.scrollTop;
-    }
-
     public onKeyDown(event: SvgEvent, next: () => void) {
-        if ((event.event as KeyboardEvent).keyCode !== SPACE || event.event.target !== document.body) {
+     if ((event.event as KeyboardEvent).keyCode !== SPACE || event.event.target !== document.body) {
             next();
             return;
         }
@@ -91,6 +77,21 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         this.isSpaceDown = false;    
         event.event.preventDefault();
         event.event.stopPropagation();
+    }
+
+
+    public onMouseDown(event: SvgEvent, next: () => void) {
+        if (this.props.interactionMode !== InteractionMode.Drag && !this.isSpaceDown) {
+            next();
+            return;
+        }
+
+        this.dragStartX = (event.event as MouseEvent).pageX;
+        this.dragStartY = (event.event as MouseEvent).pageY;
+        
+        const element: any = ReactDOM.findDOMNode(this.props.editorContent.current);    
+        this.scrollLeftStart = element.scrollLeft;
+        this.scrollTopStart = element.scrollTop;
     }
 
     public onMouseWheel(event: SvgEvent, next: () => void) {
