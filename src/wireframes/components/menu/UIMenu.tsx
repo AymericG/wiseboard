@@ -49,7 +49,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
 
                 <Shortcut disabled={!canZoomOut} onPressed={this.doZoomOut} keys='-' />
 
-                <span className='menu-item menu-item-label'>{zoom * 100}%</span>
+                <span className='menu-item menu-item-label'>{(zoom * 100).toFixed()}%</span>
 
                 <Tooltip title={withShortcut('Zoom In', ['+'])}>
                     <Button className='menu-item left-border'

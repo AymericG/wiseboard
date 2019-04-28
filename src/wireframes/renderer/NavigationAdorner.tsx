@@ -104,8 +104,21 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         }
         const { setZoom, zoom } = this.props;
         const delta = ((e.deltaY || -e.wheelDelta || e.detail) >> 10) || 1;
-        const newZoom = Math.min(maxZoom, Math.max(minZoom, zoom - .1 * delta));
-        setZoom(Math.floor(newZoom * 100) / 100);
+        const newZoom = delta > 0 ? zoom / 1.05 : zoom * 1.05;
+        const roundedNewZoom = Math.floor(Math.round(Math.min(maxZoom, Math.max(minZoom, newZoom)) * 100)) / 100;
+        setZoom(roundedNewZoom);
+
+        // set scroll
+        const element: any = ReactDOM.findDOMNode(this.props.editorContent.current);    
+        
+        const canvasXBeforeZoom = (e.clientX + element.scrollLeft) / zoom;
+        const canvasYBeforeZoom = (e.clientY + element.scrollTop) / zoom;
+
+        const offsetLeft = canvasXBeforeZoom * roundedNewZoom - e.clientX;
+        const offsetTop = canvasYBeforeZoom * roundedNewZoom - e.clientY;
+
+        element.scrollLeft = offsetLeft;
+        element.scrollTop = offsetTop;
     }
 
     public onMouseDrag(event: SvgEvent, next: () => void) {
