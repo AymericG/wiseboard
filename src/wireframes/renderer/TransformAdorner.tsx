@@ -57,7 +57,11 @@ export interface TransformAdornerProps {
     transformItems: (diagram: Diagram, items: DiagramItem[], oldBounds: Transform, newBounds: Transform) => void;
 }
 
-export class TransformAdorner extends React.Component<TransformAdornerProps> implements InteractionHandler {
+interface TransformAdornerState {
+    hideToolbar: boolean;
+}
+
+export class TransformAdorner extends React.Component<TransformAdornerProps, TransformAdornerState> implements InteractionHandler {
     private renderer: SVGRenderer;
     private transform: Transform;
     private startTransform: Transform;
@@ -74,6 +78,11 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     private resizeDragOffset: Vec2;
     private resizeShapes: any[] = [];
     private snapManager = new SnapManager();
+
+    constructor(props: TransformAdornerProps, context: any) {
+        super(props, context);
+        this.state = { hideToolbar: false };
+    }
 
     public componentWillMount() {
         this.renderer = new SVGRenderer();
@@ -181,8 +190,8 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         }
 
         this.dragStart = event.position;
-
         this.startTransform = this.transform;
+        this.setState({ hideToolbar: true });
     }
 
     private hitTest(point: Vec2) {
@@ -332,6 +341,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         } finally {
             this.manipulationMode = 0;
             this.manipulated = false;
+            this.setState({ hideToolbar: false });
         }
     }
 
@@ -437,7 +447,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     public render(): any {
         const { zoom } = this.props;
 
-        if (!this.transform || this.props.selectedItems.length === 0) {
+        if (this.state.hideToolbar || !this.transform || !this.props.selectedItems.length) {
             return null;
         }
         const left = this.transform.position.x * zoom;
