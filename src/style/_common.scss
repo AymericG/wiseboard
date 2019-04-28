@@ -287,7 +287,7 @@ $sidebar-size: 320px;
         color: $color-theme-grey;
         
         &:hover {
-            background-color: $color-theme-grey;
+            background-color: $color-brand-primary;
             color: $color-dark-foreground; 
             border-color: transparent;
         }
@@ -349,4 +349,9 @@ $sidebar-size: 320px;
 
 .key:first-child {
     margin-left: .5rem;
+}
+
+.editor-toolbox button.menu-item.selected {
+    background-color: $color-brand-primary;
+    color: $color-dark-foreground;
 }

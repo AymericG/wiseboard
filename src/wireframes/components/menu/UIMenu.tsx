@@ -41,7 +41,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
                     <Button className='menu-item right-border'
                         disabled={!canZoomOut}
                         onClick={this.doZoomOut}>
-                        <Icon type='minus-circle-o' />
+                        <Icon type='minus' />
                     </Button>
                 </Tooltip>
 
@@ -53,7 +53,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
                     <Button className='menu-item left-border'
                         disabled={!canZoomIn}
                         onClick={this.doZoomIn}>
-                        <Icon type='plus-circle-o' />
+                        <Icon type='plus' />
                     </Button>
                 </Tooltip>
 

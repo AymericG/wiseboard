@@ -8,6 +8,7 @@ import {
     EditorViewContainer,
     HistoryMenuContainer,
     IconsContainer,
+    InteractionModeMenuContainer,
     LoadingMenuContainer,
     ShapesContainer,
     UIMenuContainer
@@ -135,7 +136,11 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                         </div>
 
                         <EditorViewContainer spacing={40} editorContent={this.editorContent}/>
+
                         <div className='editor-bottom-right'>
+                            <div className='editor-toolbox'>
+                                <InteractionModeMenuContainer />
+                            </div>
                             <div className='editor-toolbox'>
                                 <HistoryMenuContainer />
                             </div>

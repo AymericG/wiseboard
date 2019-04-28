@@ -1,3 +1,4 @@
+import { InteractionMode } from '@app/constants';
 export interface UIState {
     // The current zoom level.
     zoom: number;
@@ -7,6 +8,9 @@ export interface UIState {
 
     // The info toast from any loading operation.
     infoToast?: string;
+
+    // Indicates if the cursor will select or move the board around.
+    interactionMode: InteractionMode;
 
     // Indicates if the info dialog is open.
     showInfoDialog: boolean;
@@ -29,6 +33,7 @@ export const createInitialUIState: () => UIState = () => {
     return {
         zoom: 1,
         selectedTab: 'shapes',
+        interactionMode: InteractionMode.Selection,
         showInfoDialog: false,
         showLeftSidebar: true,
         selectedColorTab: 'palette'

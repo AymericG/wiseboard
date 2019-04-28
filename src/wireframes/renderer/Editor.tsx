@@ -25,6 +25,7 @@ import {
     getSelectedItemsWithLocked,
     RendererService,
     selectItems,
+    setInteractionMode,
     Transform,
     transformItems,
     UIStateInStore
@@ -38,11 +39,15 @@ import { ShapeRef }             from './shape-ref';
 import { TextAdorner }          from './TextAdorner';
 import { TransformAdorner }     from './TransformAdorner';
 
+import { InteractionMode } from '@app/constants';
+
 export interface EditorProps {
     editorContent: React.RefObject<any>;
 
     // The renderer service.
     rendererService: RendererService;
+
+    interationMode: InteractionMode;
 
     // The selected diagram.
     selectedDiagram: Diagram;
@@ -70,6 +75,8 @@ export interface EditorProps {
 
     // A function to change the appearance of a visual.
     changeItemsAppearance: (diagram: Diagram, visuals: DiagramVisual[], key: string, val: any) => any;
+
+    setInteractionMode: (interactionMode: InteractionMode) => void;
 
     // A function to transform a set of items.
     transformItems: (diagram: Diagram, items: DiagramItem[], oldBounds: Transform, newBounds: Transform) => any;
@@ -172,10 +179,12 @@ class Editor extends React.Component<EditorProps> {
         // tslint:disable:no-shadowed-variable
         const {
             changeItemsAppearance,
+            interationMode,
             selectedDiagram,
             selectedItems,
             selectItems,
             selectedItemsWithLocked,
+            setInteractionMode,
             transformItems,
             zoom,
             zoomedHeight,
@@ -207,6 +216,8 @@ class Editor extends React.Component<EditorProps> {
                                 <ClipboardShortcutsContainer />
 
                                 <NavigationAdorner
+                                    interactionMode={interationMode}
+                                    setInteractionMode={setInteractionMode}
                                     editorContent={this.props.editorContent}
                                     interactionService={this.interactionService}
                                     selectedDiagram={selectedDiagram}
@@ -223,6 +234,7 @@ class Editor extends React.Component<EditorProps> {
                                     zoom={zoom} />
 
                                 <SelectionAdorner
+                                    interactionMode={interationMode}
                                     adorners={this.adornersSelect}
                                     interactionService={this.interactionService}
                                     selectedDiagram={selectedDiagram}
@@ -250,6 +262,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
     const editor = getEditor(state);
 
     return {
+        interationMode: state.ui.interactionMode,
         selectedDiagram: getDiagram(state),
         selectedItems: getSelectedItems(state),
         selectedItemsWithLocked: getSelectedItemsWithLocked(state),
@@ -261,7 +274,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    selectItems, changeItemsAppearance, transformItems
+    selectItems, changeItemsAppearance, transformItems, setInteractionMode
 }, dispatch);
 
 export const EditorContainer = connect(

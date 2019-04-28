@@ -15,6 +15,7 @@ import {
     SvgEvent
 } from './interaction-service';
 
+import { InteractionMode } from '@app/constants';
 import { SVGRenderer } from '@app/wireframes/shapes/utils/svg-renderer';
 
 const SELECTION_STROKE_COLOR = '#080';
@@ -22,6 +23,8 @@ const SELECTION_STROKE_LOCK_COLOR = '#f00';
 const SELECTION_FILL_COLOR = 'none';
 
 export interface SelectionAdornerProps {
+    interactionMode: InteractionMode;
+
     // The adorner scope.
     adorners: svg.Container;
 

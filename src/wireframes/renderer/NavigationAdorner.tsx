@@ -1,6 +1,8 @@
 import * as React from 'react';
 import ReactDOM = require('react-dom');
 
+import { InteractionMode } from '@app/constants';
+
 import {
     Diagram,
     DiagramItem
@@ -12,8 +14,12 @@ import {
     SvgEvent
 } from './interaction-service';
 
+const SPACE = 32;
+
 export interface NavigationAdornerProps {
     editorContent: React.RefObject<any>;
+
+    interactionMode: InteractionMode;
 
     // The selected diagram.
     selectedDiagram: Diagram;
@@ -26,6 +32,8 @@ export interface NavigationAdornerProps {
 
     // A function to select a set of items.
     selectItems: (diagram: Diagram, itemIds: string[]) => any;
+
+    setInteractionMode: (interactionMode: InteractionMode) => void;
 }
 
 export class NavigationAdorner extends React.Component<NavigationAdornerProps> implements InteractionHandler {
@@ -49,7 +57,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
     }
 
     public onMouseDown(event: SvgEvent, next: () => void) {
-        if (!this.isSpaceDown) {
+        if (this.props.interactionMode !== InteractionMode.Drag && !this.isSpaceDown) {
             next();
             return;
         }
@@ -63,22 +71,24 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
     }
 
     public onKeyDown(event: SvgEvent, next: () => void) {
-        if ((event.event as KeyboardEvent).keyCode !== 32 || event.event.target !== document.body) {
+        if ((event.event as KeyboardEvent).keyCode !== SPACE || event.event.target !== document.body) {
             next();
             return;
         }
         this.isSpaceDown = true;
+        this.props.setInteractionMode(InteractionMode.Drag);
         event.event.preventDefault();
         event.event.stopPropagation();
     }
 
     public onKeyUp(event: SvgEvent, next: () => void) {
-        if (!this.isSpaceDown || (event.event as KeyboardEvent).keyCode !== 32 || event.event.target !== document.body) {
+        if (!this.isSpaceDown || (event.event as KeyboardEvent).keyCode !== SPACE || event.event.target !== document.body) {
             next();
             return;
         }
 
-        this.isSpaceDown = true;    
+        this.props.setInteractionMode(InteractionMode.Selection);
+        this.isSpaceDown = false;    
         event.event.preventDefault();
         event.event.stopPropagation();
     }
@@ -91,7 +101,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
     }
 
     public onMouseDrag(event: SvgEvent, next: () => void) {
-        if (!this.isSpaceDown || !this.dragStartX) {
+        if ((this.props.interactionMode !== InteractionMode.Drag && !this.isSpaceDown) || !this.dragStartX) {
             return next();
         }
         const element: any = ReactDOM.findDOMNode(this.props.editorContent.current);    
@@ -100,11 +110,11 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
     }
 
     public onMouseUp(event: SvgEvent, next: () => void) {
-        if (!this.isSpaceDown || !this.dragStartX) {
+        if ((this.props.interactionMode !== InteractionMode.Drag && !this.isSpaceDown) || !this.dragStartX) {
             return next();
         }
 
-        // TODO: this.props.moveBoard
+        // TODO: save scrollLeft and scrollTop to state (this.props.moveBoard)
         this.dragStartX = null;
         this.dragStartY = null;
     }

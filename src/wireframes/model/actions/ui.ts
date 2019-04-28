@@ -1,6 +1,8 @@
 import { message } from 'antd';
 import { AnyAction, Dispatch, Middleware, Reducer } from 'redux';
 
+import { InteractionMode } from '@app/constants';
+
 import { UIState } from './../internal';
 
 export const SHOW_INFO_TOAST = 'SHOW_INFO_TOAST';
@@ -16,6 +18,11 @@ export const showErrorToast = (text: string) => {
 export const SET_ZOOM = 'SET_ZOOM';
 export const setZoom = (zoomLevel: number) => {
     return { type: SET_ZOOM, zoomLevel };
+};
+
+export const SET_INTERACTION_MODE = 'SET_INTERACTION_MODE';
+export const setInteractionMode = (interactionMode: InteractionMode) => {
+    return { type: SET_INTERACTION_MODE, interactionMode };
 };
 
 export const SELECT_COLOR_TAB = 'SELECT_COLOR_TAB';
@@ -58,6 +65,8 @@ export function toastMiddleware() {
 export function ui(initialState: UIState): Reducer<UIState> {
     const reducer: Reducer<UIState> = (state = initialState, action: any) => {
         switch (action.type) {
+            case SET_INTERACTION_MODE:
+                return { ...state, interactionMode: action.interactionMode };
             case SET_ZOOM:
                 return { ...state, zoom: action.zoomLevel };
             case SELECT_TAB:
