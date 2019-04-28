@@ -441,7 +441,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
             return null;
         }
         const left = this.transform.position.x * zoom;
-        const top = zoom * (this.transform.position.y - this.transform.size.y / 2 - 70);
+        const top = zoom * (this.transform.position.y - this.transform.size.y / 2 - 20) - 50;
 
         const style = { left, top };
         return <div
