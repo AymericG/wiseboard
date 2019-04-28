@@ -4,6 +4,8 @@ import { Diagram } from './diagram';
 import { EditorStateInStore } from './editor-state';
 import { UndoableState } from './undoable-state';
 
+import { canvasSize } from '@app/constants';
+
 export class EditorState {
     constructor(
         public readonly diagrams: ImmutableIdMap<Diagram>,
@@ -14,7 +16,7 @@ export class EditorState {
     }
 
     public static empty(): EditorState {
-        return new EditorState(ImmutableIdMap.empty<Diagram>(), null, new Vec2(2500, 2500));
+        return new EditorState(ImmutableIdMap.empty<Diagram>(), null, new Vec2(canvasSize, canvasSize));
     }
 
     public addDiagram(diagram: Diagram): EditorState {
