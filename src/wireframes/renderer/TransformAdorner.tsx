@@ -11,12 +11,6 @@ import {
     Transform
 } from '@app/wireframes/model';
 
-import {
-    ArrangeMenuContainer,
-    CustomPropertiesMenuContainer,
-    LayoutMenuContainer
-} from '@app/wireframes/components';
-
 import { InteractionOverlays } from './interaction-overlays';
 
 import {
@@ -445,22 +439,6 @@ export class TransformAdorner extends React.Component<TransformAdornerProps, Tra
     }
 
     public render(): any {
-        const { zoom } = this.props;
-
-        if (this.state.hideToolbar || !this.transform || !this.props.selectedItems.length) {
-            return null;
-        }
-        const left = this.transform.position.x * zoom;
-        const top = zoom * (this.transform.position.y - this.transform.size.y / 2 - 20) - 50;
-
-        const style = { left, top };
-        return <div
-            className='editor-floating-toolbox'
-            style={style}>
-
-            <CustomPropertiesMenuContainer />
-            <LayoutMenuContainer />
-            <ArrangeMenuContainer />
-        </div>;
+        return null;
     }
 }

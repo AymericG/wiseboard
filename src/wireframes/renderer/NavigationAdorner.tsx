@@ -14,8 +14,6 @@ import {
     SvgEvent
 } from './interaction-service';
 
-import { getCanvasOffset } from '@app/core';
-
 const SPACE = 32;
 const LEFT = 37;
 const UP = 38;
@@ -36,6 +34,8 @@ export interface NavigationAdornerProps {
     // The interaction service.
     interactionService: InteractionService;
 
+    x: number;
+    y: number;
     zoom: number;
 
     // A function to select a set of items.
@@ -67,34 +67,29 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
     }
 
     public onKeyDown(event: SvgEvent, next: () => void) {
-        const { moveTo } = this.props;
+        const { moveTo, x, y } = this.props;
         const target: any = event.event.target;
         if (target.type === 'textarea' || target.type === 'input') {
             next();
             return;
         }
         const keyCode = (event.event as KeyboardEvent).keyCode;
-        let offset: { x: number, y: number };
         switch (keyCode) {
             case SPACE:
                 this.isSpaceDown = true;
                 this.props.setInteractionMode(InteractionMode.Drag);
                 break;
             case LEFT:
-                offset = getCanvasOffset();
-                moveTo(offset.x + 10, offset.y);
+                moveTo(x + 10, y);
                 break;
             case UP:
-                offset = getCanvasOffset();
-                moveTo(offset.x, offset.y + 10);
+                moveTo(x, y + 10);
                 break;
             case RIGHT:
-                offset = getCanvasOffset();
-                moveTo(offset.x - 10, offset.y);
+                moveTo(x - 10, y);
                 break;
             case DOWN:
-                offset = getCanvasOffset();
-                moveTo(offset.x, offset.y - 10);
+                moveTo(x, y - 10);
                 break;
             default:
                 next();
@@ -122,12 +117,13 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
             return;
         }
 
+        const { x, y } = this.props;
+
         this.dragStartX = (event.event as MouseEvent).pageX;
         this.dragStartY = (event.event as MouseEvent).pageY;
 
-        const offset = getCanvasOffset();
-        this.editorStartX = offset.x;
-        this.editorStartY = offset.y;
+        this.editorStartX = x;
+        this.editorStartY = y;
     }
 
     public onMouseWheel(event: SvgEvent, next: () => void) {
@@ -135,7 +131,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         const deltaY = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
         const deltaX = e.deltaX > 0 ? 1 : e.deltaX < 0 ? -1 : 0;
 
-        const { moveTo, setZoom, zoom } = this.props;
+        const { moveTo, setZoom, x, y, zoom } = this.props;
 
         // zoom
         if (e.ctrlKey) {
@@ -146,9 +142,8 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
             const newZoom = deltaY > 0 ? zoom / 1.05 : zoom * 1.05;
             const roundedNewZoom = Math.floor(Math.round(Math.min(maxZoom, Math.max(minZoom, newZoom)) * 100)) / 100;
 
-            const canvasOffset = getCanvasOffset();
-            const worldX = (e.clientX - canvasOffset.x) / zoom;
-            const worldY = (e.clientY - canvasOffset.y) / zoom;
+            const worldX = (e.clientX - x) / zoom;
+            const worldY = (e.clientY - y) / zoom;
 
             setZoom(roundedNewZoom, worldX, worldY, e.clientX, e.clientY);
             return;
@@ -156,8 +151,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
 
         // pan
         const STEP = 50;
-        const offset = getCanvasOffset();
-        moveTo(offset.x - STEP * deltaX, offset.y - STEP * deltaY);
+        moveTo(x - STEP * deltaX, y - STEP * deltaY);
     }
 
     public onMouseDrag(event: SvgEvent, next: () => void) {

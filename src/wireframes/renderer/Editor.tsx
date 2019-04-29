@@ -69,6 +69,9 @@ export interface EditorProps {
     // The zoom value of the canvas.
     zoom: number;
 
+    x: number;
+    y: number;
+
     // The view size of the editor.
     viewSize: Vec2;
 
@@ -199,6 +202,8 @@ class Editor extends React.Component<EditorProps> {
             setInteractionMode,
             setZoom,
             transformItems,
+            x,
+            y,
             zoom,
             zoomedHeight,
             zoomedWidth,
@@ -215,10 +220,12 @@ class Editor extends React.Component<EditorProps> {
             this.diagramRendering.size(w, h);
         }
 
+        const style = { transform: 'translate(' + x + 'px, ' + y + 'px'};
+
         return (
             <>
                 {selectedDiagram &&
-                    <div id='editor' className='editor'>
+                    <div id='editor' className='editor' style={style}>
                         <CanvasView onInit={this.initDiagramScope}
                             zoom={zoom}
                             zoomedWidth={zoomedWidth}
@@ -237,6 +244,8 @@ class Editor extends React.Component<EditorProps> {
                                     selectedItems={selectedItemsWithLocked}
                                     selectItems={selectItems} 
                                     zoom={zoom}
+                                    x={x}
+                                    y={y}
                                     setZoom={setZoom}
                                     moveTo={moveTo}
                                     />
@@ -279,6 +288,8 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
     const editor = getEditor(state);
 
     return {
+        x: state.ui.x,
+        y: state.ui.y,
         interationMode: state.ui.interactionMode,
         selectedDiagram: getDiagram(state),
         selectedItems: getSelectedItems(state),

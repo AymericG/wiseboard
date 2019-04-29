@@ -23,6 +23,9 @@ export interface FloatingToolbarProps {
     // The current zoom value.
     zoom: number;
 
+    x: number;
+    y: number;
+
     // The selected diagram.
     selectedDiagram: Diagram;
 
@@ -54,15 +57,15 @@ class FloatingToolbar extends React.Component<FloatingToolbarProps, FloatingTool
     }
 
     public render(): any {
-        const { selectedDiagram, selectedItems, zoom } = this.props;
+        const { selectedDiagram, selectedItems, x, y, zoom } = this.props;
 
         if (this.state.hideToolbar || !selectedItems.length) {
             return null;
         }
         const transform = this.calculateTransform(selectedItems, selectedDiagram);
 
-        const left = transform.position.x * zoom;
-        const top = zoom * (transform.position.y - transform.size.y / 2 - 20) - 50;
+        const left = transform.position.x * zoom + x;
+        const top = zoom * (transform.position.y - transform.size.y / 2 - 20) - 50 + y;
 
         const style = { left, top };
         return <div
@@ -80,6 +83,8 @@ class FloatingToolbar extends React.Component<FloatingToolbarProps, FloatingTool
 const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
     return {
         zoom: state.ui.zoom,
+        x: state.ui.x,
+        y: state.ui.y,
         selectedDiagram: getDiagram(state),
         selectedItems: getSelectedItems(state)
     };

@@ -23,6 +23,9 @@ export interface UIState {
 
     // The color tab.
     selectedColorTab: string;
+
+    x: number;
+    y: number;
 }
 
 export interface UIStateInStore {
@@ -31,6 +34,8 @@ export interface UIStateInStore {
 
 export const createInitialUIState: () => UIState = () => {
     return {
+        x: 0,
+        y: 0,
         zoom: 1,
         selectedTab: 'shapes',
         interactionMode: InteractionMode.Selection,

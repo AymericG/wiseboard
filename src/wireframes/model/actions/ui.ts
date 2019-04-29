@@ -5,8 +5,6 @@ import { InteractionMode } from '@app/constants';
 
 import { UIState, UIStateInStore } from './../internal';
 
-import { getCanvasOffset, moveCanvas } from '@app/core';
-
 export const SHOW_INFO_TOAST = 'SHOW_INFO_TOAST';
 export const showInfoToast = (text: string) => {
     return { type: SHOW_INFO_TOAST, text };
@@ -27,24 +25,24 @@ export const setZoom = (zoomLevel: number, worldX?: number, worldY?: number, cli
             clientX = rect.width / 2;
             clientY = rect.height / 2;
 
-            const canvasOffset = getCanvasOffset(); 
             const state = getState();
             const zoom = state.ui.zoom;
-            worldX = (clientX - canvasOffset.x) / zoom;
-            worldY = (clientY - canvasOffset.y) / zoom;
+            const x = state.ui.x;
+            const y = state.ui.y;
+            
+            worldX = (clientX - x) / zoom;
+            worldY = (clientY - y) / zoom;
         }
 
-        const x = clientX - worldX * zoomLevel;
-        const y = clientY - worldY * zoomLevel;
-        moveCanvas(x, y);
+        const newX = clientX - worldX * zoomLevel;
+        const newY = clientY - worldY * zoomLevel;
 
-        return dispatch({ type: SET_ZOOM, zoomLevel });
+        return dispatch({ type: SET_ZOOM, payload: { zoomLevel, x: newX, y: newY }});
     };
 };
 
 export const MOVE_TO = 'MOVE_TO';
 export const moveTo = (x: number, y: number) => {
-    moveCanvas(x, y);
     return { type: MOVE_TO, payload: { x, y }};
 };
 
@@ -96,7 +94,9 @@ export function ui(initialState: UIState): Reducer<UIState> {
             case SET_INTERACTION_MODE:
                 return { ...state, interactionMode: action.interactionMode };
             case SET_ZOOM:
-                return { ...state, zoom: action.zoomLevel };
+                return { ...state, zoom: action.payload.zoomLevel, x: action.payload.x, y: action.payload.y };
+            case MOVE_TO:
+                return { ...state, x: action.payload.x, y: action.payload.y };
             case SELECT_TAB:
                 return { ...state, selectedTab: action.tab };
             case SELECT_COLOR_TAB:
