@@ -47,7 +47,12 @@ export class SnapManager {
         let dw = delta.x;
         let dh = delta.y;
 
-        if (!snapToGrid && transform.rotation.degree === 0) {
+        if (!snapToGrid) {
+            dw = MathHelper.roundToMultipleOf(transform.size.x + dw, RESIZE_SNAP_GRID) - transform.size.x;
+            dh = MathHelper.roundToMultipleOf(transform.size.y + dh, RESIZE_SNAP_GRID) - transform.size.y;
+        }
+
+        if (transform.rotation.degree === 0) {
             const aabb = transform.aabb;
 
             const orderedAabbs = this.calculateOrderedAABBs(transform, diagram, view);
@@ -103,9 +108,6 @@ export class SnapManager {
                     }
                 }
             }
-        } else if (snapToGrid) {
-            dw = MathHelper.roundToMultipleOf(transform.size.x + dw, RESIZE_SNAP_GRID) - transform.size.x;
-            dh = MathHelper.roundToMultipleOf(transform.size.y + dh, RESIZE_SNAP_GRID) - transform.size.y;
         }
 
         if (transform.size.x + dw < RESIZE_MINIMUM) {
@@ -129,87 +131,85 @@ export class SnapManager {
         let x = aabb.x + delta.x;
         let y = aabb.y + delta.y;
 
-        if (!snapToGrid) {
-            const orderedAabbs = this.calculateOrderedAABBs(transform, diagram, view);
-
-            const left = aabb.left + delta.x, right = aabb.right + delta.x, centerX = aabb.cx + delta.x;
-
-            for (let target of orderedAabbs) {
-                if (Math.abs(target.cx - centerX) < MOVE_SNAP_SHAPE) {
-                    x = target.cx - aabb.width * 0.5;
-
-                    result.snapModeX = SnapMode.Center;
-                    result.snapValueX = target.cx;
-                    break;
-                } else if (Math.abs(target.left - left) < MOVE_SNAP_SHAPE) {
-                    x = target.left;
-
-                    result.snapModeX = SnapMode.LeftTop;
-                    result.snapValueX = target.left;
-                    break;
-                } else if (Math.abs(target.right - left) < MOVE_SNAP_SHAPE) {
-                    x = target.right;
-
-                    result.snapModeX = SnapMode.LeftTop;
-                    result.snapValueX = target.right;
-                    break;
-                } else if (Math.abs(target.right - right) < MOVE_SNAP_SHAPE) {
-                    x = target.right - aabb.width;
-
-                    result.snapModeX = SnapMode.RightBottom;
-                    result.snapValueX = target.right;
-                    break;
-                } else if (Math.abs(target.left - right) < MOVE_SNAP_SHAPE) {
-                    x = target.left - aabb.width;
-
-                    result.snapModeX = SnapMode.RightBottom;
-                    result.snapValueX = target.left;
-                    break;
-                }
-            }
-
-            const top = aabb.top + delta.y, bottom = aabb.bottom + delta.y, centerY = aabb.cy + delta.y;
-
-            for (let target of orderedAabbs) {
-                if (Math.abs(target.cy - centerY) < MOVE_SNAP_SHAPE) {
-                    y = target.cy - aabb.height * 0.5;
-
-                    result.snapModeY = SnapMode.Center;
-                    result.snapValueY = target.cy;
-                    break;
-                } else if (Math.abs(target.top - top) < MOVE_SNAP_SHAPE) {
-                    y = target.top;
-
-                    result.snapModeY = SnapMode.LeftTop;
-                    result.snapValueY = target.top;
-                    break;
-                } else if (Math.abs(target.bottom - top) < MOVE_SNAP_SHAPE) {
-                    y = target.bottom;
-
-                    result.snapModeY = SnapMode.LeftTop;
-                    result.snapValueY = target.bottom;
-                    break;
-                } else if (Math.abs(target.bottom - bottom) < MOVE_SNAP_SHAPE) {
-                    y = target.bottom - aabb.height;
-
-                    result.snapModeY = SnapMode.RightBottom;
-                    result.snapValueY = target.bottom;
-                    break;
-                } else if (Math.abs(target.top - bottom) < MOVE_SNAP_SHAPE) {
-                    y = target.top - aabb.height;
-
-                    result.snapModeY = SnapMode.RightBottom;
-                    result.snapValueY = target.top;
-                    break;
-                }
-            }
-        } else {
+        if (snapToGrid) {
             x = MathHelper.roundToMultipleOf(x, MOVE_SNAP_GRID);
             y = MathHelper.roundToMultipleOf(y, MOVE_SNAP_GRID);
         }
 
-        result.delta = new Vec2(x - aabb.x, y - aabb.y);
+        const orderedAabbs = this.calculateOrderedAABBs(transform, diagram, view);
 
+        const left = aabb.left + delta.x, right = aabb.right + delta.x, centerX = aabb.cx + delta.x;
+
+        for (let target of orderedAabbs) {
+            if (Math.abs(target.cx - centerX) < MOVE_SNAP_SHAPE) {
+                x = target.cx - aabb.width * 0.5;
+
+                result.snapModeX = SnapMode.Center;
+                result.snapValueX = target.cx;
+                break;
+            } else if (Math.abs(target.left - left) < MOVE_SNAP_SHAPE) {
+                x = target.left;
+
+                result.snapModeX = SnapMode.LeftTop;
+                result.snapValueX = target.left;
+                break;
+            } else if (Math.abs(target.right - left) < MOVE_SNAP_SHAPE) {
+                x = target.right;
+
+                result.snapModeX = SnapMode.LeftTop;
+                result.snapValueX = target.right;
+                break;
+            } else if (Math.abs(target.right - right) < MOVE_SNAP_SHAPE) {
+                x = target.right - aabb.width;
+
+                result.snapModeX = SnapMode.RightBottom;
+                result.snapValueX = target.right;
+                break;
+            } else if (Math.abs(target.left - right) < MOVE_SNAP_SHAPE) {
+                x = target.left - aabb.width;
+
+                result.snapModeX = SnapMode.RightBottom;
+                result.snapValueX = target.left;
+                break;
+            }
+        }
+
+        const top = aabb.top + delta.y, bottom = aabb.bottom + delta.y, centerY = aabb.cy + delta.y;
+
+        for (let target of orderedAabbs) {
+            if (Math.abs(target.cy - centerY) < MOVE_SNAP_SHAPE) {
+                y = target.cy - aabb.height * 0.5;
+
+                result.snapModeY = SnapMode.Center;
+                result.snapValueY = target.cy;
+                break;
+            } else if (Math.abs(target.top - top) < MOVE_SNAP_SHAPE) {
+                y = target.top;
+
+                result.snapModeY = SnapMode.LeftTop;
+                result.snapValueY = target.top;
+                break;
+            } else if (Math.abs(target.bottom - top) < MOVE_SNAP_SHAPE) {
+                y = target.bottom;
+
+                result.snapModeY = SnapMode.LeftTop;
+                result.snapValueY = target.bottom;
+                break;
+            } else if (Math.abs(target.bottom - bottom) < MOVE_SNAP_SHAPE) {
+                y = target.bottom - aabb.height;
+
+                result.snapModeY = SnapMode.RightBottom;
+                result.snapValueY = target.bottom;
+                break;
+            } else if (Math.abs(target.top - bottom) < MOVE_SNAP_SHAPE) {
+                y = target.top - aabb.height;
+
+                result.snapModeY = SnapMode.RightBottom;
+                result.snapValueY = target.top;
+                break;
+            }
+        }
+        result.delta = new Vec2(x - aabb.x, y - aabb.y);
         return result;
     }
 

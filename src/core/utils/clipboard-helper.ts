@@ -13,7 +13,6 @@ export function pasteImage(file: File, addImage: any, diagramId: string, x: numb
         const imageElement = document.createElement('img');
 
         imageElement.onload = () => {
-            console.log('loaded');
             addImage(diagramId, imageSource, x, y, imageElement.width, imageElement.height);
         };
         imageElement.src = imageSource;
