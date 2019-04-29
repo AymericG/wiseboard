@@ -1,4 +1,5 @@
-﻿export * from './utils/color';
+﻿export * from './utils/canvas';
+export * from './utils/color';
 export * from './utils/color-palette';
 export * from './utils/immutable-id-map';
 export * from './utils/immutable-list';

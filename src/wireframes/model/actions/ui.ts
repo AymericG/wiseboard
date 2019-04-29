@@ -3,7 +3,9 @@ import { AnyAction, Dispatch, Middleware, Reducer } from 'redux';
 
 import { InteractionMode } from '@app/constants';
 
-import { UIState } from './../internal';
+import { UIState, UIStateInStore } from './../internal';
+
+import { getCanvasOffset, moveCanvas } from '@app/core';
 
 export const SHOW_INFO_TOAST = 'SHOW_INFO_TOAST';
 export const showInfoToast = (text: string) => {
@@ -16,8 +18,34 @@ export const showErrorToast = (text: string) => {
 };
 
 export const SET_ZOOM = 'SET_ZOOM';
-export const setZoom = (zoomLevel: number) => {
-    return { type: SET_ZOOM, zoomLevel };
+export const setZoom = (zoomLevel: number, worldX?: number, worldY?: number, clientX?: number, clientY?: number) => {
+    return (dispatch: Dispatch, getState: () => UIStateInStore) => {
+    
+        if (!worldX) {
+            const editorView = document.getElementById('editor-view');
+            const rect = editorView.getBoundingClientRect();
+            clientX = rect.width / 2;
+            clientY = rect.height / 2;
+
+            const canvasOffset = getCanvasOffset(); 
+            const state = getState();
+            const zoom = state.ui.zoom;
+            worldX = (clientX - canvasOffset.x) / zoom;
+            worldY = (clientY - canvasOffset.y) / zoom;
+        }
+
+        const x = clientX - worldX * zoomLevel;
+        const y = clientY - worldY * zoomLevel;
+        moveCanvas(x, y);
+
+        return dispatch({ type: SET_ZOOM, zoomLevel });
+    };
+};
+
+export const MOVE_TO = 'MOVE_TO';
+export const moveTo = (x: number, y: number) => {
+    moveCanvas(x, y);
+    return { type: MOVE_TO, payload: { x, y }};
 };
 
 export const SET_INTERACTION_MODE = 'SET_INTERACTION_MODE';
