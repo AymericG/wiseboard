@@ -3,6 +3,8 @@ import { ColorConfigurable, Configurable, DiagramShape } from '@app/wireframes/m
 import { AbstractContext, AbstractControl } from '@app/wireframes/shapes/utils/abstract-control';
 import { CommonTheme } from './_theme';
 
+import { commentHeight, commentWidth } from '@app/constants';
+
 const COLOR_KEY = 'COLOR';
 
 const DEFAULT_APPEARANCE = {};
@@ -26,7 +28,7 @@ export class Comment extends AbstractControl {
     }
 
     public createDefaultShape(shapeId: string): DiagramShape {
-        return DiagramShape.createShape(shapeId, this.identifier(), 170, 150, CONFIGURABLE, DEFAULT_APPEARANCE);
+        return DiagramShape.createShape(shapeId, this.identifier(), commentWidth, commentHeight, CONFIGURABLE, DEFAULT_APPEARANCE);
     }
 
     protected renderInternal(ctx: AbstractContext) {

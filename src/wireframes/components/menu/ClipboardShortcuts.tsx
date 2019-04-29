@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import {
+    addVisual,
     Diagram,
     DiagramItem,
     DiagramItemSet,
@@ -11,18 +12,27 @@ import {
     getSelectedItems,
     pasteItems,
     removeItems,
-    Serializer
+    Serializer,
+    UIStateInStore
 } from '@app/wireframes/model';
 
 import { SerializerContext } from '@app/context';
 import { ClipboardHooks } from '@app/core/react/ClipboardHooks';
 
+import { commentHeight, commentWidth, gridSize } from '@app/constants';
+
 interface ClipboardShortcutsProps {
     // The selected diagram.
     selectedDiagram: Diagram | null;
 
+    x: number;
+    y: number;
+    zoom: number;
+
     // The selected items.
     selectedItems: DiagramItem[];
+
+    addVisual: (diagram: string, renderer: string, x: number, y: number, properties?: object) => any;
 
     // Remove items.
     removeItems: (diagram: Diagram, items: DiagramItem[]) => any;
@@ -42,11 +52,30 @@ interface ClipboardShortcutsState {
 
 const OFFSET = 50;
 
+const WISE_OBJECTS = 'application/wiseObjects';
+const PLAIN_TEXT = 'text/plain';
+
 class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, ClipboardShortcutsState> {
+    private lastClientX = 0;
+    private lastClientY = 0;
+    
     constructor(props: ClipboardShortcutsProps) {
         super(props);
 
         this.state = { offset: 0 };
+    }
+
+    private onMouseMove = (e: MouseEvent) => {
+        this.lastClientX = e.clientX;
+        this.lastClientY = e.clientY;
+    }
+
+    public componentDidMount() {
+        document.addEventListener('mousemove', this.onMouseMove);
+    }
+
+    public componentWillUnmount() {
+        document.removeEventListener('mousemove', this.onMouseMove);
     }
 
     private doCopy = (e: ClipboardEvent, serializer: Serializer, changeIds = false) => {
@@ -69,9 +98,9 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                     text += t + '\n';
                 }
             }
-            e.clipboardData.setData('text/plain', text);
+            e.clipboardData.setData(PLAIN_TEXT, text);
             // set internal
-            e.clipboardData.setData('application/wiseObjects', serializer.serializeSet(set, changeIds));
+            e.clipboardData.setData(WISE_OBJECTS, serializer.serializeSet(set, changeIds));
         }
     }
 
@@ -92,44 +121,82 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
             return;
         }
 
-        let clipboard = e.clipboardData.getData('application/wiseObjects');
-        const lastClipboard = this.state.lastClipboard;
-        let offset = this.state.offset;
+        if (e.clipboardData && e.clipboardData.types.length) {
+            if (e.clipboardData.types.indexOf(WISE_OBJECTS) !== -1) {
+                let clipboard = e.clipboardData.getData(WISE_OBJECTS);
+                const lastClipboard = this.state.lastClipboard;
+                let offset = this.state.offset;
+        
+                if (clipboard === lastClipboard) {
+                    offset += OFFSET;
+        
+                    // generate new ids
+                    const set = serializer.deserializeSet(clipboard);
+                    clipboard = serializer.serializeSet(set, true);
+                    this.setState(s => ({ offset }));
+                } else {
+                    offset = OFFSET;
+                    this.setState(s => ({ offset, lastClipboard: clipboard }));
+                }
+        
+                this.props.pasteItems(selectedDiagram, clipboard!, this.state.offset);
+            } else {
+                if (e.clipboardData.types.indexOf(PLAIN_TEXT) !== -1) {
+                    const clipboardText = e.clipboardData.getData(PLAIN_TEXT);
+                    const { x, y, zoom } = this.props;
+                    // split lines
+                    const lines = clipboardText.replace('\r\n', '\n').split('\n');
 
-        if (clipboard === lastClipboard) {
-            offset += OFFSET;
-
-            // generate new ids
-            const set = serializer.deserializeSet(clipboard);
-            clipboard = serializer.serializeSet(set, true);
-            this.setState(s => ({ offset }));
-        } else {
-            offset = OFFSET;
-            this.setState(s => ({ offset, lastClipboard: clipboard }));
+                    const worldX = (this.lastClientX - x) / zoom;
+                    const worldY = (this.lastClientY - y) / zoom;
+                    let offX = 0;
+                    let offY = 0;
+                    let counter = 0;
+                    for (const line of lines) {
+                        if (!line) { continue; }
+                        if (!!counter) {
+                            if (counter % 4 === 0) {
+                                offX = 0;
+                                offY += commentHeight + gridSize;
+                            } else {
+                                offX += commentWidth + gridSize;
+                            }
+                        }
+                        this.props.addVisual(selectedDiagram.id, 'Comment', worldX + offX, worldY + offY, { 'TEXT': line });
+                        counter++;
+                    }
+                    
+                }
+            }
         }
-
-        this.props.pasteItems(selectedDiagram, clipboard!, this.state.offset);
         e.preventDefault();
     }
 
     public render() {
         return (
             <SerializerContext.Consumer>
-                {serializer => <ClipboardHooks onCopy={(e: ClipboardEvent) => this.doCopy(e, serializer, true)} onCut={(e: ClipboardEvent) => this.doCut(e, serializer)} onPaste={(e: ClipboardEvent) => this.doPaste(e, serializer)} />}
+                {serializer => <ClipboardHooks 
+                    onCopy={(e: ClipboardEvent) => this.doCopy(e, serializer, true)} 
+                    onCut={(e: ClipboardEvent) => this.doCut(e, serializer)} 
+                    onPaste={(e: ClipboardEvent) => this.doPaste(e, serializer)} 
+                />}
             </SerializerContext.Consumer>
         );
     }
 }
 
-const mapStateToProps = (state: EditorStateInStore) => {
+const mapStateToProps = (state: EditorStateInStore & UIStateInStore) => {
     return {
+        x: state.ui.x,
+        y: state.ui.y,
+        zoom: state.ui.zoom,
         selectedDiagram: getDiagram(state),
         selectedItems: getSelectedItems(state)
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    removeItems, pasteItems
+    addVisual, removeItems, pasteItems
 }, dispatch);
 
 export const ClipboardShortcutsContainer = connect(
