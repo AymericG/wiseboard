@@ -67,9 +67,10 @@ export class TextAdorner extends React.Component<TextAdornerProps> implements In
         }
     }
 
-    public onDoubleClick(event: SvgEvent) {
+    public onDoubleClick(event: SvgEvent, next: () => void) {
         if (event.shape && !event.shape.isLocked && this.textareaElement) {
             if (event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT_DISABLED) === true) {
+                next();
                 return;
             }
 

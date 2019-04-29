@@ -34,6 +34,9 @@ export interface NavigationAdornerProps {
     // The interaction service.
     interactionService: InteractionService;
 
+    // Adds a visual.
+    addVisual: (diagram: string, renderer: string, x: number, y: number, properties?: object) => any;
+
     x: number;
     y: number;
     zoom: number;
@@ -62,9 +65,20 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         this.props.interactionService.removeHandler(this);
     }
 
-    public componentDidUpdate() {
-        // 
+    public onDoubleClick(event: SvgEvent, next: () => void) {
+        const { addVisual, selectedDiagram, x, y, zoom } = this.props;
+
+        if (event.shape) {
+            return next();
+        }
+        const e: any = event.event;
+        const worldX = (e.clientX - x) / zoom;
+        const worldY = (e.clientY - y) / zoom;
+
+        // create new postit here.
+        addVisual(selectedDiagram.id, 'Comment', worldX, worldY); // item['shape'], x, y);
     }
+
 
     public onKeyDown(event: SvgEvent, next: () => void) {
         const { interactionMode, moveTo, x, y } = this.props;

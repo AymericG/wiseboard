@@ -12,6 +12,7 @@ import {
 } from '@app/wireframes/components';
 
 import {
+    addVisual,
     changeItemsAppearance,
     Diagram,
     DiagramGroup,
@@ -74,6 +75,9 @@ export interface EditorProps {
 
     // The view size of the editor.
     viewSize: Vec2;
+
+    // Adds a visual.
+    addVisual: (diagram: string, renderer: string, x: number, y: number, properties?: object) => any;
 
     // A function to select a set of items.
     selectItems: (diagram: Diagram, itemIds: string[]) => any;
@@ -199,6 +203,7 @@ class Editor extends React.Component<EditorProps> {
     public render() {
         // tslint:disable:no-shadowed-variable
         const {
+            addVisual,
             changeItemsAppearance,
             interationMode,
             moveTo,
@@ -243,6 +248,7 @@ class Editor extends React.Component<EditorProps> {
                                 <ClipboardShortcutsContainer />
 
                                 <NavigationAdorner
+                                    addVisual={addVisual}
                                     interactionMode={interationMode}
                                     setInteractionMode={setInteractionMode}
                                     // editorContent={this.props.editorContent}
@@ -309,7 +315,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    selectItems, changeItemsAppearance, moveTo, transformItems, setInteractionMode, setZoom
+    addVisual, selectItems, changeItemsAppearance, moveTo, transformItems, setInteractionMode, setZoom
 }, dispatch);
 
 export const EditorContainer = connect(

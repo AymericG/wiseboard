@@ -59,6 +59,10 @@ export class InteractionService {
             this.invokeEvent(event, h => h.onDoubleClick ? h.onDoubleClick.bind(h) : null);
         });
 
+        diagram.dblclick((event: MouseEvent) => {
+            this.invokeEvent(event, h => h.onDoubleClick ? h.onDoubleClick.bind(h) : null);
+        });
+
         diagram.mousemove((event: MouseEvent) => {
             this.onMouseMove(event);
         });
