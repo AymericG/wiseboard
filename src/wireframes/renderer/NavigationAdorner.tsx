@@ -155,7 +155,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
                 next();
                 return;
             }
-            const newZoom = deltaY > 0 ? zoom / 1.05 : zoom * 1.05;
+            const newZoom = deltaY > 0 ? zoom / 1.1 : zoom * 1.1;
             const roundedNewZoom = Math.floor(Math.round(Math.min(maxZoom, Math.max(minZoom, newZoom)) * 100)) / 100;
 
             const worldX = (e.clientX - x) / zoom;
