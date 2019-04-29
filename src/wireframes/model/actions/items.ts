@@ -21,11 +21,25 @@ import {
     ItemsRef
 } from './utils';
 
+export interface IVisual {
+    shapeId: string;
+    renderer: string;
+    x: number;
+    y: number;
+    properties?: object;
+}
+
+
 // tslint:disable:no-shadowed-variable
 
 export const ADD_VISUAL = 'ADD_VISUAL';
 export const addVisual = (diagram: DiagramRef, renderer: string, x: number, y: number, properties?: object, shapeId?: string) => {
     return createDiagramAction(ADD_VISUAL, diagram, { shapeId: shapeId || MathHelper.guid(), renderer, position: { x, y }, properties });
+};
+
+export const ADD_VISUALS = 'ADD_VISUALS';
+export const addVisuals = (diagram: DiagramRef, visuals: IVisual[]) => {
+    return createDiagramAction(ADD_VISUALS, diagram, { visuals });
 };
 
 export const ADD_IMAGE = 'ADD_IMAGE';
@@ -64,6 +78,28 @@ export const pasteItems = (diagram: DiagramRef, json: string, offset = 0) => {
 };
 
 const MAX_IMAGE_SIZE = 300;
+
+function doAddVisual(rendererService: RendererService, rendererName: string, shapeId: string, x: number, y: number, props?: object) {
+    const renderer = rendererService.registeredRenderers[rendererName];
+
+    const shape = renderer.createDefaultShape(shapeId);
+
+    const position =
+        new Vec2(
+            x + shape.transform.size.x * 0.5,
+            y + shape.transform.size.y * 0.5);
+
+    let configured = <DiagramVisual>shape.transformWith(t => t.moveTo(position));
+
+    if (props) {
+        for (let key in props) {
+            if (props.hasOwnProperty(key)) {
+                configured = configured.setAppearance(key, props[key]);
+            }
+        }
+    }
+    return configured;
+}
 
 export function items(rendererService: RendererService, serializer: Serializer): Reducer<EditorState> {
     const reducer: Reducer<EditorState> = (state: EditorState, action: any) => {
@@ -168,29 +204,20 @@ export function items(rendererService: RendererService, serializer: Serializer):
                 });
             case ADD_VISUAL:
                 return state.updateDiagram(action.diagramId, diagram => {
-                    const renderer = rendererService.registeredRenderers[action.renderer];
-
-                    const shape = renderer.createDefaultShape(action.shapeId);
-
-                    const position =
-                        new Vec2(
-                            action.position.x + shape.transform.size.x * 0.5,
-                            action.position.y + shape.transform.size.y * 0.5);
-
-                    let configured = <DiagramVisual>shape.transformWith(t => t.moveTo(position));
-
-                    let properties = action.properties;
-                    if (properties) {
-                        for (let key in properties) {
-                            if (properties.hasOwnProperty(key)) {
-                                configured = configured.setAppearance(key, properties[key]);
-                            }
-                        }
-                    }
-
+                    const configured = doAddVisual(rendererService, action.renderer, action.shapeId, action.position.x, action.position.y, action.properties);
+                    
                     return diagram
                         .addVisual(configured)
                         .selectItems([configured.id]);
+                });
+            case ADD_VISUALS:
+                return state.updateDiagram(action.diagramId, diagram => {
+                    const visuals: DiagramVisual[] = action.visuals.map((x: IVisual) => doAddVisual(rendererService, x.renderer, x.shapeId, x.x, x.y, x.properties));
+                    let d = diagram;
+                    for (const v of visuals) {
+                        d = d.addVisual(v);
+                    }
+                    return d.selectItems(visuals.map(x => x.id));
                 });
             default:
                 return state;

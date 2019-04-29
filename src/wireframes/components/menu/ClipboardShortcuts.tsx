@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import {
-    addVisual,
+    addVisuals,
     Diagram,
     DiagramItem,
     DiagramItemSet,
     EditorStateInStore,
     getDiagram,
     getSelectedItems,
+    IVisual,
     pasteItems,
     removeItems,
     Serializer,
@@ -20,6 +21,7 @@ import { SerializerContext } from '@app/context';
 import { ClipboardHooks } from '@app/core/react/ClipboardHooks';
 
 import { commentHeight, commentWidth, gridSize } from '@app/constants';
+import { MathHelper } from '@app/core';
 
 interface ClipboardShortcutsProps {
     // The selected diagram.
@@ -32,7 +34,7 @@ interface ClipboardShortcutsProps {
     // The selected items.
     selectedItems: DiagramItem[];
 
-    addVisual: (diagram: string, renderer: string, x: number, y: number, properties?: object) => any;
+    addVisuals: (diagram: string, visuals: IVisual[]) => any;
 
     // Remove items.
     removeItems: (diagram: Diagram, items: DiagramItem[]) => any;
@@ -152,6 +154,7 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                     let offX = 0;
                     let offY = 0;
                     let counter = 0;
+                    const visuals: IVisual[] = [];
                     for (const line of lines) {
                         if (!line) { continue; }
                         if (!!counter) {
@@ -162,8 +165,11 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                                 offX += commentWidth + gridSize;
                             }
                         }
-                        this.props.addVisual(selectedDiagram.id, 'Comment', worldX + offX, worldY + offY, { 'TEXT': line });
+                        visuals.push({ shapeId: MathHelper.guid(), renderer: 'Comment', x: worldX + offX, y: worldY + offY, properties: { 'TEXT': line }});
                         counter++;
+                    }
+                    if (visuals.length !== 0) {
+                        this.props.addVisuals(selectedDiagram.id, visuals);
                     }
                     
                 }
@@ -196,7 +202,7 @@ const mapStateToProps = (state: EditorStateInStore & UIStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    addVisual, removeItems, pasteItems
+    addVisuals, removeItems, pasteItems
 }, dispatch);
 
 export const ClipboardShortcutsContainer = connect(
