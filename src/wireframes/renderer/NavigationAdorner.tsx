@@ -67,7 +67,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
     }
 
     public onKeyDown(event: SvgEvent, next: () => void) {
-        const { moveTo, x, y } = this.props;
+        const { interactionMode, moveTo, x, y } = this.props;
         const target: any = event.event.target;
         if (target.type === 'textarea' || target.type === 'input') {
             next();
@@ -76,8 +76,10 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         const keyCode = (event.event as KeyboardEvent).keyCode;
         switch (keyCode) {
             case SPACE:
-                this.isSpaceDown = true;
-                this.props.setInteractionMode(InteractionMode.Drag);
+                if (interactionMode !== InteractionMode.Drag) {
+                    this.isSpaceDown = true;
+                    this.props.setInteractionMode(InteractionMode.Drag);
+                }
                 break;
             case LEFT:
                 moveTo(x + 10, y);

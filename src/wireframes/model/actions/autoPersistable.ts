@@ -10,7 +10,7 @@ export function autoPersistable<T>(reducer: Reducer<T>): Reducer {
     return (state: any, action: any) => {
         const nextState: any = reducer(state, action);
         if (!!nextState && !!nextState.loading && !!nextState.loading.isLoaded) {
-            if (nextState.editor.actions !== state.editor.actions) {
+            if (nextState.editor.presentState !== state.editor.presentState) {
                 const s = nextState;
                 const readToken = s.loading.readToken || 'default';
                 const body = JSON.stringify(s.editor.actions);
