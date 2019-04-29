@@ -51,6 +51,11 @@ export const setInteractionMode = (interactionMode: InteractionMode) => {
     return { type: SET_INTERACTION_MODE, interactionMode };
 };
 
+export const SET_IS_INTERACTING_WITH_ITEM = 'SET_IS_INTERACTING_WITH_ITEM';
+export const setIsInteractingWithItem = (isInteracting: boolean) => {
+    return { type: SET_IS_INTERACTING_WITH_ITEM, isInteracting };
+};
+
 export const SELECT_COLOR_TAB = 'SELECT_COLOR_TAB';
 export const selectColorTab = (tab: string) => {
     return { type: SELECT_COLOR_TAB, tab };
@@ -93,6 +98,8 @@ export function ui(initialState: UIState): Reducer<UIState> {
         switch (action.type) {
             case SET_INTERACTION_MODE:
                 return { ...state, interactionMode: action.interactionMode };
+            case SET_IS_INTERACTING_WITH_ITEM:
+                return { ...state, isInteractingWithItem: action.isInteracting };
             case SET_ZOOM:
                 return { ...state, zoom: action.payload.zoomLevel, x: action.payload.x, y: action.payload.y };
             case MOVE_TO:

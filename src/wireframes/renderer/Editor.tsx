@@ -28,6 +28,7 @@ import {
     RendererService,
     selectItems,
     setInteractionMode,
+    setIsInteractingWithItem,
     setZoom,
     Transform,
     transformItems,
@@ -89,7 +90,8 @@ export interface EditorProps {
     changeItemsAppearance: (diagram: Diagram, visuals: DiagramVisual[], key: string, val: any) => any;
 
     setInteractionMode: (interactionMode: InteractionMode) => void;
-
+    setIsInteractingWithItem: (isInteracting: boolean) => void;
+    
     // A function to transform a set of items.
     transformItems: (diagram: Diagram, items: DiagramItem[], oldBounds: Transform, newBounds: Transform) => any;
 }
@@ -212,6 +214,7 @@ class Editor extends React.Component<EditorProps> {
             selectItems,
             selectedItemsWithLocked,
             setInteractionMode,
+            setIsInteractingWithItem,
             setZoom,
             transformItems,
             x,
@@ -251,7 +254,6 @@ class Editor extends React.Component<EditorProps> {
                                     addVisual={addVisual}
                                     interactionMode={interationMode}
                                     setInteractionMode={setInteractionMode}
-                                    // editorContent={this.props.editorContent}
                                     interactionService={this.interactionService}
                                     selectedDiagram={selectedDiagram}
                                     selectedItems={selectedItemsWithLocked}
@@ -266,6 +268,7 @@ class Editor extends React.Component<EditorProps> {
                                 <TransformAdorner
                                     adorners={this.adornersTransform}
                                     interactionService={this.interactionService}
+                                    setIsInteractingWithItem={setIsInteractingWithItem}
                                     selectedDiagram={selectedDiagram}
                                     selectedItems={selectedItems}
                                     transformItems={transformItems}
@@ -315,7 +318,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    addVisual, selectItems, changeItemsAppearance, moveTo, transformItems, setInteractionMode, setZoom
+    addVisual, selectItems, changeItemsAppearance, moveTo, transformItems, setInteractionMode, setIsInteractingWithItem, setZoom
 }, dispatch);
 
 export const EditorContainer = connect(

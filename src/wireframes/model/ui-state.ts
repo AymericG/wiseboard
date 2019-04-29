@@ -12,6 +12,8 @@ export interface UIState {
     // Indicates if the cursor will select or move the board around.
     interactionMode: InteractionMode;
 
+    isInteractingWithItem: boolean;
+
     // Indicates if the info dialog is open.
     showInfoDialog: boolean;
 
@@ -38,6 +40,7 @@ export const createInitialUIState: () => UIState = () => {
         y: 0,
         zoom: 1,
         selectedTab: 'shapes',
+        isInteractingWithItem: false,
         interactionMode: InteractionMode.Selection,
         showInfoDialog: false,
         showLeftSidebar: true,

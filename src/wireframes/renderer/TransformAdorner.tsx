@@ -47,15 +47,13 @@ export interface TransformAdornerProps {
     // The interaction service.
     interactionService: InteractionService;
 
+    setIsInteractingWithItem: (isInteracting: boolean) => void;
+
     // A function to transform a set of items.
     transformItems: (diagram: Diagram, items: DiagramItem[], oldBounds: Transform, newBounds: Transform) => void;
 }
 
-interface TransformAdornerState {
-    hideToolbar: boolean;
-}
-
-export class TransformAdorner extends React.Component<TransformAdornerProps, TransformAdornerState> implements InteractionHandler {
+export class TransformAdorner extends React.Component<TransformAdornerProps> implements InteractionHandler {
     private renderer: SVGRenderer;
     private transform: Transform;
     private startTransform: Transform;
@@ -72,11 +70,6 @@ export class TransformAdorner extends React.Component<TransformAdornerProps, Tra
     private resizeDragOffset: Vec2;
     private resizeShapes: any[] = [];
     private snapManager = new SnapManager();
-
-    constructor(props: TransformAdornerProps, context: any) {
-        super(props, context);
-        this.state = { hideToolbar: false };
-    }
 
     public componentWillMount() {
         this.renderer = new SVGRenderer();
@@ -171,6 +164,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps, Tra
             return;
         }
 
+
         this.manipulated = false;
 
         if (hitItem === this.moveShape) {
@@ -185,7 +179,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps, Tra
 
         this.dragStart = event.position;
         this.startTransform = this.transform;
-        this.setState({ hideToolbar: true });
+        this.props.setIsInteractingWithItem(true);
     }
 
     private hitTest(point: Vec2) {
@@ -335,7 +329,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps, Tra
         } finally {
             this.manipulationMode = 0;
             this.manipulated = false;
-            this.setState({ hideToolbar: false });
+            this.props.setIsInteractingWithItem(false);
         }
     }
 
