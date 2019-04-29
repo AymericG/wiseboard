@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import {
+    addImage,
     addVisuals,
     Diagram,
     DiagramItem,
@@ -22,6 +23,9 @@ import { ClipboardHooks } from '@app/core/react/ClipboardHooks';
 
 import { commentHeight, commentWidth, gridSize } from '@app/constants';
 import { MathHelper } from '@app/core';
+import { pasteImage } from '@app/core/utils/clipboard-helper';
+import { DiagramRef } from '@app/wireframes/model/actions/utils';
+
 
 interface ClipboardShortcutsProps {
     // The selected diagram.
@@ -34,6 +38,7 @@ interface ClipboardShortcutsProps {
     // The selected items.
     selectedItems: DiagramItem[];
 
+    addImage: (diagram: DiagramRef, source: string, x: number, y: number, w: number, h: number, shapeId?: string) => any;
     addVisuals: (diagram: string, visuals: IVisual[]) => any;
 
     // Remove items.
@@ -117,8 +122,8 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
     }
 
     private doPaste = (e: ClipboardEvent, serializer: Serializer) => {
-        const selectedDiagram = this.props.selectedDiagram;
-
+        const { selectedDiagram, x, y, zoom } = this.props;
+        
         if (!selectedDiagram) {
             return;
         }
@@ -145,7 +150,6 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
             } else {
                 if (e.clipboardData.types.indexOf(PLAIN_TEXT) !== -1) {
                     const clipboardText = e.clipboardData.getData(PLAIN_TEXT);
-                    const { x, y, zoom } = this.props;
                     // split lines
                     const lines = clipboardText.replace('\r\n', '\n').split('\n');
 
@@ -172,7 +176,22 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                         this.props.addVisuals(selectedDiagram.id, visuals);
                     }
                     
-                }
+                } else {
+                    const worldX = (this.lastClientX - x) / zoom;
+                    const worldY = (this.lastClientY - y) / zoom;
+        
+                    const clipboardItems = e.clipboardData.items;
+                    
+                    // tslint:disable-next-line: prefer-for-of
+                    for (let i = 0; i < clipboardItems.length; i++) {
+                        const item = clipboardItems[i];
+                        if (/image/.test(item.type)) {
+                            const file = item.getAsFile();
+                            pasteImage(file, this.props.addImage, this.props.selectedDiagram.id, worldX, worldY);
+                        }
+                    }
+
+                }                
             }
         }
         e.preventDefault();
@@ -202,7 +221,7 @@ const mapStateToProps = (state: EditorStateInStore & UIStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    addVisuals, removeItems, pasteItems
+    addImage, addVisuals, removeItems, pasteItems
 }, dispatch);
 
 export const ClipboardShortcutsContainer = connect(

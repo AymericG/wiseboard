@@ -22,6 +22,8 @@ import {
 
 import { EditorContainer } from '@app/wireframes/renderer/Editor';
 
+import { pasteImage } from '@app/core/utils/clipboard-helper';
+
 export interface EditorViewProps {
     // editorContent: React.RefObject<any>;
 
@@ -82,18 +84,7 @@ const AssetTarget: DropTargetSpec<EditorViewProps> = {
 
                 for (let file of files) {
                     if (file.type.indexOf('image') === 0) {
-                        const reader = new FileReader();
-
-                        reader.onload = (loadedFile: any) => {
-                            const imageSource: string = loadedFile.target.result;
-                            const imageElement = document.createElement('img');
-
-                            imageElement.onload = () => {
-                                props.addImage(props.selectedDiagramId, imageSource, x, y, imageElement.width, imageElement.height);
-                            };
-                            imageElement.src = imageSource;
-                        };
-                        reader.readAsDataURL(file);
+                        pasteImage(file, props.addImage, props.selectedDiagramId, x, y);
                         break;
                     }
                 }
