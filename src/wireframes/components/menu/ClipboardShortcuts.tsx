@@ -62,7 +62,14 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
             this.setState({ offset: OFFSET });
             e.preventDefault();
             // set text
-            // e.clipboardData.setData('text/plain', 'Something');
+            let text = '';
+            for (const visual of set.allVisuals) {
+                const t = visual.appearance.get('TEXT');
+                if (t) { 
+                    text += t + '\n';
+                }
+            }
+            e.clipboardData.setData('text/plain', text);
             // set internal
             e.clipboardData.setData('application/wiseObjects', serializer.serializeSet(set, changeIds));
         }
@@ -91,8 +98,8 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
 
         if (clipboard === lastClipboard) {
             offset += OFFSET;
-            // generate new ids
 
+            // generate new ids
             const set = serializer.deserializeSet(clipboard);
             clipboard = serializer.serializeSet(set, true);
             this.setState(s => ({ offset }));
