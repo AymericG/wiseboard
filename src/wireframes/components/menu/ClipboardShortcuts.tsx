@@ -2,8 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { Shortcut } from '@app/core';
-
 import {
     Diagram,
     DiagramItem,
@@ -17,6 +15,7 @@ import {
 } from '@app/wireframes/model';
 
 import { SerializerContext } from '@app/context';
+import { ClipboardHooks } from '@app/core/react/ClipboardHooks';
 
 interface ClipboardShortcutsProps {
     // The selected diagram.
@@ -35,6 +34,7 @@ interface ClipboardShortcutsProps {
 interface ClipboardShortcutsState {
     // The current clipboard value.
     clipboard?: string;
+    lastClipboard?: string;
 
     // The offset for new items.
     offset: number;
@@ -49,51 +49,66 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
         this.state = { offset: 0 };
     }
 
-    private doCopy = (serializer: Serializer, changeIds = false) => {
+    private doCopy = (e: ClipboardEvent, serializer: Serializer, changeIds = false) => {
         const { selectedDiagram, selectedItems } = this.props;
 
-        if (selectedDiagram) {
+        if (selectedDiagram && !!selectedItems.length) {
             const set =
                 DiagramItemSet.createFromDiagram(
                     selectedItems,
                     selectedDiagram);
 
-            this.setState({ offset: 0, clipboard: serializer.serializeSet(set, changeIds) });
+            
+            this.setState({ offset: OFFSET });
+            e.preventDefault();
+            // set text
+            // e.clipboardData.setData('text/plain', 'Something');
+            // set internal
+            e.clipboardData.setData('application/wiseObjects', serializer.serializeSet(set, changeIds));
         }
     }
 
-    private doCut = (serializer: Serializer) => {
-        const selectedDiagram = this.props.selectedDiagram;
+    private doCut = (e: ClipboardEvent, serializer: Serializer) => {
+        const { selectedDiagram, selectedItems } = this.props;
 
         if (selectedDiagram) {
-            this.doCopy(serializer);
+            this.doCopy(e, serializer);
 
-            this.props.removeItems(selectedDiagram, this.props.selectedItems);
+            this.props.removeItems(selectedDiagram, selectedItems);
         }
     }
 
-    private doPaste = () => {
+    private doPaste = (e: ClipboardEvent, serializer: Serializer) => {
         const selectedDiagram = this.props.selectedDiagram;
 
-        if (selectedDiagram) {
-            this.setState(s => ({ offset: s.offset + OFFSET, clipboard: s.clipboard }));
-
-            this.props.pasteItems(selectedDiagram, this.state.clipboard!, this.state.offset);
+        if (!selectedDiagram) {
+            return;
         }
+
+        let clipboard = e.clipboardData.getData('application/wiseObjects');
+        const lastClipboard = this.state.lastClipboard;
+        let offset = this.state.offset;
+
+        if (clipboard === lastClipboard) {
+            offset += OFFSET;
+            // generate new ids
+
+            const set = serializer.deserializeSet(clipboard);
+            clipboard = serializer.serializeSet(set, true);
+            this.setState(s => ({ offset }));
+        } else {
+            offset = OFFSET;
+            this.setState(s => ({ offset, lastClipboard: clipboard }));
+        }
+
+        this.props.pasteItems(selectedDiagram, clipboard!, this.state.offset);
+        e.preventDefault();
     }
 
     public render() {
-        const canCopy = this.props.selectedItems.length > 0;
-
         return (
             <SerializerContext.Consumer>
-                {serializer =>
-                    <>
-                        <Shortcut disabled={!canCopy} onPressed={() => this.doCopy(serializer, true)} keys='ctrl+c' />
-                        <Shortcut disabled={!canCopy} onPressed={() => this.doCut(serializer)} keys='ctrl+x' />
-                        <Shortcut disabled={!this.state.clipboard} onPressed={this.doPaste} keys='ctrl+v' />
-                    </>
-                }
+                {serializer => <ClipboardHooks onCopy={(e: ClipboardEvent) => this.doCopy(e, serializer, true)} onCut={(e: ClipboardEvent) => this.doCut(e, serializer)} onPaste={(e: ClipboardEvent) => this.doPaste(e, serializer)} />}
             </SerializerContext.Consumer>
         );
     }

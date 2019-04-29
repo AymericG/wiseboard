@@ -95,7 +95,6 @@ export class Serializer {
 
     private static serializeShape(shape: DiagramShape, changeIds: boolean): any {
         const output = { id: changeIds ? MathHelper.guid() : shape.id };
-
         Serializer.serializeRenderer(shape.renderer, output);
         Serializer.serializeTransform(shape.transform, output);
         Serializer.serializeAppearance(shape.appearance, output);

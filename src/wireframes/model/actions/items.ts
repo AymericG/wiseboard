@@ -101,7 +101,6 @@ export function items(rendererService: RendererService, serializer: Serializer):
             case PASTE_ITEMS:
                 return state.updateDiagram(action.diagramId, diagram => {
                     const set = serializer.deserializeSet(action.json);
-
                     diagram = diagram.addItems(set);
 
                     for (let item of set.allVisuals) {
