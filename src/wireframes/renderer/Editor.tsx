@@ -127,6 +127,13 @@ class Editor extends React.Component<EditorProps> {
             return;
         }
 
+        const { x, y, zoom } = this.props;
+
+        // reposition this.diagramTools
+        const newX = - x / zoom;
+        const newY = - y / zoom;
+        
+        this.diagramTools.move(newX, newY);
         const allShapesById: { [id: string]: boolean } = {};
         const allShapes = this.getOrderedShapes();
 
