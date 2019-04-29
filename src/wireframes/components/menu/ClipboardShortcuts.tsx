@@ -59,7 +59,7 @@ interface ClipboardShortcutsState {
 
 const OFFSET = 50;
 
-const WISE_OBJECTS = 'application/wiseObjects';
+const WISE_OBJECTS = 'application/wiseobjects';
 const PLAIN_TEXT = 'text/plain';
 
 class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, ClipboardShortcutsState> {
