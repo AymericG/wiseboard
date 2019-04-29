@@ -95,6 +95,8 @@ ul {
 }
 
 .sidebar-left {
+    z-index: 1;
+    
     & {
         @include flex;
         @include flex-flow(column);
@@ -371,4 +373,10 @@ $sidebar-size: 320px;
 .editor {
     width: 0;
     height: 0;
+}
+
+.editor {
+    textarea.ant-input {
+        max-width: inherit;
+    }
 }
