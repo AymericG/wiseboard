@@ -96,8 +96,8 @@ const mapStateToProps = (state: LoadingStateInStore & UIStateInStore) => {
     const readToken = state.loading.readToken;
 
     const title =  readToken && readToken.length > 0 ?
-        `mydraft.cc - Diagram ${readToken}` :
-        'mydraft.cc - Diagram (unsaved)';
+        `${readToken} - wiseboard` :
+        '(unsaved) - wiseboard';
 
     return { readToken: readToken, title, showInfoDialog: state.ui.showInfoDialog };
 };
