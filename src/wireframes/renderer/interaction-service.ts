@@ -63,9 +63,8 @@ export class InteractionService {
             this.onMouseMove(event);
         });
 
-        diagram.mousedown((event: MouseEvent) => {
+        document.getElementById('editor-view').addEventListener('mousedown', (event: MouseEvent) => {
             this.isDragging = true;
-
             this.invokeEvent(event, h => h.onMouseDown ? h.onMouseDown.bind(h) : null);
         });
 

@@ -6,10 +6,12 @@ import { LoadingStateInStore } from './wireframes/model/loading-state';
 
 import {
     EditorViewContainer,
+    FloatingToolbarContainer,
     HistoryMenuContainer,
     IconsContainer,
     InteractionModeMenuContainer,
     LoadingMenuContainer,
+    MainToolbarContainer,
     ShapesContainer,
     UIMenuContainer
 } from '@app/wireframes/components';
@@ -21,7 +23,8 @@ import {
     toggleLeftSidebar,
     UIStateInStore
 } from '@app/wireframes/model';
-import ReactDOM = require('react-dom');
+
+// import ReactDOM = require('react-dom');
 
 interface AppOwnProps {
     // The read token of the diagram.
@@ -35,16 +38,16 @@ interface AppProps {
     // The selected tabs
     selectedTab: string;
 
-    isLoaded: boolean;
+    // isLoaded: boolean;
 
     // Select a tab.
     selectTab: (key: string) => any;
 
     // Show or hide the left sidebar.
-    toggleLeftSidebar: () =>  any;
+    toggleLeftSidebar: () => any;
 
     // Creates a new diagram.
-    newDiagram: (navigate: boolean) =>  any;
+    newDiagram: (navigate: boolean) => any;
 
     // Load a diagram.
     loadDiagramAsync: (token: string, navigate: boolean) => any;
@@ -53,8 +56,8 @@ interface AppProps {
 const mapStateToProps = (state: UIStateInStore & LoadingStateInStore, props: AppOwnProps) => {
     return {
         selectedTab: state.ui.selectedTab,
-        showLeftSidebar: state.ui.showLeftSidebar,
-        isLoaded: state.loading.isLoaded
+        showLeftSidebar: state.ui.showLeftSidebar
+        // isLoaded: state.loading.isLoaded
     };
 };
 
@@ -66,12 +69,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
 }, dispatch);
 
 class App extends React.PureComponent<AppProps & AppOwnProps> {
-    private editorContent: any;
-
     constructor(props: AppProps & AppOwnProps) {
         super(props);
 
-        this.editorContent = React.createRef();
         props.newDiagram(false);
 
         if (props.token && props.token.length > 0) {
@@ -88,9 +88,9 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
             }
         }
 
-        if (props.isLoaded && !this.props.isLoaded) {
-            this.zoomToCenter();
-        }
+        // if (props.isLoaded && !this.props.isLoaded) {
+        //     this.zoomToCenter();
+        // }
     }
 
     private doSelectTab = (key: string) => {
@@ -101,13 +101,13 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
         this.props.toggleLeftSidebar();
     }
 
-    private zoomToCenter() {
-        const element: any = ReactDOM.findDOMNode(this.editorContent.current);
+    // private zoomToCenter() {
+    //     const element: any = ReactDOM.findDOMNode(this.editorContent.current);
 
-        if (!element) { return; }
-        element.scrollLeft = element.scrollWidth / 2 - element.clientWidth / 2;
-        element.scrollTop = element.scrollHeight / 2 - element.clientHeight / 2;
-    }
+    //     if (!element) { return; }
+    //     element.scrollLeft = element.scrollWidth / 2 - element.clientWidth / 2;
+    //     element.scrollTop = element.scrollHeight / 2 - element.clientHeight / 2;
+    // }
 
     public render() {
         const { selectedTab, showLeftSidebar } = this.props;
@@ -128,27 +128,32 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                             </Tabs.TabPane>
                         </Tabs>
                     </Layout.Sider>
-                    <Layout.Content className='editor-content' ref={this.editorContent}>
-                        <div className='editor-top-right'>
-                            <div className='editor-toolbox'>
-                                <LoadingMenuContainer />
-                            </div>
-                        </div>
 
-                        <EditorViewContainer spacing={40} editorContent={this.editorContent}/>
+                    <div className='editor-main-toolbox'>
+                        <MainToolbarContainer />
+                    </div>
 
-                        <div className='editor-bottom-right'>
-                            <div className='editor-toolbox'>
-                                <InteractionModeMenuContainer />
-                            </div>
-                            <div className='editor-toolbox'>
-                                <HistoryMenuContainer />
-                            </div>
-                            <div className='editor-toolbox'>
-                                <UIMenuContainer />
-                            </div>
+                    <div className='editor-top-right'>
+                        <div className='editor-toolbox'>
+                            <LoadingMenuContainer />
                         </div>
-                    </Layout.Content>
+                    </div>
+
+                    <EditorViewContainer />
+
+                    <FloatingToolbarContainer />
+
+                    <div className='editor-bottom-right'>
+                        <div className='editor-toolbox'>
+                            <InteractionModeMenuContainer />
+                        </div>
+                        <div className='editor-toolbox'>
+                            <HistoryMenuContainer />
+                        </div>
+                        <div className='editor-toolbox'>
+                            <UIMenuContainer />
+                        </div>
+                    </div>
 
                     <Button icon={toggleIcon(showLeftSidebar)}
                         className={toggleClass(showLeftSidebar, 'left')}

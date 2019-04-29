@@ -43,7 +43,7 @@ import { TransformAdorner }     from './TransformAdorner';
 import { gridSize, InteractionMode } from '@app/constants';
 
 export interface EditorProps {
-    editorContent: React.RefObject<any>;
+    // editorContent: React.RefObject<any>;
 
     // The renderer service.
     rendererService: RendererService;
@@ -215,7 +215,7 @@ class Editor extends React.Component<EditorProps> {
         return (
             <>
                 {selectedDiagram &&
-                    <div className='editor' style={{ position: 'relative'/*, width: sizeInPx(w), height: sizeInPx(h)*/ }}>
+                    <div id='editor' className='editor'>
                         <CanvasView onInit={this.initDiagramScope}
                             zoom={zoom}
                             zoomedWidth={zoomedWidth}
@@ -228,7 +228,7 @@ class Editor extends React.Component<EditorProps> {
                                 <NavigationAdorner
                                     interactionMode={interationMode}
                                     setInteractionMode={setInteractionMode}
-                                    editorContent={this.props.editorContent}
+                                    // editorContent={this.props.editorContent}
                                     interactionService={this.interactionService}
                                     selectedDiagram={selectedDiagram}
                                     selectedItems={selectedItemsWithLocked}

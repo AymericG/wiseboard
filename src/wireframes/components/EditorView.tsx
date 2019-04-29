@@ -6,7 +6,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { NativeTypes } from 'react-dnd-html5-backend';
 
-import { sizeInPx } from '@app/core';
+// import { sizeInPx } from '@app/core';
 
 import { RendererContext } from '@app/context';
 
@@ -16,26 +16,17 @@ import {
     addVisual,
     EditorStateInStore,
     getDiagramId,
-    getEditor,
+    // getEditor,
     UIStateInStore
 } from '@app/wireframes/model';
 
 import { EditorContainer } from '@app/wireframes/renderer/Editor';
 
 export interface EditorViewProps {
-    editorContent: React.RefObject<any>;
-
-    // The width of the canvas.
-    zoomedWidth: number;
-
-    // The height of the canvas.
-    zoomedHeight: number;
+    // editorContent: React.RefObject<any>;
 
     // The zoom value of the canvas.
     zoom: number;
-
-    // The spacing.
-    spacing: number;
 
     // The drop target.
     connectDropTarget?: any;
@@ -62,9 +53,10 @@ const AssetTarget: DropTargetSpec<EditorViewProps> = {
         const offset = monitor.getSourceClientOffset() || monitor.getClientOffset()!;
 
         const componentRect = (findDOMNode(component!) as HTMLElement)!.getBoundingClientRect();
+        const editorRect = document.getElementById('editor').getBoundingClientRect();
 
-        let x = (offset.x - props.spacing - componentRect.left) / props.zoom;
-        let y = (offset.y - props.spacing - componentRect.top) / props.zoom;
+        let x = (offset.x - componentRect.left - editorRect.left) / props.zoom;
+        let y = (offset.y - componentRect.top - editorRect.top) / props.zoom;
 
         const item: any = monitor.getItem();
 
@@ -133,23 +125,11 @@ const EditorViewConnect: DropTargetCollector<any> = (connector, monitor) => {
 ], AssetTarget, EditorViewConnect)
 class EditorView extends React.Component<EditorViewProps> {
     public render() {
-        const calculateStyle = () => {
-            const zoomedOuterWidth = 2 * this.props.spacing + this.props.zoomedWidth;
-            const zoomedOuterHeight = 2 * this.props.spacing + this.props.zoomedHeight;
-
-            const w = sizeInPx(zoomedOuterWidth);
-            const h = sizeInPx(zoomedOuterHeight);
-
-            const padding = sizeInPx(this.props.spacing);
-
-            return { width: w, height: h, padding, margin: 'auto' };
-        };
-
         return this.props.connectDropTarget(
-            <div className='editor-view' style={calculateStyle()}>
+            <div id='editor-view' className='editor-view'>
                 <RendererContext.Consumer>
                     {renderer =>
-                        <EditorContainer rendererService={renderer} editorContent={this.props.editorContent} />
+                        <EditorContainer rendererService={renderer} />
                     }
                 </RendererContext.Consumer>
 
@@ -159,12 +139,8 @@ class EditorView extends React.Component<EditorViewProps> {
 }
 
 const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
-    const editor = getEditor(state);
-
     return {
         selectedDiagramId: getDiagramId(state),
-        zoomedWidth: editor.size.x * state.ui.zoom,
-        zoomedHeight: editor.size.y * state.ui.zoom,
         zoom: state.ui.zoom
     };
 };

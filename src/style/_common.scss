@@ -237,12 +237,31 @@ $sidebar-size: 320px;
     z-index: 1;
 }
 
+.editor-view {
+    position: fixed;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+.editor-main-toolbox {
+    position: absolute;
+    left: 1rem;
+    z-index: 1;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+ }
+
 .editor-floating-toolbox {
-    display: table;
+    display: flex;
     position: absolute;
     top: 1rem;
     left: 1rem;
     transform: translate(-50%);
+}
+
+.editor-floating-toolbox, .editor-main-toolbox {
     background-color: #293845;
     padding: .25rem;
 
@@ -264,13 +283,13 @@ $sidebar-size: 320px;
     }
 }
 
-.editor-floating-toolbox, .editor-toolbox {
+.editor-floating-toolbox, .editor-toolbox, .editor-main-toolbox {
     border-radius: 4px;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
 }
 
 .editor-toolbox-group {
-    display: inline-block;
+    display: flex;
     margin-left: 1rem;
 
     .menu-item {
@@ -330,14 +349,6 @@ $sidebar-size: 320px;
     border-color: #efefef;
 }
 
-.editor-content::-webkit-scrollbar {
-    display: none;
-}
-      
-.editor-content::-webkit-scrollbar-button {
-    display: none;
-}
-
 .key {
     font-size: .7rem;
     font-weight: bold;
@@ -355,4 +366,9 @@ $sidebar-size: 320px;
 .editor-toolbox button.menu-item.selected {
     background-color: $color-brand-primary;
     color: $color-dark-foreground;
+}
+
+.editor {
+    width: 0;
+    height: 0;
 }

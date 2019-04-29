@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ReactDOM = require('react-dom');
+// import ReactDOM = require('react-dom');
 
 import { InteractionMode, maxZoom, minZoom } from '@app/constants';
 
@@ -17,7 +17,7 @@ import {
 const SPACE = 32;
 
 export interface NavigationAdornerProps {
-    editorContent: React.RefObject<any>;
+    // editorContent: React.RefObject<any>;
 
     interactionMode: InteractionMode;
 
@@ -44,8 +44,8 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
     private dragStartY: number;
     
     private isSpaceDown: boolean;
-    private scrollLeftStart: number;
-    private scrollTopStart: number;
+    private editorStartX: number;
+    private editorStartY: number;
     
     public componentDidMount() {
         this.props.interactionService.addHandler(this);
@@ -92,9 +92,9 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         this.dragStartX = (event.event as MouseEvent).pageX;
         this.dragStartY = (event.event as MouseEvent).pageY;
         
-        const element: any = ReactDOM.findDOMNode(this.props.editorContent.current);    
-        this.scrollLeftStart = element.scrollLeft;
-        this.scrollTopStart = element.scrollTop;
+        const editor: any = document.getElementById('editor');    
+        this.editorStartX = parseInt((editor.style.left || '0px').replace('px', ''), 10);
+        this.editorStartY = parseInt((editor.style.top || '0px').replace('px', ''), 10);
     }
 
     public onMouseWheel(event: SvgEvent, next: () => void) {
@@ -107,10 +107,10 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         const newZoom = delta > 0 ? zoom / 1.05 : zoom * 1.05;
         const roundedNewZoom = Math.floor(Math.round(Math.min(maxZoom, Math.max(minZoom, newZoom)) * 100)) / 100;
         setZoom(roundedNewZoom);
-
-        // set scroll
-        const element: any = ReactDOM.findDOMNode(this.props.editorContent.current);    
         
+        // set scroll
+        const element: any = document.getElementById('editor');
+
         const canvasXBeforeZoom = (e.clientX + element.scrollLeft) / zoom;
         const canvasYBeforeZoom = (e.clientY + element.scrollTop) / zoom;
 
@@ -125,9 +125,9 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         if ((this.props.interactionMode !== InteractionMode.Drag && !this.isSpaceDown) || !this.dragStartX) {
             return next();
         }
-        const element: any = ReactDOM.findDOMNode(this.props.editorContent.current);    
-        element.scrollLeft = this.scrollLeftStart + this.dragStartX - (event.event as MouseEvent).pageX;
-        element.scrollTop = this.scrollTopStart + this.dragStartY - (event.event as MouseEvent).pageY;
+        const element: any = document.getElementById('editor');    
+        element.style.left = (this.editorStartX + (event.event as MouseEvent).pageX - this.dragStartX) + 'px';
+        element.style.top = (this.editorStartY + (event.event as MouseEvent).pageY - this.dragStartY) + 'px';
     }
 
     public onMouseUp(event: SvgEvent, next: () => void) {
