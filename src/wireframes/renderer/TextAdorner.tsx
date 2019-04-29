@@ -81,14 +81,17 @@ export class TextAdorner extends React.Component<TextAdornerProps> implements In
             const x = sizeInPx(zoom * (transform.position.x - 0.5 * transform.size.x) - 2);
             const y = sizeInPx(zoom * (transform.position.y - 0.5 * transform.size.y) - 2);
 
-            const w = sizeInPx(zoom * (Math.max(transform.size.x, MIN_WIDTH)) + 4);
-            const h = sizeInPx(zoom * (Math.max(transform.size.y, MIN_HEIGHT)) + 4);
+            const w = sizeInPx((Math.max(transform.size.x, MIN_WIDTH)) + 4);
+            const h = sizeInPx((Math.max(transform.size.y, MIN_HEIGHT)) + 4);
 
             this.textareaElement.value = event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '';
             this.textareaElement.style.top = y;
             this.textareaElement.style.left = x;
             this.textareaElement.style.width = w;
             this.textareaElement.style.height = h;
+            this.textareaElement.style.transform = 'scale(' + (zoom) + ')';
+            this.textareaElement.style.transformOrigin = 'top left';
+            
             this.textareaElement.style.resize = 'none';
             this.textareaElement.style.display = 'block';
             this.textareaElement.style.position = 'absolute';
