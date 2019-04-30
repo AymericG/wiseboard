@@ -51,15 +51,22 @@ export class Serializer {
     public serializeSet(set: DiagramItemSet, changeIds: boolean): string {
         const output: any = { visuals: [], groups: [] };
 
+        const idMap: any = {};
         for (let visual of set.allVisuals) {
             const shape = <DiagramShape>visual;
-            const json = Serializer.serializeShape(shape, changeIds);
+            let id: string = shape.id;
+            if (changeIds) {
+                const newId = MathHelper.guid();
+                idMap[shape.id] = newId;
+                id = newId;
+            }
+            const json = Serializer.serializeShape(shape, id);
 
             output.visuals.push(json);
         }
 
         for (let group of set.allGroups) {
-            const json = Serializer.serializeGroup(group, changeIds);
+            const json = Serializer.serializeGroup(group, changeIds, idMap);
 
             output.groups.push(json);
         }
@@ -73,9 +80,20 @@ export class Serializer {
             Serializer.deserializeRotation(input));
     }
 
-    private static serializeGroup(group: DiagramGroup, changeIds: boolean) {
+    private static serializeGroup(group: DiagramGroup, changeIds: boolean, idMap: any) {
         const output = { id: changeIds ? MathHelper.guid() : group.id };
 
+        // replace changed ids.
+        const ids: string[] = [];
+        for (let i = 0; i < group.childIds.size; i++) {
+            const oldId = group.childIds[i];
+            if (idMap[oldId]) {
+                ids.push(idMap[oldId]);
+            } else {
+                ids.push(oldId);
+            }
+        }
+        group = group.removeItems(...group.childIds.toArray()).addItems(...ids) as DiagramGroup;
         Serializer.serializeChildIds(group.childIds, output);
         Serializer.serializeRotation(group.rotation, output);
 
@@ -93,8 +111,8 @@ export class Serializer {
         return shape;
     }
 
-    private static serializeShape(shape: DiagramShape, changeIds: boolean): any {
-        const output = { id: changeIds ? MathHelper.guid() : shape.id };
+    private static serializeShape(shape: DiagramShape, id: string): any {
+        const output = { id };
         Serializer.serializeRenderer(shape.renderer, output);
         Serializer.serializeTransform(shape.transform, output);
         Serializer.serializeAppearance(shape.appearance, output);

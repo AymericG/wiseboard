@@ -7,6 +7,10 @@ body {
     color: #000;
 }
 
+* {
+    user-select: none;
+}
+
 @font-face {
     font-family: 'Gennaro Palmieri Sharpie 2016';
     src: url('style/GennaroPalmieriSharpie2016.woff2') format('woff2'),

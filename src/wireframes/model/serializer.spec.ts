@@ -43,7 +43,7 @@ describe('Serializer', () => {
         renderers.addRenderer(checkbox);
     });
 
-    it('should serialize and deserialize', () => {
+    it('should serialize and deserialize with different ids', () => {
         const serializer = new Serializer(renderers);
         const groupId = MathHelper.guid();
 
@@ -56,7 +56,7 @@ describe('Serializer', () => {
 
         const oldSet = DiagramItemSet.createFromDiagram([oldDiagram.items.last.id], oldDiagram) !;
 
-        const json = serializer.serializeSet(oldSet, false);
+        const json = serializer.serializeSet(oldSet, true);
 
         const newSet = serializer.deserializeSet(json);
         const newShape1 = <DiagramShape>newSet.allVisuals[0];
@@ -70,8 +70,8 @@ describe('Serializer', () => {
 
         const group = newSet.allGroups[0];
 
-        expect(group.childIds.get(0)).toBe(newShape1.id);
-        expect(group.childIds.get(1)).toBe(newShape2.id);
+        expect(group.childIds.get(0)).not.toBe(newShape1.id);
+        expect(group.childIds.get(1)).not.toBe(newShape2.id);
     });
 
     function compareShapes(newShape: DiagramShape, originalShape: DiagramShape) {

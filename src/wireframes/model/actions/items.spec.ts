@@ -183,17 +183,18 @@ describe('ItemsReducer', () => {
     it('should paste json and add group and items', () => {
         const serializer = new Serializer(rendererService);
 
-        const json = serializer.serializeSet(DiagramItemSet.createFromDiagram(diagram.rootIds.toArray(), diagram)!, false);
+        const json = serializer.serializeSet(DiagramItemSet.createFromDiagram(diagram.rootIds.toArray(), diagram)!, true);
 
         const action = pasteItems(diagram, json);
         const state_1 = EditorState.empty().addDiagram(diagram);
+        
         const state_2 = reducer(state_1, action);
-
+        
         const newDiagram = state_2.diagrams.last;
 
         expect(newDiagram.items.size).toBe(8);
-        expect(newDiagram.rootIds.size).toBe(4);
-        expect(newDiagram.selectedItemIds.size).toBe(2);
+        expect(newDiagram.rootIds.size).toBe(6); // was 4
+        expect(newDiagram.selectedItemIds.size).toBe(4); // was 2
     });
 
     it('should not throw when pasting invalid json to diagram', () => {
