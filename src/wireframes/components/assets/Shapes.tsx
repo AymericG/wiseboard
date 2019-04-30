@@ -15,11 +15,18 @@ import {
     getDiagramId,
     getFilteredShapes,
     getShapesFilter,
-    ShapeInfo} from '@app/wireframes/model';
+    ShapeInfo,
+    UIStateInStore} from '@app/wireframes/model';
 
 import { ShapeImage } from './ShapeImage';
 
+import { commentHeight, commentWidth } from '@app/constants';
+
 interface ShapesProps {
+    x: number;
+    y: number;
+    zoom: number;
+
     // The filtered shapes.
     shapesFiltered: ShapeInfo[];
 
@@ -33,15 +40,24 @@ interface ShapesProps {
     filterShapes: (value: string) => any;
 
     // Adds an visual.
-    addVisualToPosition: (diagram: string, renderer: string) => any;
+    addVisualToPosition: (diagram: string, renderer: string, x: number, y: number, zoom: number) => any;
 }
 
-const addVisualToPosition = (diagram: string, renderer: string) => {
-    return addVisual(diagram, renderer, 100, 100);
+const addVisualToPosition = (diagram: string, renderer: string, offsetX: number, offsetY: number, zoom: number) => {
+
+    const editorView = document.getElementById('editor-view').getBoundingClientRect();
+
+    const worldX = ((editorView.width / 2 - commentWidth / 2) - offsetX) / zoom;
+    const worldY = ((editorView.height / 2 - commentHeight / 2) - offsetY) / zoom;
+
+    return addVisual(diagram, renderer, worldX, worldY);
 };
 
-const mapStateToProps = (state: AssetsStateInStore & EditorStateInStore) => {
+const mapStateToProps = (state: AssetsStateInStore & EditorStateInStore & UIStateInStore) => {
     return {
+        x: state.ui.x,
+        y: state.ui.y,
+        zoom: state.ui.zoom,
         selectedDiagramId: getDiagramId(state),
         shapesFiltered: getFilteredShapes(state),
         shapesFilter: getShapesFilter(state)
@@ -58,7 +74,8 @@ class Shapes extends React.PureComponent<ShapesProps> {
             const diagramId = this.props.selectedDiagramId;
 
             if (diagramId) {
-                this.props.addVisualToPosition(diagramId, shape.name);
+                const { x, y, zoom } = this.props;
+                this.props.addVisualToPosition(diagramId, shape.name, x, y, zoom);
             }
         };
 
