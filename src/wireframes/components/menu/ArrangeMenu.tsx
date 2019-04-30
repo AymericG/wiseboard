@@ -11,15 +11,21 @@ import {
     Diagram,
     DiagramGroup,
     DiagramItem,
+    DiagramItemSet,
     EditorStateInStore,
     getDiagram,
     getSelectedGroups,
     getSelectedItems,
     groupItems,
+    pasteItems,
     removeItems,
     selectItems,
-    ungroupItems
+    Serializer,
+    ungroupItems    
 } from '@app/wireframes/model';
+
+import { CLONE_OFFSET } from '@app/constants';
+import { SerializerContext } from '@app/context';
 
 interface ArrangeMenuProps {
     // Indicates if items can be grouped.
@@ -53,6 +59,9 @@ interface ArrangeMenuProps {
 
     // Selcts items.
     selectItems: (diagram: Diagram, itemsIds: string[]) => any;
+
+    pasteItems: (diagram: Diagram, json: string, offset?: number) => any;
+
 }
 
 class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
@@ -89,6 +98,13 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
         }
     }
 
+    private doClone = (serializer: Serializer) => {
+        const { selectedDiagram, selectedItems } = this.props;
+        const set = DiagramItemSet.createFromDiagram(selectedItems, selectedDiagram);
+        const clipboard = serializer.serializeSet(set, true);
+        this.props.pasteItems(selectedDiagram, clipboard!, CLONE_OFFSET);
+    }
+
     public render() {
         const { canGroup, canRemove, canUngroup, canUnselect } = this.props;
 
@@ -113,6 +129,15 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
                 </Tooltip>}
 
                 {canUngroup && <Shortcut disabled={!canUngroup} onPressed={this.doUngroup} keys='ctrl+shift+g' />}
+
+                <SerializerContext.Consumer>
+                    {serializer => <Tooltip title='Clone'>
+                        <Button className='menu-item'
+                            onClick={() => this.doClone(serializer)}>
+                            <i className='fa fa-clone' />
+                        </Button>
+                    </Tooltip>}
+                </SerializerContext.Consumer>
 
                 {canRemove && <Tooltip title={withShortcut('Delete selected items', ['Del'])}>
                     <Button className='menu-item'
@@ -149,7 +174,7 @@ const mapStateToProps = (state: EditorStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    groupItems, removeItems, ungroupItems, selectItems
+    groupItems, pasteItems, removeItems, ungroupItems, selectItems
 }, dispatch);
 
 export const ArrangeMenuContainer = connect(

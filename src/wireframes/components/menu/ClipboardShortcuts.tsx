@@ -21,7 +21,7 @@ import {
 import { SerializerContext } from '@app/context';
 import { ClipboardHooks } from '@app/core/react/ClipboardHooks';
 
-import { commentHeight, commentWidth, gridSize } from '@app/constants';
+import { CLONE_OFFSET, commentHeight, commentWidth, gridSize } from '@app/constants';
 import { MathHelper } from '@app/core';
 import { pasteImage } from '@app/core/utils/clipboard-helper';
 import { DiagramRef } from '@app/wireframes/model/actions/utils';
@@ -44,7 +44,6 @@ interface ClipboardShortcutsProps {
     // Remove items.
     removeItems: (diagram: Diagram, items: DiagramItem[]) => any;
 
-    // Ungroup items.
     pasteItems: (diagram: Diagram, json: string, offset?: number) => any;
 }
 
@@ -56,8 +55,6 @@ interface ClipboardShortcutsState {
     // The offset for new items.
     offset: number;
 }
-
-const OFFSET = 50;
 
 const WISE_OBJECTS = 'application/wiseobjects';
 const PLAIN_TEXT = 'text/plain';
@@ -95,7 +92,7 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                     selectedDiagram);
 
             
-            this.setState({ offset: OFFSET });
+            this.setState({ offset: CLONE_OFFSET });
             e.preventDefault();
             // set text
             let text = '';
@@ -135,14 +132,14 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                 let offset = this.state.offset;
         
                 if (clipboard === lastClipboard) {
-                    offset += OFFSET;
+                    offset += CLONE_OFFSET;
         
                     // generate new ids
                     const set = serializer.deserializeSet(clipboard);
                     clipboard = serializer.serializeSet(set, true);
                     this.setState(s => ({ offset }));
                 } else {
-                    offset = OFFSET;
+                    offset = CLONE_OFFSET;
                     this.setState(s => ({ offset, lastClipboard: clipboard }));
                 }
         
