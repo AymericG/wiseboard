@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import ReactDOM = require('react-dom');
 
-import { InteractionMode, maxZoom, minZoom } from '@app/constants';
+import { InteractionMode, maxZoom, minZoom, ShapeType } from '@app/constants';
 
 import {
     Diagram,
@@ -76,8 +76,25 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         const worldY = (e.clientY - y) / zoom;
 
         // create new postit here.
-        addVisual(selectedDiagram.id, 'Comment', worldX, worldY); // item['shape'], x, y);
+        addVisual(selectedDiagram.id, ShapeType.Comment, worldX, worldY);
     }
+
+    debounceTimeout: number;
+    debounceX: number;
+    debounceY: number;
+    
+    private debounceMove = (wait: number) => {  
+        const later = () => {
+            this.debounceTimeout = null;
+            this.props.moveTo(this.debounceX, this.debounceY);
+            this.debounceX = null;
+            this.debounceY = null;
+        };
+
+        clearTimeout(this.debounceTimeout);
+        this.debounceTimeout = setTimeout(later, wait);
+    }
+
 
 
     public onKeyDown(event: SvgEvent, next: () => void) {
@@ -147,7 +164,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         const deltaY = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
         const deltaX = e.deltaX > 0 ? 1 : e.deltaX < 0 ? -1 : 0;
 
-        const { moveTo, setZoom, x, y, zoom } = this.props;
+        const { setZoom, x, y, zoom } = this.props;
 
         // zoom
         if (e.ctrlKey) {
@@ -167,7 +184,11 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
 
         // pan
         const STEP = 50;
-        moveTo(x - STEP * deltaX, y - STEP * deltaY);
+        this.debounceX = (this.debounceX == null ? x : this.debounceX) - STEP * deltaX;
+        this.debounceY = (this.debounceY == null ? y : this.debounceY) - STEP * deltaY;
+        const editor = document.getElementById('editor');
+        editor.style.transform = 'translate(' + this.debounceX + 'px, ' + this.debounceY + 'px'; 
+        this.debounceMove(100);
     }
 
     public onMouseDrag(event: SvgEvent, next: () => void) {
@@ -176,7 +197,8 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         }
         const x = this.editorStartX + (event.event as MouseEvent).pageX - this.dragStartX;
         const y = this.editorStartY + (event.event as MouseEvent).pageY - this.dragStartY;
-        this.props.moveTo(x, y);
+        const editor = document.getElementById('editor');
+        editor.style.transform = 'translate(' + x + 'px, ' + y + 'px'; 
     }
 
 
@@ -185,7 +207,10 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
             return next();
         }
 
-        // TODO: save scrollLeft and scrollTop to state (this.props.moveBoard)
+        const x = this.editorStartX + (event.event as MouseEvent).pageX - this.dragStartX;
+        const y = this.editorStartY + (event.event as MouseEvent).pageY - this.dragStartY;
+
+        this.props.moveTo(x, y);
         this.dragStartX = null;
         this.dragStartY = null;
     }

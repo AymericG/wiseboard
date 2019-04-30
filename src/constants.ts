@@ -11,3 +11,7 @@ export const maxZoom = 2;
 
 export const commentWidth = 170;
 export const commentHeight = 150;
+
+export namespace ShapeType {
+    export const Comment = 'Comment';
+}
