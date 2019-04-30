@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { createBrowserHistory } from 'history';
+import { createHashHistory } from 'history';
 import * as React from 'react';
 import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -61,7 +61,7 @@ const undoableReducer = Reducers.undoable(editorReducer,
     ]
 );
 
-const history = createBrowserHistory();
+const history = createHashHistory();
 
 const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose;
 
