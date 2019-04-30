@@ -298,6 +298,7 @@ class Editor extends React.Component<EditorProps> {
                                     startEditing={startEditing}
                                     stopEditing={stopEditing}
                                     isEditingText={isEditingText}
+                                    selectItems={selectItems}
                                     zoom={zoom} />
                                 
 

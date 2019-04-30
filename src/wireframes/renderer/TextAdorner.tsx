@@ -40,6 +40,8 @@ export interface TextAdornerProps {
 
     // A function to change the appearance of a visual.
     changeItemsAppearance: (diagram: Diagram, visuals: DiagramVisual[], key: string, val: any) => any;
+    selectItems: (diagram: Diagram, itemIds: string[]) => any;
+
 }
 
 interface TextAdornerState {
@@ -122,6 +124,7 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
             return;
         }
         this.setState({ text: event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '' });
+        this.props.selectItems(this.props.selectedDiagram, [event.shape.id]);
         this.props.startEditing();
         event.event.stopPropagation();
     }
