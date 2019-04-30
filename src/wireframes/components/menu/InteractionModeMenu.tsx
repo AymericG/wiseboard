@@ -27,10 +27,19 @@ class InteractionModeMenu extends React.PureComponent<InteractionModeMenuProps> 
         this.props.setInteractionMode(InteractionMode.Drag);
     }
 
+    public componentWillReceiveProps(nextProps: InteractionModeMenuProps) {
+        const { interactionMode } = this.props;
+        if (interactionMode !== nextProps.interactionMode) {
+            const cursor = nextProps.interactionMode === InteractionMode.Drag ? 'move' : 'default';
+            document.body.setAttribute('data-cursor', cursor);
+            document.body.style.cursor = cursor;
+        }
+    }
+    
     public render() {
         const { interactionMode } = this.props;
 
-        let leftButtonClassName = 'menu-item right-border';
+        let leftButtonClassName = 'menu-item';
         let rightButtonClassName = 'menu-item';
 
         if (interactionMode === InteractionMode.Selection) {
@@ -40,14 +49,14 @@ class InteractionModeMenu extends React.PureComponent<InteractionModeMenuProps> 
         }
         return (
             <>
-                <Tooltip title='Select objects'>
+                <Tooltip title='Select objects' placement='right'>
                     <Button className={leftButtonClassName}
                         onClick={this.setSelectionMode}>
                         <Icon type='gateway' />
                     </Button>
                 </Tooltip>
 
-                <Tooltip title={withShortcut('Move the board', ['Space'])}>
+                <Tooltip title={withShortcut('Move the board', ['Space'])} placement='right'>
                     <Button className={rightButtonClassName}
                         onClick={this.setDragMode}>
                         <Icon type='fullscreen' />

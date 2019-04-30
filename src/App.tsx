@@ -156,7 +156,12 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                     </Layout.Sider>
 
                     <div className='editor-main-toolbox'>
-                        <MainToolbarContainer />
+                        <div className='editor-toolbox'>
+                            <InteractionModeMenuContainer />
+                        </div>
+                        <div className='editor-toolbox'>
+                            <MainToolbarContainer />
+                        </div>
                     </div>
 
                     <div className='editor-top-right'>
@@ -170,9 +175,6 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                     <FloatingToolbarContainer />
 
                     <div className='editor-bottom-right'>
-                        <div className='editor-toolbox'>
-                            <InteractionModeMenuContainer />
-                        </div>
                         <div className='editor-toolbox'>
                             <HistoryMenuContainer />
                         </div>

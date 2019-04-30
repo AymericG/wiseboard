@@ -207,7 +207,7 @@ export class InteractionService {
 
             document.body.style.cursor = 'n-resize';
         } else {
-            document.body.style.cursor = 'default';
+            document.body.style.cursor = document.body.getAttribute('data-cursor') || 'default';
         }
     }
 }
