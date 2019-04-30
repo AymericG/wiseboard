@@ -34,14 +34,28 @@ export interface TextAdornerProps {
     // The interaction service.
     interactionService: InteractionService;
 
+    isEditingText: boolean;
+    startEditing: () => any;
+    stopEditing: () => any;
+
     // A function to change the appearance of a visual.
     changeItemsAppearance: (diagram: Diagram, visuals: DiagramVisual[], key: string, val: any) => any;
 }
 
-export class TextAdorner extends React.Component<TextAdornerProps> implements InteractionHandler {
-    private readonly style = { display: 'none '};
-    private selectedShape: DiagramShape | null = null;
-    private textareaElement: HTMLTextAreaElement;
+interface TextAdornerState {
+    text: string;
+}
+
+export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerState> implements InteractionHandler {
+    private editingStyle: object;
+    private textArea: React.RefObject<any>;
+
+    constructor(props: TextAdornerProps, context: any) {
+        super(props, context);
+
+        this.textArea = React.createRef();
+        this.state = { text: '' };
+    }
 
     public componentDidMount() {
         this.props.interactionService.addHandler(this);
@@ -56,27 +70,13 @@ export class TextAdorner extends React.Component<TextAdornerProps> implements In
     }
 
     public componentWillReceiveProps(nextProps: TextAdornerProps) {
-        if (this.props.selectedItems !== nextProps.selectedItems) {
-            this.updateText();
-        }
-    }
+        const { selectedItems, isEditingText, zoom } = this.props;
+        if (isEditingText !== nextProps.isEditingText && nextProps.isEditingText && selectedItems.length) {
+            
+            // limitation. Only edit first item in selection?
+            const editingShape = nextProps.selectedItems[0] as DiagramShape;
 
-    private handleMouseDown = (e: MouseEvent) => {
-        if (e.target !== this.textareaElement) {
-            this.hide();
-        }
-    }
-
-    public onDoubleClick(event: SvgEvent, next: () => void) {
-        if (event.shape && !event.shape.isLocked && this.textareaElement) {
-            if (event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT_DISABLED) === true) {
-                next();
-                return;
-            }
-
-            const zoom = this.props.zoom;
-
-            const transform = event.shape.transform;
+            const transform = editingShape.transform;
 
             const x = sizeInPx(zoom * (transform.position.x - 0.5 * transform.size.x) - 2);
             const y = sizeInPx(zoom * (transform.position.y - 0.5 * transform.size.y) - 2);
@@ -84,27 +84,46 @@ export class TextAdorner extends React.Component<TextAdornerProps> implements In
             const w = sizeInPx((Math.max(transform.size.x, MIN_WIDTH)) + 4);
             const h = sizeInPx((Math.max(transform.size.y, MIN_HEIGHT)) + 4);
 
-            this.textareaElement.value = event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '';
-            this.textareaElement.style.top = y;
-            this.textareaElement.style.left = x;
-            this.textareaElement.style.width = w;
-            this.textareaElement.style.height = h;
-            this.textareaElement.style.transform = 'scale(' + (zoom) + ')';
-            this.textareaElement.style.transformOrigin = 'top left';
             
-            this.textareaElement.style.resize = 'none';
-            this.textareaElement.style.display = 'block';
-            this.textareaElement.style.position = 'absolute';
-            this.textareaElement.focus();
+            this.editingStyle = {
+                top: y,
+                left: x,
+                width: w,
+                height: h,
+                transform: 'scale(' + (nextProps.zoom) + ')',
+                transformOrigin: 'top left',
+                resize: 'none',
+                display: 'block',
+                position: 'absolute'
+            };
 
             this.props.interactionService.hideAdorners();
+        }
 
-            this.selectedShape = event.shape;
+        if (selectedItems !== nextProps.selectedItems && isEditingText) {
+            this.updateText();
         }
     }
 
-    private doInitialize = (textarea: HTMLTextAreaElement) => {
-        this.textareaElement = textarea;
+    private handleMouseDown = (e: MouseEvent) => {
+        if (e.target !== this.textArea.current) {
+            this.hide();
+        }
+    }
+
+    public onDoubleClick(event: SvgEvent, next: () => void) {
+        if (!event.shape || event.shape.isLocked) {
+            next();
+            return;
+        }
+
+        if (event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT_DISABLED) === true) {
+            next();
+            return;
+        }
+        this.setState({ text: event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '' });
+        this.props.startEditing();
+        event.event.stopPropagation();
     }
 
     private doHide = () => {
@@ -129,35 +148,49 @@ export class TextAdorner extends React.Component<TextAdornerProps> implements In
     }
 
     private updateText() {
-        if (!this.selectedShape) {
+        const { isEditingText, selectedItems } = this.props;
+        if (!isEditingText || !selectedItems.length) {
             return;
         }
 
-        const newText = this.textareaElement.value;
-        const oldText = this.selectedShape.appearance.get(DiagramShape.APPEARANCE_TEXT);
+        const editingShape = selectedItems[0] as DiagramShape;
+
+        const newText = this.state.text;
+        const oldText = editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT);
 
         if (newText !== oldText) {
-            this.props.changeItemsAppearance(this.props.selectedDiagram, [this.selectedShape], DiagramShape.APPEARANCE_TEXT, newText);
+            this.props.changeItemsAppearance(this.props.selectedDiagram, [editingShape], DiagramShape.APPEARANCE_TEXT, newText);
         }
 
         this.hide();
     }
 
     private hide() {
-        this.selectedShape = null;
-
-        this.textareaElement.style.width = '0';
-        this.textareaElement.style.display = 'none';
-
+        if (this.props.isEditingText) {
+            this.props.stopEditing();
+        }
         this.props.interactionService.showAdorners();
     }
 
+    private onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        this.setState({ text: e.target.value });
+    }
+
     public render() {
+        const { isEditingText } = this.props;
+        if (!isEditingText) { return null; }
+
         return (
-            <textarea className='ant-input no-border-radius' style={this.style}
-                ref={this.doInitialize}
+            <textarea 
+                onChange={this.onChange}
+                value={this.state.text}
+                autoFocus={true}
+                className='ant-input no-border-radius' 
+                style={this.editingStyle}
+                ref={this.textArea}
                 onBlur={this.doHide}
-                onKeyDown={this.doSubmit} />
+                onKeyDown={this.doSubmit} 
+            />
         );
     }
 }

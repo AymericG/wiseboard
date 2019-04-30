@@ -15,6 +15,15 @@ export const showErrorToast = (text: string) => {
     return { type: SHOW_ERROR_TOAST, text };
 };
 
+export const SET_IS_EDITING_TEXT = 'SET_IS_EDITING_TEXT';
+export const startEditing = () => {
+    return { type: SET_IS_EDITING_TEXT, value: true };
+};
+
+export const stopEditing = () => {
+    return { type: SET_IS_EDITING_TEXT, value: false };
+};
+
 export const SET_ZOOM = 'SET_ZOOM';
 export const setZoom = (zoomLevel: number, worldX?: number, worldY?: number, clientX?: number, clientY?: number) => {
     return (dispatch: Dispatch, getState: () => UIStateInStore) => {
@@ -96,6 +105,9 @@ export function toastMiddleware() {
 export function ui(initialState: UIState): Reducer<UIState> {
     const reducer: Reducer<UIState> = (state = initialState, action: any) => {
         switch (action.type) {
+            
+            case SET_IS_EDITING_TEXT:
+                return { ...state, isEditingText: action.value };
             case SET_INTERACTION_MODE:
                 return { ...state, interactionMode: action.interactionMode };
             case SET_IS_INTERACTING_WITH_ITEM:

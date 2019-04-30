@@ -30,6 +30,8 @@ import {
     setInteractionMode,
     setIsInteractingWithItem,
     setZoom,
+    startEditing,
+    stopEditing,
     Transform,
     transformItems,
     UIStateInStore
@@ -46,7 +48,9 @@ import { TransformAdorner }     from './TransformAdorner';
 import { gridSize, InteractionMode } from '@app/constants';
 
 export interface EditorProps {
-    // editorContent: React.RefObject<any>;
+    isEditingText: boolean;
+    startEditing: () => any;
+    stopEditing: () => any;
 
     // The renderer service.
     rendererService: RendererService;
@@ -207,6 +211,7 @@ class Editor extends React.Component<EditorProps> {
         const {
             addVisual,
             changeItemsAppearance,
+            isEditingText,
             interationMode,
             moveTo,
             selectedDiagram,
@@ -216,6 +221,8 @@ class Editor extends React.Component<EditorProps> {
             setInteractionMode,
             setIsInteractingWithItem,
             setZoom,
+            startEditing,
+            stopEditing,
             transformItems,
             x,
             y,
@@ -288,6 +295,9 @@ class Editor extends React.Component<EditorProps> {
                                     interactionService={this.interactionService}
                                     selectedDiagram={selectedDiagram}
                                     selectedItems={selectedItems}
+                                    startEditing={startEditing}
+                                    stopEditing={stopEditing}
+                                    isEditingText={isEditingText}
                                     zoom={zoom} />
                                 
 
@@ -311,6 +321,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
         selectedItems: getSelectedItems(state),
         selectedItemsWithLocked: getSelectedItemsWithLocked(state),
         viewSize: editor.size,
+        isEditingText: state.ui.isEditingText,
         zoomedWidth: editor.size.x * state.ui.zoom,
         zoomedHeight: editor.size.y * state.ui.zoom,
         zoom: state.ui.zoom
@@ -318,7 +329,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    addVisual, selectItems, changeItemsAppearance, moveTo, transformItems, setInteractionMode, setIsInteractingWithItem, setZoom
+    addVisual, selectItems, changeItemsAppearance, moveTo, transformItems, setInteractionMode, setIsInteractingWithItem, setZoom, startEditing, stopEditing
 }, dispatch);
 
 export const EditorContainer = connect(

@@ -1,7 +1,10 @@
 import { InteractionMode } from '@app/constants';
+
 export interface UIState {
     // The current zoom level.
     zoom: number;
+
+    isEditingText: boolean;
 
     // The error toast from any loading operation.
     errorToast?: string;
@@ -38,6 +41,7 @@ export const createInitialUIState: () => UIState = () => {
     return {
         x: 0,
         y: 0,
+        isEditingText: false,
         zoom: 1,
         selectedTab: 'shapes',
         isInteractingWithItem: false,
