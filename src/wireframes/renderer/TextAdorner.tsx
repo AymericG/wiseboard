@@ -98,8 +98,6 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
                 display: 'block',
                 position: 'absolute'
             };
-
-            this.props.interactionService.hideAdorners();
         }
 
         if (selectedItems !== nextProps.selectedItems && isEditingText) {
@@ -126,6 +124,7 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
         this.setState({ text: event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '' });
         this.props.selectItems(this.props.selectedDiagram, [event.shape.id]);
         this.props.startEditing();
+        this.props.interactionService.hideAdorners();
         event.event.stopPropagation();
     }
 
