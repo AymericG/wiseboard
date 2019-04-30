@@ -2,7 +2,8 @@ import { Button, Layout, Tabs } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { LoadingStateInStore } from './wireframes/model/loading-state';
+
+import { Shortcut } from '@app/core';
 
 import {
     EditorViewContainer,
@@ -17,8 +18,14 @@ import {
 } from '@app/wireframes/components';
 
 import {
+    calculateSelection,
+    Diagram,
+    EditorStateInStore,
+    getDiagram,
     loadDiagramAsync,
+    LoadingStateInStore,
     newDiagram,
+    selectItems,
     selectTab,
     toggleLeftSidebar,
     UIStateInStore
@@ -38,6 +45,10 @@ interface AppProps {
     // The selected tabs
     selectedTab: string;
 
+    // The selected diagram.
+    selectedDiagram: Diagram | null;
+
+
     // isLoaded: boolean;
 
     // Select a tab.
@@ -51,10 +62,15 @@ interface AppProps {
 
     // Load a diagram.
     loadDiagramAsync: (token: string, navigate: boolean) => any;
+
+    // Selcts items.
+    selectItems: (diagram: Diagram, itemsIds: string[]) => any;
+
 }
 
-const mapStateToProps = (state: UIStateInStore & LoadingStateInStore, props: AppOwnProps) => {
+const mapStateToProps = (state: UIStateInStore & LoadingStateInStore & EditorStateInStore, props: AppOwnProps) => {
     return {
+        selectedDiagram: getDiagram(state),
         selectedTab: state.ui.selectedTab,
         showLeftSidebar: state.ui.showLeftSidebar
         // isLoaded: state.loading.isLoaded
@@ -65,6 +81,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
     loadDiagramAsync,
     newDiagram,
     toggleLeftSidebar,
+    selectItems,
     selectTab
 }, dispatch);
 
@@ -108,6 +125,15 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
     //     element.scrollLeft = element.scrollWidth / 2 - element.clientWidth / 2;
     //     element.scrollTop = element.scrollHeight / 2 - element.clientHeight / 2;
     // }
+
+    private doSelectAll = () => {
+        const selectedDiagram = this.props.selectedDiagram;
+
+        if (selectedDiagram) {
+            this.props.selectItems(selectedDiagram, calculateSelection(selectedDiagram.items.toArray(), selectedDiagram));
+        }
+    }
+
 
     public render() {
         const { selectedTab, showLeftSidebar } = this.props;
@@ -154,6 +180,10 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                             <UIMenuContainer />
                         </div>
                     </div>
+
+                    <Shortcut 
+                        onPressed={this.doSelectAll} 
+                        keys='ctrl+a' />
 
                     <Button icon={toggleIcon(showLeftSidebar)}
                         className={toggleClass(showLeftSidebar, 'left')}

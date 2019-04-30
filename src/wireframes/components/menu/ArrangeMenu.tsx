@@ -8,7 +8,6 @@ import { MathHelper, Shortcut } from '@app/core';
 import { withShortcut } from '@app/core/utils/tooltip-helper';
 
 import {
-    calculateSelection,
     Diagram,
     DiagramGroup,
     DiagramItem,
@@ -81,13 +80,6 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
         }
     }
 
-    private doSelectAll = () => {
-        const selectedDiagram = this.props.selectedDiagram;
-
-        if (selectedDiagram) {
-            this.props.selectItems(selectedDiagram, calculateSelection(selectedDiagram.items.toArray(), selectedDiagram));
-        }
-    }
 
     private doUnselectAll = () => {
         const selectedDiagram = this.props.selectedDiagram;
@@ -133,7 +125,6 @@ class ArrangeMenu extends React.PureComponent<ArrangeMenuProps> {
                 {canRemove && <Shortcut disabled={!canRemove} onPressed={this.doRemove} keys='del' />}
                 {canRemove && <Shortcut disabled={!canRemove} onPressed={this.doRemove} keys='backspace' />}
 
-                <Shortcut disabled={!this.props.selectedDiagram} onPressed={this.doSelectAll} keys='ctrl+a' />
                 {<Shortcut disabled={!canUnselect} onPressed={this.doUnselectAll} keys='esc' />}
 
             </>
