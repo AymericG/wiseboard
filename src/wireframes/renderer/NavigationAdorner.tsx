@@ -79,9 +79,9 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         addVisual(selectedDiagram.id, ShapeType.Comment, worldX, worldY);
     }
 
-    debounceTimeout: number;
-    debounceX: number;
-    debounceY: number;
+    private debounceTimeout: number;
+    private debounceX: number;
+    private debounceY: number;
     
     private debounceMove = (wait: number) => {  
         const later = () => {

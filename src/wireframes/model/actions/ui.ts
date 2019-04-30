@@ -28,13 +28,14 @@ export const stopEditing = () => {
 export const SET_ZOOM = 'SET_ZOOM';
 export const setZoom = (zoomLevel: number, worldX?: number, worldY?: number, clientX?: number, clientY?: number) => {
     return (dispatch: Dispatch, getState: () => UIStateInStore) => {
-    
-        if (!worldX) {
+        if (!clientX) {
             const editorView = document.getElementById('editor-view');
             const rect = editorView.getBoundingClientRect();
             clientX = rect.width / 2;
             clientY = rect.height / 2;
+        }
 
+        if (!worldX) {
             const state = getState();
             const zoom = state.ui.zoom;
             const x = state.ui.x;

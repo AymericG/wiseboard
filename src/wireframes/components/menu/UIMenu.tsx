@@ -5,13 +5,16 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Shortcut } from '@app/core';
 
-import { setZoom, UIStateInStore } from '@app/wireframes/model';
+import { Diagram, EditorStateInStore, setZoom, UIStateInStore } from '@app/wireframes/model';
 
 import { withShortcut } from '@app/core/utils/tooltip-helper';
 
 import { maxZoom, minZoom } from '@app/constants';
+import { getDiagram } from '../../model/projections';
 
 interface UIMenuProps {
+    selectedDiagram: Diagram;
+    
     // Indicates if you can zoom in.
     canZoomIn: boolean;
 
@@ -22,12 +25,42 @@ interface UIMenuProps {
     zoom: number;
 
     // Sets the zoom.
-    setZoom: (value: number) => any;
+    setZoom: (value: number, worldX?: number, worldY?: number, clientX?: number, clientY?: number) => any;
 }
+
+const calculateUniverseBoundaries = (diagram: Diagram) => {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    const items = diagram.items.toArray();
+    for (const item of items) {
+        const rect2 = item.bounds(diagram);
+        const left = rect2.position.x - 85;
+        const top = rect2.position.y - 75;
+        
+        const rect = {
+            left: left,
+            top: top,
+            right: left + rect2.size.x,
+            bottom: top + rect2.size.y
+        };
+        if (rect.left < minX) { minX = rect.left; }
+        if (rect.right > maxX) { maxX = rect.right; }
+        if (rect.top < minY) { minY = rect.top; }
+        if (rect.bottom > maxY) { maxY = rect.bottom; }
+    }
+    return { minX, maxX, minY, maxY };
+};
 
 class UIMenu extends React.PureComponent<UIMenuProps> {
     private doZoomOut = () => {
         this.props.setZoom(this.props.zoom - .25);
+    }
+
+    private doZoomToFit = () => {
+        // calculate universe bound
+        const rect = calculateUniverseBoundaries(this.props.selectedDiagram);
+        const editorView = document.getElementById('editor-view').getBoundingClientRect();
+        const zoom = 1 / (1.2 * Math.max((rect.maxX - rect.minX) / editorView.width, (rect.maxY - rect.minY) / editorView.height));        
+        this.props.setZoom(zoom, (rect.minX + rect.maxX) / 2, (rect.minY + rect.maxY) / 2);
     }
 
     private doZoomIn = () => {
@@ -40,7 +73,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
         return (
             <>
                 <Tooltip title={withShortcut('Zoom Out', ['-'])}>
-                    <Button className='menu-item right-border'
+                    <Button className='menu-item'
                         disabled={!canZoomOut}
                         onClick={this.doZoomOut}>
                         <Icon type='minus' />
@@ -49,10 +82,15 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
 
                 <Shortcut disabled={!canZoomOut} onPressed={this.doZoomOut} keys='-' />
 
-                <span className='menu-item menu-item-label'>{(zoom * 100).toFixed()}%</span>
+                <Tooltip title='Zoom to fit'>
+                    <Button className='menu-item left-border right-border'
+                        onClick={this.doZoomToFit}>
+                        {(zoom * 100).toFixed()}%
+                    </Button>
+                </Tooltip>
 
                 <Tooltip title={withShortcut('Zoom In', ['+'])}>
-                    <Button className='menu-item left-border'
+                    <Button className='menu-item'
                         disabled={!canZoomIn}
                         onClick={this.doZoomIn}>
                         <Icon type='plus' />
@@ -66,8 +104,9 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
     }
 }
 
-const mapStateToProps = (state: UIStateInStore) => {
+const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
     return {
+        selectedDiagram: getDiagram(state),
         canZoomIn: state.ui.zoom < maxZoom,
         canZoomOut: state.ui.zoom > minZoom,
         zoom: state.ui.zoom
