@@ -19,6 +19,10 @@ const CONFIGURABLE: Configurable[] = [
 ];
 
 export class Comment extends AbstractControl {
+    public icon() {
+        return 'fa-sticky-note';
+    }
+    
     public defaultAppearance() {
         return DEFAULT_APPEARANCE;
     }

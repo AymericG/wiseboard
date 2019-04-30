@@ -41,7 +41,12 @@ export class ShapeImage extends React.PureComponent<ShapeImageProps> {
         };
 
         return this.props.connectDragSource!(
-            <img ref={preview} className='asset-shape-image' alt={this.props.shape.displayName} src={previewPath(this.props.shape)} />,
+            <img 
+                ref={preview} 
+                className='asset-shape-image' 
+                alt={this.props.shape.displayName} 
+                src={previewPath(this.props.shape)} 
+            />,
         {
             dropEffect: 'copy'
         });

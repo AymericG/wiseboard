@@ -44,6 +44,10 @@ export class Checkbox extends AbstractControl {
         return DEFAULT_APPEARANCE;
     }
 
+    public icon() {
+        return 'fa-icon-check';
+    }
+
     public identifier(): string {
         return 'Checkbox';
     }

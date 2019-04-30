@@ -8,6 +8,7 @@ export interface Renderer {
     defaultAppearance(): { [key: string]: any };
 
     previewOffset(): Vec2;
+    icon(): string;
 
     showInGallery(): boolean;
 

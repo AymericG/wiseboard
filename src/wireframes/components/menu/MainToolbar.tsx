@@ -1,86 +1,96 @@
-import { Button, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import {
+    addVisual,
     alignItems,
-    BRING_TO_FRONT,
+    AssetsStateInStore,
     DiagramItem,
     EditorStateInStore,
     getDiagramId,
+    getFilteredShapes,
     getSelectedItems,
     orderItems,
-    SEND_TO_BACK
+    ShapeInfo,
+    UIStateInStore
 } from '@app/wireframes/model';
 
+import { commentHeight, commentWidth, ShapeType } from '@app/constants';
+import { ShapeIcon } from '@app/wireframes/components/assets/ShapeIcon';
+
 interface MainToolbarProps {
+    // The filtered shapes.
+    shapesFiltered: ShapeInfo[];
+    
     // The selected diagram.
     selectedDiagramId: string | null;
 
     // The selected items.
     selectedItems: DiagramItem[];
 
-    // Indicates wherther the items can be aligned.
-    canAlign: boolean;
+    x: number;
+    y: number;
+    zoom: number;
 
-    // Indicates whether the items can be ordered.
-    canOrder: boolean;
+    // Adds an visual.
+    addVisualToPosition: (diagram: string, renderer: string, x: number, y: number, zoom: number) => any;
 
-    // Indicates whether the items can be distributed.
-    canDistribute: boolean;
-
-    // Orders the items.
-    orderItems: (mode: string, diagram: string, items: DiagramItem[]) => any;
-
-    // Align the items.
-    alignItems: (mode: string, diagram: string, items: DiagramItem[]) => any;
 }
 
-const MainToolbar = (props: MainToolbarProps) => {
-    const doOrder = (mode: string) => {
-        if (props.selectedDiagramId) {
-            props.orderItems(mode, props.selectedDiagramId, props.selectedItems);
-        }
-    };
+const addVisualToPosition = (diagram: string, renderer: string, offsetX: number, offsetY: number, zoom: number) => {
 
-    const doBringToFront  = () => doOrder(BRING_TO_FRONT);
-    // const doBringForwards = () => doOrder(BRING_FORWARDS);
-    // const doSendBackwards = () => doOrder(SEND_BACKWARDS);
-    const doSendToBack    = () => doOrder(SEND_TO_BACK);
+    const editorView = document.getElementById('editor-view').getBoundingClientRect();
 
-    const { canOrder, selectedDiagramId } = props;
+    const worldX = ((editorView.width / 2 - commentWidth / 2) - offsetX) / zoom;
+    const worldY = ((editorView.height / 2 - commentHeight / 2) - offsetY) / zoom;
 
-    return selectedDiagramId ? (
-        <>
-            <Tooltip title='Bring to front' placement='right'>
-                <Button disabled={!canOrder} className='menu-item' onClick={doBringToFront}>
-                    <i className='icon-bring-to-front' />
-                </Button>
-            </Tooltip>
-            <Tooltip title='Send to back' placement='right'>
-                <Button disabled={!canOrder} className='menu-item' onClick={doSendToBack}>
-                    <i className='icon-send-to-back'></i>
-                </Button>
-            </Tooltip>
-        </>
-    ) : null;
+    return addVisual(diagram, renderer, worldX, worldY);
 };
 
-const mapStateToProps = (state: EditorStateInStore) => {
+
+class MainToolbar extends React.PureComponent<MainToolbarProps> {
+    private doAdd = (shape: ShapeInfo) => {
+        const { selectedDiagramId, x, y, zoom } = this.props;
+        if (selectedDiagramId) {
+            console.log('doADd');
+            this.props.addVisualToPosition(selectedDiagramId, shape.name, x, y, zoom);
+        }
+    }
+
+    public render() {
+        const { shapesFiltered } = this.props;
+
+        const card = shapesFiltered.filter(x => x.name === ShapeType.Comment)[0];
+        const heading = shapesFiltered.filter(x => x.name === ShapeType.Heading)[0];
+
+        return <>
+                <Tooltip title='Card' placement='right'>
+                    <div className='menu-item' onDoubleClick={() => this.doAdd(card)}><ShapeIcon shape={card} /></div>
+                </Tooltip>
+                <Tooltip title='Heading' placement='right'>
+                    <div className='menu-item' onDoubleClick={() => this.doAdd(heading)}><ShapeIcon shape={heading} /></div>
+                </Tooltip>
+            </>;
+    }
+}
+
+const mapStateToProps = (state: EditorStateInStore & AssetsStateInStore & UIStateInStore) => {
     const items = getSelectedItems(state);
 
     return {
+        x: state.ui.x,
+        y: state.ui.y,
+        zoom: state.ui.zoom,
         selectedDiagramId: getDiagramId(state),
         selectedItems: items,
-        canAlign: items.length > 1,
-        canOrder: items.length > 0,
-        canDistribute: items.length > 1
+        shapesFiltered: getFilteredShapes(state)
     };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    orderItems, alignItems
+    orderItems, alignItems, addVisualToPosition
 }, dispatch);
 
 export const MainToolbarContainer = connect(

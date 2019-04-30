@@ -9,6 +9,10 @@ import {
 class MockupRenderer implements Renderer {
     public previewOffset() { return Vec2.ZERO; }
 
+    public icon() {
+        return 'fa-icon-picture';
+    }
+
     public defaultAppearance() { return {}; }
 
     public identifier(): string { return 'identifier'; }

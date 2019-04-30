@@ -18,6 +18,10 @@ export class Raster extends AbstractControl {
         return false;
     }
 
+    public icon() {
+        return 'fa-icon-picture';
+    }
+
     public createDefaultShape(shapeId: string): DiagramShape {
         return DiagramShape.createShape(shapeId, this.identifier(), 80, 30, undefined, DEFAULT_APPEARANCE);
     }

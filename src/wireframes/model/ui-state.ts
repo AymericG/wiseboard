@@ -47,7 +47,7 @@ export const createInitialUIState: () => UIState = () => {
         isInteractingWithItem: false,
         interactionMode: InteractionMode.Selection,
         showInfoDialog: false,
-        showLeftSidebar: true,
+        showLeftSidebar: false,
         selectedColorTab: 'palette'
     };
 };

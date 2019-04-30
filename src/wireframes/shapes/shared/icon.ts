@@ -15,6 +15,10 @@ export class Icon extends AbstractControl {
         return 'Icon';
     }
 
+    public icon(): string {
+        return 'fa-coffee';
+    }
+
     public showInGallery() {
         return false;
     }

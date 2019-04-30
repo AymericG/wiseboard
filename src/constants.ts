@@ -17,4 +17,5 @@ export const CLONE_OFFSET = 50;
 
 export namespace ShapeType {
     export const Comment = 'Comment';
+    export const Heading = 'Heading';
 }

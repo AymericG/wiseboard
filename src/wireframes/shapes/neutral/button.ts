@@ -34,6 +34,10 @@ export class Button extends AbstractControl {
         return DEFAULT_APPEARANCE;
     }
 
+    public icon() {
+        return 'fa-icon-picture';
+    }
+
     public identifier(): string {
         return 'Button';
     }

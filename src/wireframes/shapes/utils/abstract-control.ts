@@ -38,6 +38,10 @@ export abstract class AbstractControl implements Renderer {
         return Vec2.ZERO;
     }
 
+    public icon() {
+        return 'fa-question';
+    }
+
     public showInGallery() {
         return true;
     }

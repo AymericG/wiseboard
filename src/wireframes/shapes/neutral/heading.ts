@@ -16,6 +16,10 @@ export class Heading extends AbstractControl {
         return DEFAULT_APPEARANCE;
     }
 
+    public icon() {
+        return 'fa-font';
+    }
+
     public identifier(): string {
         return 'Heading';
     }

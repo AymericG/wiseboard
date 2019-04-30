@@ -15,6 +15,7 @@ export interface AssetInfo {
 
 export interface ShapeInfo extends AssetInfo {
     offset: Vec2;
+    icon: string;
 }
 
 export interface IconInfo extends AssetInfo {
@@ -45,7 +46,12 @@ export const createInitialAssetsState: (rendererService: RendererService) => Ass
             const renderer = rendererService.registeredRenderers[rendererKey];
 
             if (renderer.showInGallery()) {
-                allShapes.push({ displaySearch: rendererKey.toLowerCase(), displayName: rendererKey, name: rendererKey, offset: renderer.previewOffset() });
+                allShapes.push({ 
+                    displaySearch: rendererKey.toLowerCase(), 
+                    displayName: rendererKey, name: rendererKey, 
+                    offset: renderer.previewOffset(),
+                    icon: renderer.icon()
+                });
             }
         }
     }
