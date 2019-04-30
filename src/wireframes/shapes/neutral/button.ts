@@ -3,11 +3,11 @@ import { ColorConfigurable, Configurable, DiagramShape, SelectionConfigurable } 
 import { AbstractContext, AbstractControl } from '@app/wireframes/shapes/utils/abstract-control';
 import { CommonTheme } from './_theme';
 
+import { COLOR_KEY } from '@app/constants';
+
 const STYLE_KEY = 'STYLE';
 const STYLE_FILL = 'Fill';
 const STYLE_OUTLINE = 'Outline';
-
-const COLOR_KEY = 'COLOR';
 
 const DEFAULT_APPEARANCE = {};
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FOREGROUND_COLOR] = CommonTheme.CONTROL_TEXT_COLOR;

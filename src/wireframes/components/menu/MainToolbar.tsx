@@ -54,7 +54,6 @@ class MainToolbar extends React.PureComponent<MainToolbarProps> {
     private doAdd = (shape: ShapeInfo) => {
         const { selectedDiagramId, x, y, zoom } = this.props;
         if (selectedDiagramId) {
-            console.log('doADd');
             this.props.addVisualToPosition(selectedDiagramId, shape.name, x, y, zoom);
         }
     }

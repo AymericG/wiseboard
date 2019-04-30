@@ -72,6 +72,7 @@ const CustomPropertiesMenu = (props: CustomPropertiesMenuProps) => {
                         <SelectPicker
                             className='menu-item'
                             value={selectedShape.appearance.get(c.name)}
+                            sufix={c.sufix}
                             options={c.options}
                             onChange={(value: string) => props.changeItemsAppearance(selectedDiagramId, [selectedShape], c.name, value)} />
                     }

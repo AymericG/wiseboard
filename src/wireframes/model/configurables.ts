@@ -7,8 +7,9 @@ export abstract class Configurable {
 }
 
 export class SelectionConfigurable extends Configurable {
-    constructor(name: string, label: string,
-        public readonly options: string[]
+    constructor(name: string, label: string, 
+        public readonly options: string[],
+        public readonly sufix: string = ''
     ) {
         super(name, label);
 

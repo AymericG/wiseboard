@@ -17,6 +17,7 @@ interface SelectPickerProps {
 
     // If disabled or not.
     disabled?: boolean;
+    sufix?: string;
 
     // Triggered when the color has changed.
     onChange?: (value: string) => void;
@@ -84,7 +85,7 @@ export class SelectPicker extends React.PureComponent<SelectPickerProps, SelectP
         return (
             <Popover content={content} visible={this.state.visible} placement={placement} trigger='click' onVisibleChange={this.doSetVisibility}>
                 <Button disabled={disabled} className={className}  onClick={this.doToggle}>
-                    {this.state.value}
+                    {this.state.value}{this.props.sufix}
                 </Button>
             </Popover>
         );

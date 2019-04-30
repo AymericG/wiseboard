@@ -19,3 +19,6 @@ export namespace ShapeType {
     export const Comment = 'Comment';
     export const Heading = 'Heading';
 }
+
+export const COLOR_KEY = 'COLOR';
+

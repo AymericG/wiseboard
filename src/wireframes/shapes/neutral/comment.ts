@@ -3,9 +3,7 @@ import { ColorConfigurable, Configurable, DiagramShape } from '@app/wireframes/m
 import { AbstractContext, AbstractControl } from '@app/wireframes/shapes/utils/abstract-control';
 import { CommonTheme } from './_theme';
 
-import { commentHeight, commentWidth } from '@app/constants';
-
-const COLOR_KEY = 'COLOR';
+import { COLOR_KEY, commentHeight, commentWidth } from '@app/constants';
 
 const DEFAULT_APPEARANCE = {};
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT] = '';
