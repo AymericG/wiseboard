@@ -4,6 +4,7 @@ import { AnyAction, Dispatch, Middleware, Reducer } from 'redux';
 import { InteractionMode } from '@app/constants';
 
 import { UIState, UIStateInStore } from './../internal';
+import { ADD_VISUAL } from './items';
 
 export const SHOW_INFO_TOAST = 'SHOW_INFO_TOAST';
 export const showInfoToast = (text: string) => {
@@ -105,7 +106,8 @@ export function toastMiddleware() {
 export function ui(initialState: UIState): Reducer<UIState> {
     const reducer: Reducer<UIState> = (state = initialState, action: any) => {
         switch (action.type) {
-            
+            case ADD_VISUAL:
+                return { ...state, isEditingText: true};
             case SET_IS_EDITING_TEXT:
                 return { ...state, isEditingText: action.value };
             case SET_INTERACTION_MODE:

@@ -73,7 +73,7 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
 
     public componentWillReceiveProps(nextProps: TextAdornerProps) {
         const { selectedItems, isEditingText, zoom } = this.props;
-        if (isEditingText !== nextProps.isEditingText && nextProps.isEditingText && selectedItems.length) {
+        if (nextProps.isEditingText && nextProps.selectedItems.length) {
             
             // limitation. Only edit first item in selection?
             const editingShape = nextProps.selectedItems[0] as DiagramShape;
@@ -98,6 +98,9 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
                 display: 'block',
                 position: 'absolute'
             };
+
+            this.setState({ text: editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '' });
+            this.props.interactionService.hideAdorners();    
         }
 
         if (selectedItems !== nextProps.selectedItems && isEditingText) {
@@ -121,10 +124,8 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
             next();
             return;
         }
-        this.setState({ text: event.shape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '' });
         this.props.selectItems(this.props.selectedDiagram, [event.shape.id]);
         this.props.startEditing();
-        this.props.interactionService.hideAdorners();
         event.event.stopPropagation();
     }
 
