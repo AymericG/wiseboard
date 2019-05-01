@@ -322,6 +322,9 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
 
     private resize(delta: Vec2, shiftKey: boolean) {
         const startRotation = this.startTransform.rotation;
+        if (shiftKey) {
+            delta = new Vec2(delta.x, delta.x);
+        }
 
         const deltaSize = this.getResizeDeltaSize(startRotation, delta, !shiftKey /* snap to grid by default */);
         const deltaPos = this.getResizeDeltaPos(startRotation, deltaSize);
