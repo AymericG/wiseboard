@@ -21,6 +21,8 @@ import {
 
 import { SVGRenderer } from '@app/wireframes/shapes/utils/svg-renderer';
 
+import { gridSize, Keys } from '@app/constants';
+
 const MODE_RESIZE = 2;
 const MODE_MOVE = 3;
 const MODE_ROTATE = 1;
@@ -34,6 +36,8 @@ export interface TransformAdornerProps {
 
     // The view size of the editor.
     viewSize: Vec2;
+
+    isEditingText: boolean;
 
     // The adorner scope.
     adorners: svg.Container;
@@ -229,6 +233,56 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
 
         this.layoutShapes();
     }
+
+    public onKeyDown(event: SvgEvent, next: () => void) {
+        const { isEditingText, selectedItems } = this.props;
+        
+        if (isEditingText) {
+            next();
+            return;
+        }
+
+        const e: KeyboardEvent = event.event as KeyboardEvent;
+
+        if (!!selectedItems.length) {
+            let moveVector = null;
+            switch (e.keyCode) {
+                case Keys.LEFT:
+                moveVector = new Vec2(-gridSize, 0);
+                break;
+                case Keys.UP:
+                moveVector = new Vec2(0, -gridSize);
+                break;
+                case Keys.RIGHT:
+                moveVector = new Vec2(gridSize, 0);
+                break;
+                case Keys.DOWN:
+                moveVector = new Vec2(0, gridSize);
+                break;
+
+            }
+
+            if (moveVector) {
+                this.startTransform = this.transform;
+                this.move(moveVector, false);
+        
+                this.props.transformItems(
+                    this.props.selectedDiagram,
+                    this.props.selectedItems,
+                    this.startTransform,
+                    this.transform);
+
+                this.overlays.reset();
+
+                event.event.stopPropagation();
+                event.event.preventDefault();
+                return;
+            }
+        }
+        
+        return next();
+    }
+
 
     private move(delta: Vec2, shiftKey: boolean) {
         const snapResult =

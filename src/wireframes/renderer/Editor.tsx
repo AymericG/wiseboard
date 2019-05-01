@@ -281,6 +281,7 @@ class Editor extends React.Component<EditorProps> {
                                     selectedDiagram={selectedDiagram}
                                     selectedItems={selectedItems}
                                     transformItems={transformItems}
+                                    isEditingText={isEditingText}
                                     viewSize={viewSize}
                                     zoom={zoom} />
 

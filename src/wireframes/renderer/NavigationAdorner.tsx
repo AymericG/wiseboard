@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import ReactDOM = require('react-dom');
 
-import { InteractionMode, maxZoom, minZoom, ShapeType } from '@app/constants';
+import { InteractionMode, Keys, maxZoom, minZoom, ShapeType } from '@app/constants';
 
 import {
     Diagram,
@@ -14,11 +14,6 @@ import {
     SvgEvent
 } from './interaction-service';
 
-const SPACE = 32;
-const LEFT = 37;
-const UP = 38;
-const RIGHT = 39;
-const DOWN = 40;
 
 export interface NavigationAdornerProps {
     // editorContent: React.RefObject<any>;
@@ -98,30 +93,32 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
 
 
     public onKeyDown(event: SvgEvent, next: () => void) {
-        const { interactionMode, moveTo, x, y } = this.props;
+        const { interactionMode, moveTo, x, y, selectedItems } = this.props;
         const target: any = event.event.target;
         if (target.type === 'textarea' || target.type === 'input') {
             next();
             return;
         }
         const keyCode = (event.event as KeyboardEvent).keyCode;
+        if (keyCode === Keys.SPACE && interactionMode !== InteractionMode.Drag) {
+            this.isSpaceDown = true;
+            this.props.setInteractionMode(InteractionMode.Drag);
+            return;
+        }
+
+        if (!!selectedItems.length) { return next(); }
+
         switch (keyCode) {
-            case SPACE:
-                if (interactionMode !== InteractionMode.Drag) {
-                    this.isSpaceDown = true;
-                    this.props.setInteractionMode(InteractionMode.Drag);
-                }
-                break;
-            case LEFT:
+            case Keys.LEFT:
                 moveTo(x + 10, y);
                 break;
-            case UP:
+            case Keys.UP:
                 moveTo(x, y + 10);
                 break;
-            case RIGHT:
+            case Keys.RIGHT:
                 moveTo(x - 10, y);
                 break;
-            case DOWN:
+            case Keys.DOWN:
                 moveTo(x, y - 10);
                 break;
             default:
@@ -132,7 +129,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         event.event.stopPropagation();
     }
     public onKeyUp(event: SvgEvent, next: () => void) {
-        if (!this.isSpaceDown || (event.event as KeyboardEvent).keyCode !== SPACE || event.event.target !== document.body) {
+        if (!this.isSpaceDown || (event.event as KeyboardEvent).keyCode !== Keys.SPACE || event.event.target !== document.body) {
             next();
             return;
         }

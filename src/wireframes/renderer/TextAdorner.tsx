@@ -15,11 +15,10 @@ import {
     SvgEvent
 } from './interaction-service';
 
+import { Keys } from '@app/constants';
+
 const MIN_WIDTH = 150;
 const MIN_HEIGHT = 30;
-
-const KEY_ENTER = 13;
-const KEY_ESCAPE = 27;
 
 export interface TextAdornerProps {
     // The current zoom value.
@@ -141,11 +140,15 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
         if (target.type === 'textarea') {
             return next();
         }
-        if (!!this.props.selectedItems.length && e.keyCode === KEY_ENTER) {
-            this.props.startEditing();
-            event.event.stopPropagation();
-            event.event.preventDefault();
-            return;
+
+        if (!!this.props.selectedItems.length) {
+            switch (e.keyCode) {
+                case Keys.ENTER:
+                this.props.startEditing();
+                event.event.stopPropagation();
+                event.event.preventDefault();
+                return;
+            }
         }
         
         return next();
@@ -156,12 +159,12 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
     }
 
     private doSubmit = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if ((event.keyCode === KEY_ENTER && !event.shiftKey) ||
-            (event.keyCode === KEY_ESCAPE)) {
+        if ((event.keyCode === Keys.ENTER && !event.shiftKey) ||
+            (event.keyCode === Keys.ESC)) {
             event.preventDefault();
             event.stopPropagation();
     
-            if (event.keyCode === KEY_ENTER) {
+            if (event.keyCode === Keys.ENTER) {
                 this.updateText();
             } else {
                 this.hide();
