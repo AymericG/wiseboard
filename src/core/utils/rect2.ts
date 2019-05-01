@@ -81,8 +81,8 @@ export class Rect2 {
 
         let minX = Number.MAX_VALUE;
         let minY = Number.MAX_VALUE;
-        let maxX = Number.MIN_VALUE;
-        let maxY = Number.MIN_VALUE;
+        let maxX = -Number.MAX_VALUE;
+        let maxY = -Number.MAX_VALUE;
 
         for (let v of vecs) {
             minX = Math.min(minX, v.x);
@@ -91,7 +91,7 @@ export class Rect2 {
             maxY = Math.max(maxY, v.y);
         }
 
-        return new Rect2(minX, minY, Math.max(0, maxX - minX), Math.max(0, maxY - minY));
+        return new Rect2(minX, minY, maxX - minX, maxY - minY);
     }
 
     public static fromRects(rects: Rect2[] | null): Rect2 {
@@ -101,8 +101,8 @@ export class Rect2 {
 
         let minX = Number.MAX_VALUE;
         let minY = Number.MAX_VALUE;
-        let maxX = Number.MIN_VALUE;
-        let maxY = Number.MIN_VALUE;
+        let maxX = -Number.MAX_VALUE;
+        let maxY = -Number.MAX_VALUE;
 
         for (let r of rects) {
             minX = Math.min(minX, r.left);
@@ -111,7 +111,7 @@ export class Rect2 {
             maxY = Math.max(maxY, r.bottom);
         }
 
-        return new Rect2(minX, minY, Math.max(0, maxX - minX), Math.max(0, maxY - minY));
+        return new Rect2(minX, minY, maxX - minX, maxY - minY);
     }
 
     public static rotated(position: Vec2, size: Vec2, rotation: Rotation): Rect2 {
