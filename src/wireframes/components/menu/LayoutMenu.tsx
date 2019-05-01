@@ -13,8 +13,6 @@ import {
     alignItems,
     BRING_TO_FRONT,
     DiagramItem,
-    DISTRIBUTE_H,
-    DISTRIBUTE_V,
     EditorStateInStore,
     getDiagramId,
     getSelectedItems,
@@ -34,9 +32,6 @@ interface LayoutMenuProps {
 
     // Indicates whether the items can be ordered.
     canOrder: boolean;
-
-    // Indicates whether the items can be distributed.
-    canDistribute: boolean;
 
     // Orders the items.
     orderItems: (mode: string, diagram: string, items: DiagramItem[]) => any;
@@ -66,15 +61,12 @@ const LayoutMenu = (props: LayoutMenuProps) => {
     const doAlignVCenter = () => doAlign(ALIGN_V_CENTER);
     const doAlignVBottom = () => doAlign(ALIGN_V_BOTTOM);
 
-    const doDistributeH = () => doAlign(DISTRIBUTE_H);
-    const doDistributeV = () => doAlign(DISTRIBUTE_V);
-
     const doBringToFront  = () => doOrder(BRING_TO_FRONT);
     // const doBringForwards = () => doOrder(BRING_FORWARDS);
     // const doSendBackwards = () => doOrder(SEND_BACKWARDS);
     const doSendToBack    = () => doOrder(SEND_TO_BACK);
 
-    const { canAlign, canDistribute, canOrder, selectedDiagramId } = props;
+    const { canAlign, canOrder, selectedDiagramId } = props;
 
     return selectedDiagramId ? (
         <>
@@ -109,18 +101,6 @@ const LayoutMenu = (props: LayoutMenuProps) => {
                 <Tooltip title='Align bottom'>
                     <Button disabled={!canAlign} className='menu-item' onClick={doAlignVBottom}>
                         <i className='icon-align-v-bottom' />
-                    </Button>
-                </Tooltip>
-            </div>}
-            {canDistribute && <div className='editor-toolbox-group'>
-                <Tooltip title='Distribute horizontally'>
-                    <Button disabled={!canDistribute} className='menu-item' onClick={doDistributeH}>
-                        <i className='icon-distribute-h2' />
-                    </Button>
-                </Tooltip>
-                <Tooltip title='Distribute vertically'>
-                    <Button disabled={!canDistribute} className='menu-item' onClick={doDistributeV}>
-                        <i className='icon-distribute-v2' />
                     </Button>
                 </Tooltip>
             </div>}
@@ -160,8 +140,7 @@ const mapStateToProps = (state: EditorStateInStore) => {
         selectedDiagramId: getDiagramId(state),
         selectedItems: items,
         canAlign: items.length > 1,
-        canOrder: items.length > 0,
-        canDistribute: items.length > 1
+        canOrder: items.length > 0
     };
 };
 

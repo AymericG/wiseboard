@@ -129,6 +129,24 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
         event.event.stopPropagation();
     }
 
+    public onKeyDown(event: SvgEvent, next: () => void) {
+        if (this.props.isEditingText) {
+            next();
+            return;
+        }
+
+        // if key is ENTER
+        const e: KeyboardEvent = event.event as KeyboardEvent;
+        if (!!this.props.selectedItems.length && e.keyCode === KEY_ENTER) {
+            this.props.startEditing();
+            event.event.stopPropagation();
+            event.event.preventDefault();
+            return;
+        }
+        
+        return next();
+    }
+
     private doHide = () => {
         this.hide();
     }
