@@ -21,7 +21,7 @@ import {
 import { SerializerContext } from '@app/context';
 import { ClipboardHooks } from '@app/core/react/ClipboardHooks';
 
-import { CLONE_OFFSET, commentHeight, commentWidth, gridSize } from '@app/constants';
+import { commentHeight, commentWidth, gridSize } from '@app/constants';
 import { MathHelper } from '@app/core';
 import { pasteImage } from '@app/core/utils/clipboard-helper';
 import { DiagramRef } from '@app/wireframes/model/actions/utils';
@@ -44,16 +44,11 @@ interface ClipboardShortcutsProps {
     // Remove items.
     removeItems: (diagram: Diagram, items: DiagramItem[]) => any;
 
-    pasteItems: (diagram: Diagram, json: string, offset?: number) => any;
+    pasteItems: (diagram: Diagram, json: string, worldX: number, worldY: number) => any;
 }
 
 interface ClipboardShortcutsState {
-    // The current clipboard value.
-    clipboard?: string;
     lastClipboard?: string;
-
-    // The offset for new items.
-    offset: number;
 }
 
 const WISE_OBJECTS = 'application/wiseobjects';
@@ -62,13 +57,12 @@ const PLAIN_TEXT = 'text/plain';
 class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, ClipboardShortcutsState> {
     private lastClientX = 0;
     private lastClientY = 0;
-    
-    constructor(props: ClipboardShortcutsProps) {
-        super(props);
 
-        this.state = { offset: 0 };
+    constructor(props: ClipboardShortcutsProps, context: any) {
+        super(props, context);
+        this.state = { lastClipboard: null };
     }
-
+    
     private onMouseMove = (e: MouseEvent) => {
         this.lastClientX = e.clientX;
         this.lastClientY = e.clientY;
@@ -97,7 +91,6 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                     selectedDiagram);
 
             
-            this.setState({ offset: CLONE_OFFSET });
             e.preventDefault();
             // set text
             let text = '';
@@ -135,38 +128,34 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
         if (target.type === 'textarea' || target.type === 'input') {
             return;
         }
-        
+
         if (!selectedDiagram) {
             return;
         }
+
+        const worldX = (this.lastClientX - x) / zoom;
+        const worldY = (this.lastClientY - y) / zoom;
 
         if (e.clipboardData && e.clipboardData.types.length) {
             if (e.clipboardData.types.indexOf(WISE_OBJECTS) !== -1) {
                 let clipboard = e.clipboardData.getData(WISE_OBJECTS);
                 const lastClipboard = this.state.lastClipboard;
-                let offset = this.state.offset;
-        
                 if (clipboard === lastClipboard) {
-                    offset += CLONE_OFFSET;
-        
+
                     // generate new ids
                     const set = serializer.deserializeSet(clipboard);
                     clipboard = serializer.serializeSet(set, true);
-                    this.setState(s => ({ offset }));
                 } else {
-                    offset = CLONE_OFFSET;
-                    this.setState(s => ({ offset, lastClipboard: clipboard }));
+                    this.setState(s => ({ lastClipboard: clipboard }));
                 }
         
-                this.props.pasteItems(selectedDiagram, clipboard!, this.state.offset);
+                this.props.pasteItems(selectedDiagram, clipboard!, worldX, worldY);
             } else {
                 if (e.clipboardData.types.indexOf(PLAIN_TEXT) !== -1) {
                     const clipboardText = e.clipboardData.getData(PLAIN_TEXT);
                     // split lines
                     const lines = clipboardText.replace('\r\n', '\n').split('\n');
 
-                    const worldX = (this.lastClientX - x) / zoom;
-                    const worldY = (this.lastClientY - y) / zoom;
                     let offX = 0;
                     let offY = 0;
                     let counter = 0;
@@ -189,9 +178,6 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
                     }
                     
                 } else {
-                    const worldX = (this.lastClientX - x) / zoom;
-                    const worldY = (this.lastClientY - y) / zoom;
-        
                     const clipboardItems = e.clipboardData.items;
                     
                     // tslint:disable-next-line: prefer-for-of

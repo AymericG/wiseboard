@@ -137,6 +137,10 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
 
         // if key is ENTER
         const e: KeyboardEvent = event.event as KeyboardEvent;
+        const target: any = event.event.target;
+        if (target.type === 'textarea') {
+            return next();
+        }
         if (!!this.props.selectedItems.length && e.keyCode === KEY_ENTER) {
             this.props.startEditing();
             event.event.stopPropagation();
@@ -154,7 +158,9 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
     private doSubmit = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if ((event.keyCode === KEY_ENTER && !event.shiftKey) ||
             (event.keyCode === KEY_ESCAPE)) {
-
+            event.preventDefault();
+            event.stopPropagation();
+    
             if (event.keyCode === KEY_ENTER) {
                 this.updateText();
             } else {
@@ -163,8 +169,6 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
 
             this.hide();
 
-            event.preventDefault();
-            event.stopPropagation();
         }
     }
 

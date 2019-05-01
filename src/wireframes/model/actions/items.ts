@@ -73,8 +73,8 @@ export const removeItems = (diagram: DiagramRef, items: ItemsRef) => {
 };
 
 export const PASTE_ITEMS = 'PASTE_ITEMS';
-export const pasteItems = (diagram: DiagramRef, json: string, offset = 0) => {
-    return createDiagramAction(PASTE_ITEMS, diagram, { json, offset });
+export const pasteItems = (diagram: DiagramRef, json: string, x: number, y: number) => {
+    return createDiagramAction(PASTE_ITEMS, diagram, { json, x, y });
 };
 
 const MAX_IMAGE_SIZE = 300;
@@ -139,11 +139,20 @@ export function items(rendererService: RendererService, serializer: Serializer):
                     const set = serializer.deserializeSet(action.json);
                     diagram = diagram.addItems(set);
 
+                    if (!set.allVisuals.length) {
+                        return diagram;
+                    }
+
+                    const origin = set.allVisuals[0];
+                    const originBounds = origin.bounds(diagram);
+
+                    const offsetX = !action.x ? 0 : action.x - originBounds.position.x;
+                    const offsetY = !action.y ? 0 : action.y - originBounds.position.y;
+
                     for (let item of set.allVisuals) {
                         diagram = diagram.updateItem(item.id, i => {
                             const oldBounds = i.bounds(diagram);
-                            const newBounds = oldBounds.moveBy(new Vec2(action.offset, action.offset));
-
+                            const newBounds = oldBounds.moveBy(new Vec2(offsetX, offsetY));
                             return i.transformByBounds(oldBounds, newBounds);
                         });
                     }

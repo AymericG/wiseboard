@@ -185,7 +185,7 @@ describe('ItemsReducer', () => {
 
         const json = serializer.serializeSet(DiagramItemSet.createFromDiagram(diagram.rootIds.toArray(), diagram)!, true);
 
-        const action = pasteItems(diagram, json);
+        const action = pasteItems(diagram, json, 0, 0);
         const state_1 = EditorState.empty().addDiagram(diagram);
         
         const state_2 = reducer(state_1, action);
@@ -200,7 +200,7 @@ describe('ItemsReducer', () => {
     it('should not throw when pasting invalid json to diagram', () => {
         const json = 'invalid json';
 
-        const action = pasteItems(diagram, json);
+        const action = pasteItems(diagram, json, 0, 0);
         const state = EditorState.empty();
 
         expect(() => reducer(state, action)).not.toThrow();
