@@ -85,6 +85,11 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
     private doCopy = (e: ClipboardEvent, serializer: Serializer, changeIds = false) => {
         const { selectedDiagram, selectedItems } = this.props;
 
+        const target: any = e.target;
+        if (target.type === 'textarea' || target.type === 'input') {
+            return;
+        }
+
         if (selectedDiagram && !!selectedItems.length) {
             const set =
                 DiagramItemSet.createFromDiagram(
@@ -111,6 +116,11 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
     private doCut = (e: ClipboardEvent, serializer: Serializer) => {
         const { selectedDiagram, selectedItems } = this.props;
 
+        const target: any = e.target;
+        if (target.type === 'textarea' || target.type === 'input') {
+            return;
+        }
+
         if (selectedDiagram) {
             this.doCopy(e, serializer);
 
@@ -120,6 +130,11 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
 
     private doPaste = (e: ClipboardEvent, serializer: Serializer) => {
         const { selectedDiagram, x, y, zoom } = this.props;
+        
+        const target: any = e.target;
+        if (target.type === 'textarea' || target.type === 'input') {
+            return;
+        }
         
         if (!selectedDiagram) {
             return;
