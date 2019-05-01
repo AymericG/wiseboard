@@ -19,6 +19,8 @@ import {
     LayoutMenuContainer
 } from '@app/wireframes/components';
 
+import { InteractionMode } from '@app/constants';
+
 export interface FloatingToolbarProps {
     // The current zoom value.
     zoom: number;
@@ -27,6 +29,8 @@ export interface FloatingToolbarProps {
     y: number;
 
     isInteractingWithItem: boolean;
+    interactionMode: InteractionMode;
+    
     isEditingText: boolean;
 
     // The selected diagram.
@@ -60,9 +64,9 @@ class FloatingToolbar extends React.Component<FloatingToolbarProps, FloatingTool
     }
 
     public render(): any {
-        const { isEditingText, isInteractingWithItem, selectedDiagram, selectedItems, x, y, zoom } = this.props;
+        const { interactionMode, isEditingText, isInteractingWithItem, selectedDiagram, selectedItems, x, y, zoom } = this.props;
 
-        if (this.state.hideToolbar || !selectedItems.length || isInteractingWithItem || isEditingText) {
+        if (this.state.hideToolbar || !selectedItems.length || isInteractingWithItem || isEditingText || interactionMode === InteractionMode.Drag) {
             return null;
         }
         const transform = this.calculateTransform(selectedItems, selectedDiagram);
@@ -88,6 +92,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
         zoom: state.ui.zoom,
         x: state.ui.x,
         y: state.ui.y,
+        interactionMode: state.ui.interactionMode,
         isEditingText: state.ui.isEditingText,  
         isInteractingWithItem: state.ui.isInteractingWithItem,
         selectedDiagram: getDiagram(state),

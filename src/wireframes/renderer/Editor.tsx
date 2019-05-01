@@ -47,6 +47,8 @@ import { TransformAdorner }     from './TransformAdorner';
 
 import { gridSize, InteractionMode } from '@app/constants';
 
+const GRID_OFFSET = 1000;
+
 export interface EditorProps {
     isEditingText: boolean;
     startEditing: () => any;
@@ -143,7 +145,7 @@ class Editor extends React.Component<EditorProps> {
         const newX = - x / zoom;
         const newY = - y / zoom;
         
-        this.diagramTools.move(newX, newY);
+        this.diagramTools.move(newX - GRID_OFFSET, newY - GRID_OFFSET);
         const allShapesById: { [id: string]: boolean } = {};
         const allShapes = this.getOrderedShapes();
 
@@ -236,7 +238,7 @@ class Editor extends React.Component<EditorProps> {
         const h = viewSize.y;
 
         if (this.interactionService) {
-            this.diagramTools.size(w, h);
+            this.diagramTools.size(w + GRID_OFFSET * 2, h + GRID_OFFSET * 2);
             this.adornersSelect.size(w, h);
             this.adornersTransform.size(w, h);
             this.diagramRendering.size(w, h);
