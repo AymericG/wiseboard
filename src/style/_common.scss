@@ -418,3 +418,9 @@ div.menu-item {
     cursor: move;
     cursor: grab;
 }
+
+.sticky-note {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}

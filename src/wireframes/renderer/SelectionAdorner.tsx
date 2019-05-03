@@ -17,6 +17,7 @@ import {
 
 import { InteractionMode } from '@app/constants';
 import { SVGRenderer } from '@app/wireframes/shapes/utils/svg-renderer';
+import { isTextEditor } from '../../core/utils/text-editing';
 
 const SELECTION_STROKE_COLOR = '#080';
 const SELECTION_STROKE_LOCK_COLOR = '#f00';
@@ -71,6 +72,9 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
     }
 
     public onMouseDown(event: SvgEvent, next: () => void) {
+        if (isTextEditor(event.event.target)) {
+            return next();
+        }
         const selection = this.selectSingle(event, this.props.selectedDiagram);
         this.props.selectItems(this.props.selectedDiagram, selection);
 
@@ -84,6 +88,10 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
             return next();
         }
 
+        if (isTextEditor(event.event.target)) { 
+            return next();
+        }
+        
         const rect = Rect2.fromVecs([this.dragStart, event.position]);
 
         if (rect.area > 0) {

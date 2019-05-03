@@ -15,7 +15,12 @@ import {
     SvgEvent
 } from './interaction-service';
 
-import { Keys } from '@app/constants';
+import { Keys, TEXT_PADDING } from '@app/constants';
+
+import { ContentEditable } from '@app/core/react/ContentEditable';
+import { isTextEditor } from '@app/core/utils/text-editing';
+
+// import ContentEditable from 'react-contenteditable';
 
 const MIN_WIDTH = 150;
 const MIN_HEIGHT = 30;
@@ -91,10 +96,11 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
                 left: x,
                 width: w,
                 height: h,
+                padding: TEXT_PADDING,
+                backgroundColor: '#efefef',
                 transform: 'scale(' + (nextProps.zoom) + ')',
                 transformOrigin: 'top left',
                 resize: 'none',
-                display: 'block',
                 position: 'absolute'
             };
 
@@ -108,7 +114,7 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
     }
 
     private handleMouseDown = (e: MouseEvent) => {
-        if (e.target !== this.textArea.current) {
+        if (!isTextEditor(e.target)) {
             this.hide();
         }
     }
@@ -137,7 +143,8 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
         // if key is ENTER
         const e: KeyboardEvent = event.event as KeyboardEvent;
         const target: any = event.event.target;
-        if (target.type === 'textarea') {
+        if (isTextEditor(target)) {
+            // we ignore this enter because it is handled somewhere else
             return next();
         }
 
@@ -154,9 +161,9 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
         return next();
     }
 
-    private doHide = () => {
-        this.hide();
-    }
+    // private doHide = () => {
+    //     this.hide();
+    // }
 
     private doSubmit = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if ((event.keyCode === Keys.ENTER && !event.shiftKey) ||
@@ -169,9 +176,6 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
             } else {
                 this.hide();
             }
-
-            this.hide();
-
         }
     }
 
@@ -209,16 +213,16 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
         if (!isEditingText) { return null; }
 
         return (
-            <textarea 
+            <ContentEditable
+                className='no-select sharpie sticky-note'
                 onChange={this.onChange}
-                value={this.state.text}
                 autoFocus={true}
-                className='ant-input no-border-radius' 
+                html={this.state.text}
                 style={this.editingStyle}
                 ref={this.textArea}
-                onBlur={this.doHide}
-                onKeyDown={this.doSubmit} 
-            />
+                onBlur={this.doSubmit}
+                onKeyDown={this.doSubmit}
+                />
         );
     }
 }

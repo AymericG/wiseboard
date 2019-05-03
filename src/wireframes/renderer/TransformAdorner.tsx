@@ -22,6 +22,7 @@ import {
 import { SVGRenderer } from '@app/wireframes/shapes/utils/svg-renderer';
 
 import { gridSize, Keys } from '@app/constants';
+import { isTextEditor } from '../../core/utils/text-editing';
 
 const MODE_RESIZE = 2;
 const MODE_MOVE = 3;
@@ -150,7 +151,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     public onMouseDown(event: SvgEvent, next: () => void) {
-        if (event.event.ctrlKey) {
+        if (event.event.ctrlKey || isTextEditor(event.event.target)) {
             return next();
         }
 
@@ -299,7 +300,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     private rotate(event: SvgEvent, shiftKey: boolean) {
-        const delta = this.getCummulativeRotation(event);
+        const delta = this.getCumulativeRotation(event);
 
         const deltaRotation =
             this.snapManager.snapRotating(this.startTransform, delta, shiftKey);
@@ -309,7 +310,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         this.overlays.showInfo(this.transform, `Y: ${this.transform.rotation.degree}°`);
     }
 
-    private getCummulativeRotation(event: SvgEvent): number {
+    private getCumulativeRotation(event: SvgEvent): number {
         const center = this.startTransform.position;
 
         const eventPoint = event.position;
@@ -370,6 +371,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         if (this.manipulationMode === 0) {
             return next();
         }
+
 
         try {
             this.overlays.reset();

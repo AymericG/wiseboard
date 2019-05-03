@@ -3,7 +3,7 @@ import { ColorConfigurable, Configurable, DiagramShape } from '@app/wireframes/m
 import { AbstractContext, AbstractControl } from '@app/wireframes/shapes/utils/abstract-control';
 import { CommonTheme } from './_theme';
 
-import { COLOR_KEY, commentHeight, commentWidth } from '@app/constants';
+import { COLOR_KEY, commentHeight, commentWidth, TEXT_PADDING } from '@app/constants';
 
 const DEFAULT_APPEARANCE = {};
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT] = '';
@@ -57,7 +57,7 @@ export class Comment extends AbstractControl {
 
     private createText(ctx: AbstractContext) {
         // const textItem = ctx.renderer.createMultilineText(ctx.shape, ctx.bounds.deflate(10, 20));
-        const textItem = ctx.renderer.createFittedText(ctx.shape, ctx.bounds.deflate(10, 20));
+        const textItem = ctx.renderer.createFittedText(ctx.shape, ctx.bounds.deflate(TEXT_PADDING, TEXT_PADDING));
         ctx.add(textItem);
     }
 }

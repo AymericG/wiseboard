@@ -14,6 +14,8 @@ import {
     SvgEvent
 } from './interaction-service';
 
+import { isTextEditor } from '@app/core/utils/text-editing';
+
 
 export interface NavigationAdornerProps {
     // editorContent: React.RefObject<any>;
@@ -95,7 +97,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
     public onKeyDown(event: SvgEvent, next: () => void) {
         const { interactionMode, moveTo, x, y, selectedItems } = this.props;
         const target: any = event.event.target;
-        if (target.type === 'textarea' || target.type === 'input') {
+        if (isTextEditor(target)) {
             next();
             return;
         }

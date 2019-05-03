@@ -26,6 +26,8 @@ import { MathHelper } from '@app/core';
 import { pasteImage } from '@app/core/utils/clipboard-helper';
 import { DiagramRef } from '@app/wireframes/model/actions/utils';
 
+import { isTextEditor } from '@app/core/utils/text-editing';
+
 
 interface ClipboardShortcutsProps {
     // The selected diagram.
@@ -80,10 +82,10 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
         const { selectedDiagram, selectedItems } = this.props;
 
         const target: any = e.target;
-        if (target.type === 'textarea' || target.type === 'input') {
+        if (isTextEditor(target)) {
             return;
         }
-
+        
         if (selectedDiagram && !!selectedItems.length) {
             const set =
                 DiagramItemSet.createFromDiagram(
@@ -110,7 +112,7 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
         const { selectedDiagram, selectedItems } = this.props;
 
         const target: any = e.target;
-        if (target.type === 'textarea' || target.type === 'input') {
+        if (isTextEditor(target)) {
             return;
         }
 
@@ -125,7 +127,7 @@ class ClipboardShortcuts extends React.PureComponent<ClipboardShortcutsProps, Cl
         const { selectedDiagram, x, y, zoom } = this.props;
         
         const target: any = e.target;
-        if (target.type === 'textarea' || target.type === 'input') {
+        if (isTextEditor(target)) {
             return;
         }
 

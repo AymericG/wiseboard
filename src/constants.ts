@@ -31,3 +31,5 @@ export namespace Keys {
     export const RIGHT = 39;
     export const DOWN = 40;
 }
+
+export const TEXT_PADDING = 10;
