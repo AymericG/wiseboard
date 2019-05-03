@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
 import { Shortcut } from '@app/core';
+import { AppName } from './wireframes/components/AppName';
 
 import {
     EditorViewContainer,
@@ -192,6 +193,8 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                         size='small'
                         shape='circle'
                         onClick={this.doToggleLeftSidebar} />
+
+                    <AppName />
 
                 </Layout>
             </Layout>

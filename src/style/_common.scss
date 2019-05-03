@@ -125,7 +125,7 @@ ul {
     }
 }
 
-$toggle-button-top: 72px;
+$toggle-button-bottom: 1rem;
 $toggle-button-offset-left: 10px;
 $toggle-button-offset-right: 27px;
 $sidebar-size: 320px;
@@ -133,7 +133,7 @@ $sidebar-size: 320px;
 .content {
     .toggle-button-left {
         & {
-            @include absolute($toggle-button-top, auto, auto, $toggle-button-offset-left);
+            @include absolute(auto, auto, $toggle-button-bottom, $toggle-button-offset-left);
         }
 
         &.visible {
@@ -143,7 +143,7 @@ $sidebar-size: 320px;
 
     .toggle-button-right {
         & {
-            @include absolute($toggle-button-top, $toggle-button-offset-right, auto, auto);
+            @include absolute(auto, $toggle-button-offset-right, $toggle-button-bottom, auto);
         }
 
         &.visible {

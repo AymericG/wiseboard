@@ -18,6 +18,7 @@ import {
 import { InteractionMode } from '@app/constants';
 import { SVGRenderer } from '@app/wireframes/shapes/utils/svg-renderer';
 import { isTextEditor } from '../../core/utils/text-editing';
+import { CommonTheme } from '../shapes/neutral/_theme';
 
 const SELECTION_STROKE_COLOR = '#080';
 const SELECTION_STROKE_LOCK_COLOR = '#f00';
@@ -56,8 +57,8 @@ export class SelectionAdorner extends React.Component<SelectionAdornerProps> imp
 
         this.selectionShape = this.renderer.createRectangle(1);
 
-        this.renderer.setBackgroundColor(this.selectionShape, '#0a0');
-        this.renderer.setStrokeColor(this.selectionShape, '#050');
+        this.renderer.setBackgroundColor(this.selectionShape, CommonTheme.PURPLE);
+        this.renderer.setStrokeColor(this.selectionShape, '#000');
         this.renderer.setOpacity(this.selectionShape, 0.3);
     }
 
