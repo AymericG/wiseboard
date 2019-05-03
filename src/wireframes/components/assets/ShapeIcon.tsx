@@ -20,7 +20,7 @@ const ShapeTarget: DragSourceSpec<ShapeIconProps, any> = {
     }
 };
 
-const ShapeConnect: DragSourceCollector<any> = (connector, monitor) => {
+const ShapeConnect: DragSourceCollector<any, any> = (connector: any, monitor: any) => {
     return { connectDragSource: connector.dragSource(), connectDragPreview: connector.dragPreview() };
 };
 

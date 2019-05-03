@@ -17,7 +17,7 @@ const IconTarget: DragSourceSpec<IconProps, any> = {
     }
 };
 
-const IconConnect: DragSourceCollector<{}> = (connector, monitor) => {
+const IconConnect: DragSourceCollector<any, any> = (connector: any, monitor: any) => {
     return { connectDragSource: connector.dragSource() };
 };
 

@@ -103,7 +103,7 @@ const AssetTarget: DropTargetSpec<EditorViewProps> = {
     }
 };
 
-const EditorViewConnect: DropTargetCollector<any> = (connector, monitor) => {
+const EditorViewConnect: DropTargetCollector<any, any> = (connector: any, monitor: any) => {
     return { connectDropTarget: connector.dropTarget() };
 };
 
