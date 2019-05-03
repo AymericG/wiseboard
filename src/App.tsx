@@ -5,6 +5,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { Shortcut } from '@app/core';
 import { AppName } from './wireframes/components/AppName';
+import { UserCursor } from './wireframes/components/UserCursor';
 
 import {
     EditorViewContainer,
@@ -195,6 +196,10 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                         onClick={this.doToggleLeftSidebar} />
 
                     <AppName />
+
+                    <UserCursor color='#5905F8' name='Parma'/>
+                    <UserCursor color='#22EBCB' name='Gauri'/>
+                    <UserCursor color='#FC0CEB' name='Stephen'/>
 
                 </Layout>
             </Layout>
