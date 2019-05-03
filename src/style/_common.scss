@@ -424,3 +424,7 @@ div.menu-item {
     justify-content: center;
     flex-direction: column;
 }
+
+[contenteditable]:focus {
+    outline: 0px solid transparent;
+}

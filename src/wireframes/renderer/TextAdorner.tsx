@@ -161,10 +161,6 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
         return next();
     }
 
-    // private doHide = () => {
-    //     this.hide();
-    // }
-
     private doSubmit = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if ((event.keyCode === Keys.ENTER && !event.shiftKey) ||
             (event.keyCode === Keys.ESC)) {

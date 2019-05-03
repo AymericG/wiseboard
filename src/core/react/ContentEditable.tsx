@@ -14,33 +14,35 @@ interface ContentEditableProps {
 
 export class ContentEditable extends React.Component<ContentEditableProps> {
     private lastHtml: string;
-    private div: React.RefObject<any>;
+    private span: React.RefObject<any>;
 
     constructor(props: ContentEditableProps, context: any) {
         super(props, context);
-
-        this.div = React.createRef();
+        this.span = React.createRef();
     }
 
     public render() {
         return <div 
-            ref={this.div}
             style={this.props.style}
-            className={this.props.className}
-            onKeyDown={this.props.onKeyDown}
-            onInput={this.emitChange}
-            onBlur={this.onBlur}
-            contentEditable
-            dangerouslySetInnerHTML = {{ __html: this.props.html }} />;
+            className={'editable ' + this.props.className}>
+            <span 
+                ref={this.span}
+                onKeyDown={this.props.onKeyDown}
+                onInput={this.emitChange}
+                onBlur={this.onBlur}
+                contentEditable 
+                className='textFitted' 
+                dangerouslySetInnerHTML = {{ __html: this.props.html }}></span>
+        </div>;
     }
                 
     public shouldComponentUpdate(nextProps: ContentEditableProps) {
-        return nextProps.html !== this.div.current.innerText;
+        return nextProps.html !== this.span.current.innerText;
     }
 
     public componentDidMount() {
         if (this.props.autoFocus) {
-            this.div.current.focus();
+            this.span.current.focus();
         }
         this.updateTextSize();
      }
@@ -58,7 +60,7 @@ export class ContentEditable extends React.Component<ContentEditableProps> {
     
     private emitChange = () => {
         const { onChange } = this.props; 
-        const html = this.div.current.innerText;
+        const html = this.span.current.innerText;
         this.updateTextSize();
         if (onChange && html !== this.lastHtml) {
 
