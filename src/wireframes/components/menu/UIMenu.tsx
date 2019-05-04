@@ -52,7 +52,7 @@ const calculateUniverseBoundaries = (diagram: Diagram) => {
 
 class UIMenu extends React.PureComponent<UIMenuProps> {
     private doZoomOut = () => {
-        this.props.setZoom(this.props.zoom - .25);
+        this.props.setZoom(Math.max(minZoom, this.props.zoom - .25));
     }
 
     private doZoomToFit = () => {
@@ -64,7 +64,7 @@ class UIMenu extends React.PureComponent<UIMenuProps> {
     }
 
     private doZoomIn = () => {
-        this.props.setZoom(this.props.zoom + .25);
+        this.props.setZoom(Math.min(maxZoom, this.props.zoom + .25));
     }
 
     public render() {
