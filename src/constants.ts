@@ -3,6 +3,12 @@ export enum InteractionMode {
     Drag
 }
 
+export enum TextBehaviour {
+    Fit,
+    Grow,
+    Fixed
+}
+
 export const gridSize = 20;
 export const canvasSize = 5000;
 

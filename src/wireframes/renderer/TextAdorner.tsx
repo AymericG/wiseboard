@@ -15,7 +15,7 @@ import {
     SvgEvent
 } from './interaction-service';
 
-import { Keys, TEXT_PADDING } from '@app/constants';
+import { Keys, TextBehaviour, TEXT_PADDING } from '@app/constants';
 
 import { ContentEditable } from '@app/core/react/ContentEditable';
 import { isTextEditor } from '@app/core/utils/text-editing';
@@ -53,8 +53,10 @@ interface TextAdornerState {
 }
 
 export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerState> implements InteractionHandler {
-    private editingStyle: object;
+    private editingStyle: any;
     private textArea: React.RefObject<any>;
+    private editingClassName: string;
+    private shouldFitText: boolean;
 
     constructor(props: TextAdornerProps, context: any) {
         super(props, context);
@@ -90,12 +92,13 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
             const w = sizeInPx((Math.max(transform.size.x, MIN_WIDTH)) + 4);
             const h = sizeInPx((Math.max(transform.size.y, MIN_HEIGHT)) + 4);
 
-            
+            const textBehaviour = editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT_BEHAVIOUR);
+            this.shouldFitText = textBehaviour === TextBehaviour.Fit;    
+            this.editingClassName = editingShape.appearance.get(DiagramShape.APPEARANCE_FONT_FAMILY_CLASS_NAME);
             this.editingStyle = {
                 top: y,
                 left: x,
-                width: w,
-                height: h,
+                fontSize: editingShape.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE),
                 padding: TEXT_PADDING,
                 backgroundColor: '#efefef',
                 transform: 'scale(' + (nextProps.zoom) + ')',
@@ -103,6 +106,13 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
                 resize: 'none',
                 position: 'absolute'
             };
+
+            if (textBehaviour !== TextBehaviour.Grow) {
+                this.editingStyle.width = w;
+                this.editingStyle.height = h;
+            } else {
+                this.editingStyle.minWidth = w;
+            }
 
             this.setState({ text: editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '' });
             this.props.interactionService.hideAdorners();    
@@ -210,7 +220,8 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
 
         return (
             <ContentEditable
-                className='no-select sharpie sticky-note'
+                shouldFitText={this.shouldFitText}
+                className={'no-select ' + this.editingClassName}
                 onChange={this.onChange}
                 autoFocus={true}
                 html={this.state.text}

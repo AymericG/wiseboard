@@ -4,6 +4,7 @@ import * as textFit from 'textfit';
 
 interface ContentEditableProps {
     html: string;
+    shouldFitText: boolean;
     autoFocus?: boolean;
     style?: object;
     className?: string;
@@ -49,7 +50,7 @@ export class ContentEditable extends React.Component<ContentEditableProps> {
 
      private updateTextSize = () => {
         const div = ReactDOM.findDOMNode(this);
-        if (!div) { return; }
+        if (!div || !this.props.shouldFitText) { return; }
         textFit(div, { alignHoriz: true, multiLine: true });
      }
      

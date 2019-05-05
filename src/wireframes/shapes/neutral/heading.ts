@@ -3,7 +3,7 @@ import { ColorConfigurable, Configurable, DiagramShape, SelectionConfigurable } 
 import { AbstractContext, AbstractControl, TextSizeConstraint } from '@app/wireframes/shapes/utils/abstract-control';
 import { CommonTheme } from './_theme';
 
-import { COLOR_KEY } from '@app/constants';
+import { COLOR_KEY, TextBehaviour } from '@app/constants';
 
 const DEFAULT_APPEARANCE = {};
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FOREGROUND_COLOR] = CommonTheme.CONTROL_TEXT_COLOR;
@@ -11,6 +11,8 @@ DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT] = 'Heading';
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FONT_WEIGHT] = 'bold';
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FONT_SIZE] = 36;
 DEFAULT_APPEARANCE[COLOR_KEY] = CommonTheme.CONTROL_TEXT_COLOR;
+DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT_BEHAVIOUR] = TextBehaviour.Grow;
+
 
 const CONFIGURABLE: Configurable[] = [
     new SelectionConfigurable(DiagramShape.APPEARANCE_FONT_SIZE, 'Font size',

@@ -25,6 +25,14 @@ body {
     line-height: 1;
 }
 
+.sharpie-font {
+    font-family: 'Gennaro Palmieri Sharpie 2016';
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
 
 #root {
     height: 100%;

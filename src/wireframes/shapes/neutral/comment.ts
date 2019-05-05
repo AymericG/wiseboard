@@ -3,7 +3,7 @@ import { ColorConfigurable, Configurable, DiagramShape } from '@app/wireframes/m
 import { AbstractContext, AbstractControl } from '@app/wireframes/shapes/utils/abstract-control';
 import { CommonTheme } from './_theme';
 
-import { COLOR_KEY, commentHeight, commentWidth, TEXT_PADDING } from '@app/constants';
+import { COLOR_KEY, commentHeight, commentWidth, TextBehaviour, TEXT_PADDING } from '@app/constants';
 
 const DEFAULT_APPEARANCE = {};
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT] = '';
@@ -11,6 +11,8 @@ DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT_ALIGNMENT] = 'left';
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FONT_SIZE] = CommonTheme.CONTROL_FONT_SIZE;
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_STROKE_THICKNESS] = 1;
 DEFAULT_APPEARANCE[COLOR_KEY] = CommonTheme.YELLOW;
+DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FONT_FAMILY_CLASS_NAME] = 'sharpie-font';
+DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT_BEHAVIOUR] = TextBehaviour.Fit;
 
 const CONFIGURABLE: Configurable[] = [
     new ColorConfigurable(COLOR_KEY, 'Color')

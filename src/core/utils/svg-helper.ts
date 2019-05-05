@@ -44,28 +44,32 @@ export module SVGHelper {
         return createText(container, text, fontSize, 'normal', alignment, 'top');
     }
 
-    export function createFittedText(container: svg.Container, bounds: Rect2, text: string, fontSize?: number, alignment?: string) {
-        return createTextWithTextFit(container, bounds, text, fontSize, alignment, 'top');
+    export function createFittedText(container: svg.Container, bounds: Rect2, text: string, fontSize?: number, fontFamilyClassName?: string) {
+        return createTextWithTextFit(container, bounds, text, fontSize, fontFamilyClassName);
     }
 
-    export function createTextWithTextFit(container: svg.Container, bounds: Rect2, text: string, fontSize?: number, alignment?: string, verticalAlign?: string) {
+    export function createTextWithTextFit(
+        container: svg.Container, 
+        bounds: Rect2, 
+        text: string, 
+        fontSize?: number, 
+        fontFamilyClassName?: string) {
         fontSize = fontSize || 10;
         const element = container.element('foreignObject', svg.Parent);
-
         const div = document.createElement('div');
-        div.className = 'no-select sharpie';
-        div.style.textAlign = alignment || 'center';
-//        div.style.fontSize = sizeInPx(fontSize || 10);
+        div.className = 'no-select' + (' ' + fontFamilyClassName || '');
+        div.style.lineHeight = '1';
+
+        div.style.textAlign = 'center';
+        
         div.style.overflow = 'hidden';
         div.style.width = bounds.width + 'px';
         div.style.height = bounds.height + 'px';
         div.style.display = 'flex';
         div.style.justifyContent = 'center';
         div.style.flexDirection = 'column';
-
-    //    div.style.verticalAlign = verticalAlign || 'middle';
         div.textContent = text;
-
+        
         element.node.appendChild(div);
         textFit(div, { alignHoriz: true, multiLine: true });
         return element;
