@@ -37,13 +37,13 @@ import {
     UIStateInStore
 } from '@app/wireframes/model';
 
-import { CanvasView }           from './CanvasView';
-import { InteractionService }   from './interaction-service';
-import { NavigationAdorner }    from './NavigationAdorner';
-import { SelectionAdorner }     from './SelectionAdorner';
-import { ShapeRef }             from './shape-ref';
-import { TextAdorner }          from './TextAdorner';
-import { TransformAdorner }     from './TransformAdorner';
+import { CanvasView } from './CanvasView';
+import { InteractionService } from './interaction-service';
+import { NavigationAdorner } from './NavigationAdorner';
+import { SelectionAdorner } from './SelectionAdorner';
+import { ShapeRef } from './shape-ref';
+import { TextAdorner } from './TextAdorner';
+import { TransformAdorner } from './TransformAdorner';
 
 import { gridSize, InteractionMode } from '@app/constants';
 
@@ -97,7 +97,7 @@ export interface EditorProps {
 
     setInteractionMode: (interactionMode: InteractionMode) => void;
     setIsInteractingWithItem: (isInteracting: boolean) => void;
-    
+
     // A function to transform a set of items.
     transformItems: (diagram: Diagram, items: DiagramItem[], oldBounds: Transform, newBounds: Transform) => any;
 }
@@ -113,6 +113,7 @@ class Editor extends React.Component<EditorProps> {
     private shapeRefsById: { [id: string]: ShapeRef } = {};
 
     public componentDidUpdate() {
+        console.log('updated');
         this.forceRender();
     }
 
@@ -120,9 +121,9 @@ class Editor extends React.Component<EditorProps> {
 
         // create grid pattern
         const pattern = doc.pattern(gridSize, gridSize, (add: any) => {
-            add.circle(1).fill('none').stroke({ color: '#999', width: '1'});
+            add.circle(1).fill('none').stroke({ color: '#999', width: '1' });
         });
-        
+
         this.diagramTools = doc.rect().fill(pattern);
         this.diagramRendering = doc.group();
         this.adornersSelect = doc.group();
@@ -144,7 +145,7 @@ class Editor extends React.Component<EditorProps> {
         // reposition this.diagramTools
         const newX = - x / zoom;
         const newY = - y / zoom;
-        
+
         this.diagramTools.move(newX - GRID_OFFSET, newY - GRID_OFFSET);
         const allShapesById: { [id: string]: boolean } = {};
         const allShapes = this.getOrderedShapes();
@@ -244,73 +245,66 @@ class Editor extends React.Component<EditorProps> {
             this.diagramRendering.size(w, h);
         }
 
-        const style = { transform: 'translate(' + x + 'px, ' + y + 'px'};
+        return selectedDiagram && <>
+            <CanvasView
+                x={x}
+                y={y}
+                onInit={this.initDiagramScope}
+                zoom={zoom}
+                zoomedWidth={zoomedWidth}
+                zoomedHeight={zoomedHeight} />
 
-        return (
-            <>
-                {selectedDiagram &&
-                    <div id='editor' className='editor' style={style}>
-                        <CanvasView onInit={this.initDiagramScope}
-                            zoom={zoom}
-                            zoomedWidth={zoomedWidth}
-                            zoomedHeight={zoomedHeight} />
+            {this.interactionService && selectedDiagram && <>
+                <ClipboardShortcutsContainer />
 
-                        {this.interactionService && selectedDiagram && (
-                            <>
-                                <ClipboardShortcutsContainer />
+                <NavigationAdorner
+                    addVisual={addVisual}
+                    interactionMode={interationMode}
+                    setInteractionMode={setInteractionMode}
+                    interactionService={this.interactionService}
+                    selectedDiagram={selectedDiagram}
+                    selectedItems={selectedItemsWithLocked}
+                    selectItems={selectItems}
+                    zoom={zoom}
+                    x={x}
+                    y={y}
+                    setZoom={setZoom}
+                    moveTo={moveTo}
+                />
 
-                                <NavigationAdorner
-                                    addVisual={addVisual}
-                                    interactionMode={interationMode}
-                                    setInteractionMode={setInteractionMode}
-                                    interactionService={this.interactionService}
-                                    selectedDiagram={selectedDiagram}
-                                    selectedItems={selectedItemsWithLocked}
-                                    selectItems={selectItems} 
-                                    zoom={zoom}
-                                    x={x}
-                                    y={y}
-                                    setZoom={setZoom}
-                                    moveTo={moveTo}
-                                    />
+                <TransformAdorner
+                    adorners={this.adornersTransform}
+                    interactionService={this.interactionService}
+                    setIsInteractingWithItem={setIsInteractingWithItem}
+                    selectedDiagram={selectedDiagram}
+                    selectedItems={selectedItems}
+                    transformItems={transformItems}
+                    isEditingText={isEditingText}
+                    viewSize={viewSize}
+                    zoom={zoom} />
 
-                                <TransformAdorner
-                                    adorners={this.adornersTransform}
-                                    interactionService={this.interactionService}
-                                    setIsInteractingWithItem={setIsInteractingWithItem}
-                                    selectedDiagram={selectedDiagram}
-                                    selectedItems={selectedItems}
-                                    transformItems={transformItems}
-                                    isEditingText={isEditingText}
-                                    viewSize={viewSize}
-                                    zoom={zoom} />
+                <SelectionAdorner
+                    interactionMode={interationMode}
+                    adorners={this.adornersSelect}
+                    interactionService={this.interactionService}
+                    selectedDiagram={selectedDiagram}
+                    selectedItems={selectedItemsWithLocked}
+                    selectItems={selectItems} />
 
-                                <SelectionAdorner
-                                    interactionMode={interationMode}
-                                    adorners={this.adornersSelect}
-                                    interactionService={this.interactionService}
-                                    selectedDiagram={selectedDiagram}
-                                    selectedItems={selectedItemsWithLocked}
-                                    selectItems={selectItems} />
+                <TextAdorner
+                    changeItemsAppearance={changeItemsAppearance}
+                    interactionService={this.interactionService}
+                    selectedDiagram={selectedDiagram}
+                    selectedItems={selectedItems}
+                    startEditing={startEditing}
+                    stopEditing={stopEditing}
+                    isEditingText={isEditingText}
+                    selectItems={selectItems}
+                    zoom={zoom} />
 
-                                <TextAdorner
-                                    changeItemsAppearance={changeItemsAppearance}
-                                    interactionService={this.interactionService}
-                                    selectedDiagram={selectedDiagram}
-                                    selectedItems={selectedItems}
-                                    startEditing={startEditing}
-                                    stopEditing={stopEditing}
-                                    isEditingText={isEditingText}
-                                    selectItems={selectItems}
-                                    zoom={zoom} />
-                                
 
-                            </>
-                        )}
-                    </div>
-                }
-            </>
-        );
+            </>}
+        </>;
     }
 }
 

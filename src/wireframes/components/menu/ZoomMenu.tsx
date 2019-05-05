@@ -12,7 +12,7 @@ import { withShortcut } from '@app/core/utils/tooltip-helper';
 import { maxZoom, minZoom } from '@app/constants';
 import { getDiagram } from '../../model/projections';
 
-interface UIMenuProps {
+interface ZoomMenuProps {
     selectedDiagram: Diagram;
     
     // Indicates if you can zoom in.
@@ -50,7 +50,7 @@ const calculateUniverseBoundaries = (diagram: Diagram) => {
     return { minX, maxX, minY, maxY };
 };
 
-class UIMenu extends React.PureComponent<UIMenuProps> {
+class ZoomMenu extends React.PureComponent<ZoomMenuProps> {
     private doZoomOut = () => {
         this.props.setZoom(Math.max(minZoom, this.props.zoom - .25));
     }
@@ -117,7 +117,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
     setZoom
 }, dispatch);
 
-export const UIMenuContainer = connect(
+export const ZoomMenuContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(UIMenu);
+)(ZoomMenu);

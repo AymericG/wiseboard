@@ -16,7 +16,7 @@ import {
     LoadingMenuContainer,
     MainToolbarContainer,
     ShapesContainer,
-    UIMenuContainer
+    ZoomMenuContainer
 } from '@app/wireframes/components';
 
 import {
@@ -181,7 +181,7 @@ class App extends React.PureComponent<AppProps & AppOwnProps> {
                             <HistoryMenuContainer />
                         </div>
                         <div className='editor-toolbox'>
-                            <UIMenuContainer />
+                            <ZoomMenuContainer />
                         </div>
                     </div>
 

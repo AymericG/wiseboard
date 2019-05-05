@@ -5,6 +5,9 @@ export interface CanvasViewProps {
     // The width of the canvas.
     zoomedWidth: number;
 
+    x: number;
+    y: number;
+
     // The height of the canvas.
     zoomedHeight: number;
 
@@ -41,10 +44,6 @@ export class CanvasView extends React.Component<CanvasViewProps> {
         this.updateViewSettings(nextProps);
     }
 
-    public shouldComponentUpdate() {
-        return false;
-    }
-
     private updateViewSettings(props: CanvasViewProps) {
         if (this.document) {
             const { zoomedWidth, zoomedHeight } = props;
@@ -59,6 +58,8 @@ export class CanvasView extends React.Component<CanvasViewProps> {
     }
 
     public render() {
-        return <div className={this.props.className} ref={this.initialize} />;
+        const { x, y } = this.props;
+        const style = { transform: 'translate(' + x + 'px, ' + y + 'px)'};
+        return <div id='canvas' style={style} className={this.props.className} ref={this.initialize} />;
     }
 }

@@ -13,7 +13,7 @@ export * from './menu/LayoutMenu';
 export * from './menu/LoadingMenu';
 export * from './menu/LockMenu';
 export * from './menu/MainToolbar';
-export * from './menu/UIMenu';
+export * from './menu/ZoomMenu';
 
 
 export * from './EditorView';

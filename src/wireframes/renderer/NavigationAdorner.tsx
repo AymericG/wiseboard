@@ -185,8 +185,8 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         const STEP = 50;
         this.debounceX = (this.debounceX == null ? x : this.debounceX) - STEP * deltaX;
         this.debounceY = (this.debounceY == null ? y : this.debounceY) - STEP * deltaY;
-        const editor = document.getElementById('editor');
-        editor.style.transform = 'translate(' + this.debounceX + 'px, ' + this.debounceY + 'px'; 
+        const canvas = document.getElementById('canvas');
+        canvas.style.transform = 'translate(' + this.debounceX + 'px, ' + this.debounceY + 'px)'; 
         this.debounceMove(100);
     }
 
@@ -196,8 +196,8 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         }
         const x = this.editorStartX + (event.event as MouseEvent).pageX - this.dragStartX;
         const y = this.editorStartY + (event.event as MouseEvent).pageY - this.dragStartY;
-        const editor = document.getElementById('editor');
-        editor.style.transform = 'translate(' + x + 'px, ' + y + 'px'; 
+        const canvas = document.getElementById('canvas');
+        canvas.style.transform = 'translate(' + x + 'px, ' + y + 'px)'; 
     }
 
 

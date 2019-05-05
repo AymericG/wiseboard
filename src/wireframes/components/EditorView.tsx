@@ -55,10 +55,10 @@ const AssetTarget: DropTargetSpec<EditorViewProps> = {
         const offset = monitor.getSourceClientOffset() || monitor.getClientOffset()!;
 
         const componentRect = (findDOMNode(component!) as HTMLElement)!.getBoundingClientRect();
-        const editorRect = document.getElementById('editor').getBoundingClientRect();
+        const canvasRect = document.getElementById('canvas').getBoundingClientRect();
 
-        let x = (offset.x - componentRect.left - editorRect.left) / props.zoom;
-        let y = (offset.y - componentRect.top - editorRect.top) / props.zoom;
+        let x = (offset.x - componentRect.left - canvasRect.left) / props.zoom;
+        let y = (offset.y - componentRect.top - canvasRect.top) / props.zoom;
 
         const item: any = monitor.getItem();
 
