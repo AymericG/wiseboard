@@ -5,7 +5,7 @@ import { InteractionMode } from '@app/constants';
 
 import { UIState, UIStateInStore } from './../internal';
 import { ADD_VISUAL } from './items';
-import { getClientCenter } from '../../../core/utils/canvas-helper';
+import { calculateCanvasOffset } from '@app/core/utils/canvas-helper';
 
 export const SHOW_INFO_TOAST = 'SHOW_INFO_TOAST';
 export const showInfoToast = (text: string) => {
@@ -29,46 +29,8 @@ export const stopEditing = () => {
 export const SET_ZOOM = 'SET_ZOOM';
 export const setZoom = (zoomLevel: number, worldX?: number, worldY?: number, clientX?: number, clientY?: number) => {
     return (dispatch: Dispatch, getState: () => UIStateInStore) => {
-        if (clientX === undefined) {
-            const clientCenter = getClientCenter();
-            clientX = clientCenter.x;
-            clientY = clientCenter.y;
-        }
-
-        if (worldX === undefined) {
-            const state = getState();
-            const zoom = state.ui.zoom;
-            const x = state.ui.x;
-            const y = state.ui.y;
-            
-            worldX = (clientX - x) / zoom;
-            worldY = (clientY - y) / zoom;
-        }
-
-        const newX = clientX - worldX * zoomLevel;
-        const newY = clientY - worldY * zoomLevel;
-
-        // private debounceTimeout: number;
-        // private debounceX: number;
-        // private debounceY: number;
-        
-        // private debounceMove = (wait: number) => {  
-        //     const later = () => {
-        //         this.debounceTimeout = null;
-        //         this.props.moveTo(this.debounceX, this.debounceY);
-        //         this.debounceX = null;
-        //         this.debounceY = null;
-        //     };
-    
-        //     clearTimeout(this.debounceTimeout);
-        //     this.debounceTimeout = setTimeout(later, wait);
-        // }
-    
-        // const canvas = document.getElementById('canvas');
-        // canvas.style.transform = 'translate(' + this.debounceX + 'px, ' + this.debounceY + 'px)'; 
-
-
-        return dispatch({ type: SET_ZOOM, payload: { zoomLevel, x: newX, y: newY }});
+        const offset = calculateCanvasOffset(zoomLevel, worldX, worldY, clientX, clientY, getState);
+        return dispatch({ type: SET_ZOOM, payload: { zoomLevel, x: offset.x, y: offset.y }});
     };
 };
 

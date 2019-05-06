@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import ReactDOM = require('react-dom');
 
-import { InteractionMode, gridSize, Keys, maxZoom, minZoom, ShapeType } from '@app/constants';
+import { InteractionMode, gridSize, Keys, maxZoom, minZoom, ShapeType, canvasSize } from '@app/constants';
 
 import {
     Diagram,
@@ -15,7 +15,7 @@ import {
 } from './interaction-service';
 
 import { isTextEditor } from '@app/core/utils/text-editing';
-import { getClientCenter } from '../../core/utils/canvas-helper';
+import { getClientCenter, calculateCanvasOffset } from '@app/core/utils/canvas-helper';
 
 
 export interface NavigationAdornerProps {
@@ -64,9 +64,13 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         this.props.interactionService.removeHandler(this);
     }
 
-    public onDoubleClick(event: SvgEvent, next: () => void) {
-        const { addVisual, selectedDiagram, x, y, zoom } = this.props;
-
+    public onDoubleClick = (event: SvgEvent, next: () => void) => {
+        const { addVisual, selectedDiagram } = this.props;
+        
+        const x = this.getCanvasOffsetX();
+        const y = this.getCanvasOffsetY();
+        const zoom = this.getCanvasZoom();
+        
         if (event.shape) {
             return next();
         }
@@ -78,12 +82,79 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         addVisual(selectedDiagram.id, ShapeType.Comment, worldX, worldY);
     }
 
+    private getCanvasOffsetX = () => {
+        if (this.debounceX !== null) { return this.debounceX; }
+        return this.props.x;
+    }
+
+    private getCanvasOffsetY = () => {
+        if (this.debounceY !== null) { return this.debounceY; }
+        return this.props.y;
+    }
+
+    private getCanvasZoom = () => {
+        if (this.debounceZoom !== null) { return this.debounceZoom; }
+        return this.props.zoom;
+    }
+
+    private debounceZoom: number = null;
+    private debounceWorldX: number = null;
+    private debounceWorldY: number = null;
+    private debounceX: number = null;
+    private debounceY: number = null;
+    private debounceClientX: number = null;
+    private debounceClientY: number = null;
+    private debounceTimeout: any = null;
+    
+    private debounceSetZoom = (zoom: number, worldX: number, worldY: number, clientX?: number, clientY?: number) => {
+        this.debounceZoom = zoom;
+        this.debounceWorldX = worldX;
+        this.debounceWorldY = worldY;
+        this.debounceClientX = clientX;
+        this.debounceClientY = clientY;
+        
+        // calculate new x and y
+        const offset = calculateCanvasOffset(zoom, worldX, worldY, clientX, clientY);
+        this.debounceX = offset.x;
+        this.debounceY = offset.y;
+        
+        // Do the changes directly to the UI
+        const canvas = document.getElementById('canvas');
+        canvas.style.transform = 'translate(' + this.debounceX + 'px, ' + this.debounceY + 'px)'; 
+        const svg: any = document.getElementById('svg');
+        svg.setAttribute('width', canvasSize * zoom);
+        svg.setAttribute('height', canvasSize * zoom);
+        
+
+        const later = () => {
+            this.debounceTimeout = null;
+            this.props.setZoom(this.debounceZoom, this.debounceWorldX, this.debounceWorldY, this.debounceClientX, this.debounceClientY);
+
+            this.debounceZoom = null;
+            this.debounceWorldX = null;
+            this.debounceWorldY = null;
+            this.debounceClientX = null;
+            this.debounceClientY = null;
+            this.debounceX = null;
+            this.debounceY = null;
+        };
+    
+        if (this.debounceTimeout) {
+            clearTimeout(this.debounceTimeout);
+        }
+        this.debounceTimeout = setTimeout(later, 100);
+    }
+
     private moveCanvasBy = (deltaX: number, deltaY: number) => {
-        const { x, y, zoom } = this.props;
+        const x = this.getCanvasOffsetX();
+        const y = this.getCanvasOffsetY();
+        const zoom = this.getCanvasZoom();
+
         const clientCenter = getClientCenter();
         const worldX = (clientCenter.x - x) / zoom;
-        const worldY = (clientCenter.y - y) / zoom;        
-        this.props.setZoom(zoom, worldX + deltaX / zoom, worldY + deltaY / zoom);
+        const worldY = (clientCenter.y - y) / zoom;  
+               
+        this.debounceSetZoom(zoom, worldX + deltaX / zoom, worldY + deltaY / zoom);
     }
 
     public onKeyDown(event: SvgEvent, next: () => void) {
@@ -141,7 +212,8 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
             return;
         }
 
-        const { x, y } = this.props;
+        const x = this.getCanvasOffsetX();
+        const y = this.getCanvasOffsetY();
 
         this.dragStartX = (event.event as MouseEvent).pageX;
         this.dragStartY = (event.event as MouseEvent).pageY;
@@ -155,7 +227,12 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         const deltaY = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
         const deltaX = e.deltaX > 0 ? 1 : e.deltaX < 0 ? -1 : 0;
 
-        const { isEditingText, setZoom, x, y, zoom } = this.props;
+        const { isEditingText } = this.props;
+
+        const x = this.getCanvasOffsetX();
+        const y = this.getCanvasOffsetY();
+        const zoom = this.getCanvasZoom();
+
         if (isEditingText) {
             return next();
         }
@@ -167,11 +244,10 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
             }
             const newZoom = deltaY > 0 ? zoom / 1.1 : zoom * 1.1;
             const roundedNewZoom = Math.floor(Math.round(Math.min(maxZoom, Math.max(minZoom, newZoom)) * 100)) / 100;
-
             const worldX = (e.clientX - x) / zoom;
             const worldY = (e.clientY - y) / zoom;
             
-            setZoom(roundedNewZoom, worldX, worldY, e.clientX, e.clientY);
+            this.debounceSetZoom(roundedNewZoom, worldX, worldY, e.clientX, e.clientY);
             return;
         }
 
