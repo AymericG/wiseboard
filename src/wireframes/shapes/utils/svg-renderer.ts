@@ -189,8 +189,8 @@ export class SVGRenderer implements AbstractRenderer {
                 config.appearance.get(DiagramShape.APPEARANCE_TEXT),
                 config.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE),
                 config.appearance.get(DiagramShape.APPEARANCE_TEXT_ALIGNMENT),
-                config.appearance.get(DiagramShape.APPEARANCE_FONT_WEIGHT)
-                );
+                config.appearance.get(DiagramShape.APPEARANCE_FONT_WEIGHT),
+                config.id);
         } else if (config) {
             element = SVGHelper.createMultilineText(this.container, config.text, config.fontSize, config.alignment);
         } else {
@@ -209,7 +209,8 @@ export class SVGRenderer implements AbstractRenderer {
             element = SVGHelper.createFittedText(this.container, bounds,
                 config.appearance.get(DiagramShape.APPEARANCE_TEXT),
                 config.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE),
-                config.appearance.get(DiagramShape.APPEARANCE_FONT_FAMILY_CLASS_NAME));
+                config.appearance.get(DiagramShape.APPEARANCE_FONT_FAMILY_CLASS_NAME),
+                config.id);
         } else if (config) {
             element = SVGHelper.createFittedText(this.container, bounds, config.text, config.fontSize, config.alignment);
         } else {

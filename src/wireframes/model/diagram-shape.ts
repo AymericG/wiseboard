@@ -14,6 +14,7 @@ const EMPTY_APPEARANCE = {};
 export class DiagramShape extends DiagramVisual {
     public static readonly APPEARANCE_TEXT = 'TEXT';
     public static readonly APPEARANCE_TEXT_BEHAVIOUR = 'TEXT_BEHAVIOUR';
+    public static readonly APPEARANCE_TEXT_MULTILINE = 'TEXT_MULTILINE';
     public static readonly APPEARANCE_TEXT_ALIGNMENT = 'TEXT_ALIGNMENT';
     public static readonly APPEARANCE_TEXT_DISABLED = 'TEXT_DISABLED';
     public static readonly APPEARANCE_FONT_FAMILY = 'FONT_FAMILY';

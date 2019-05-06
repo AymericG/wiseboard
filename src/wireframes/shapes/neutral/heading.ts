@@ -9,6 +9,7 @@ const DEFAULT_APPEARANCE = {};
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FOREGROUND_COLOR] = CommonTheme.CONTROL_TEXT_COLOR;
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT] = 'Heading';
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FONT_WEIGHT] = 'bold';
+DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT_MULTILINE] = true;
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FONT_SIZE] = 36;
 DEFAULT_APPEARANCE[COLOR_KEY] = CommonTheme.CONTROL_TEXT_COLOR;
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_TEXT_BEHAVIOUR] = TextBehaviour.Grow;
@@ -43,9 +44,7 @@ export class Heading extends AbstractControl {
 
     protected renderInternal(ctx: AbstractContext) {
         const textItem = ctx.renderer.createMultilineText(ctx.shape, ctx.bounds.deflate(TEXT_PADDING, TEXT_PADDING));
-
         ctx.renderer.setForegroundColor(textItem, ctx.shape.appearance.get(COLOR_KEY));
-
         ctx.add(textItem);
     }
 }

@@ -60,6 +60,7 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
     private textArea: React.RefObject<any>;
     private editingClassName: string;
     private shouldFitText: boolean;
+    private isMultiline: boolean;
 
     constructor(props: TextAdornerProps, context: any) {
         super(props, context);
@@ -96,6 +97,7 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
             const h = sizeInPx((Math.max(transform.size.y, MIN_HEIGHT)) + 4);
 
             const textBehaviour = editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT_BEHAVIOUR);
+            this.isMultiline = editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT_MULTILINE);
             this.shouldFitText = textBehaviour === TextBehaviour.Fit;    
             this.editingClassName = editingShape.appearance.get(DiagramShape.APPEARANCE_FONT_FAMILY_CLASS_NAME);
 
@@ -123,6 +125,10 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
             }
 
             this.setState({ text: editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT) || '' });
+            const textElement = document.getElementById('text' + editingShape.id);
+            if (textElement) {
+                textElement.style.display = 'none';
+            }
             this.props.interactionService.hideAdorners();    
         }
 
@@ -180,16 +186,13 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
     }
 
     private doSubmit = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if ((event.keyCode === Keys.ENTER && !event.shiftKey) ||
+        if ((this.isMultiline && event.keyCode === Keys.ENTER && event.shiftKey) ||
+            (!this.isMultiline && event.keyCode === Keys.ENTER) ||
             (event.keyCode === Keys.ESC)) {
             event.preventDefault();
             event.stopPropagation();
     
-            if (event.keyCode === Keys.ENTER) {
-                this.updateText();
-            } else {
-                this.hide();
-            }
+            this.updateText();
         }
     }
 
@@ -203,6 +206,11 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
 
         const newText = this.state.text;
         const oldText = editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT);
+
+        const textElement = document.getElementById('text' + editingShape.id);
+        if (textElement) {
+            textElement.style.display = 'flex';
+        }
 
         if (newText !== oldText) {
             this.props.changeItemsAppearance(this.props.selectedDiagram, [editingShape], DiagramShape.APPEARANCE_TEXT, newText);

@@ -40,12 +40,18 @@ export module SVGHelper {
         return createText(container, text, fontSize, fontWeight, alignment, 'middle');
     }
 
-    export function createMultilineText(container: svg.Container, text: string, fontSize?: number, alignment?: string, fontWeight?: string) {
-        return createText(container, text, fontSize, fontWeight, alignment, 'top');
+    export function createMultilineText(
+        container: svg.Container, 
+        text: string, 
+        fontSize?: number, 
+        alignment?: string, 
+        fontWeight?: string, 
+        id?: string) {
+        return createText(container, text, fontSize, fontWeight, alignment, 'top', id);
     }
 
-    export function createFittedText(container: svg.Container, bounds: Rect2, text: string, fontSize?: number, fontFamilyClassName?: string) {
-        return createTextWithTextFit(container, bounds, text, fontSize, fontFamilyClassName);
+    export function createFittedText(container: svg.Container, bounds: Rect2, text: string, fontSize?: number, fontFamilyClassName?: string, id?: string) {
+        return createTextWithTextFit(container, bounds, text, fontSize, fontFamilyClassName, id);
     }
 
     export function createTextWithTextFit(
@@ -53,10 +59,14 @@ export module SVGHelper {
         bounds: Rect2, 
         text: string, 
         fontSize?: number, 
-        fontFamilyClassName?: string) {
+        fontFamilyClassName?: string, 
+        id?: string) {
         fontSize = fontSize || 10;
         const element = container.element('foreignObject', svg.Parent);
         const div = document.createElement('div');
+        if (id) {
+            div.id = 'text' + id;
+        }
         div.className = 'no-select' + (' ' + fontFamilyClassName || '');
         div.style.lineHeight = '1';
 
@@ -75,7 +85,14 @@ export module SVGHelper {
         return element;
     }
 
-    export function createText(container: svg.Container, text: string, fontSize?: number, fontWeight?: string, alignment?: string, verticalAlign?: string) {
+    export function createText(
+        container: svg.Container, 
+        text: string, 
+        fontSize?: number, 
+        fontWeight?: string, 
+        alignment?: string, 
+        verticalAlign?: string, 
+        id?: string) {
         fontSize = fontSize || 10;
 
         const element = container.element('foreignObject', svg.Parent);
@@ -86,7 +103,12 @@ export module SVGHelper {
         //     <tspan dy="15">tspan line 3</tspan>
         // </text>
 
-        const div = document.createElement('pre');
+        const div = document.createElement('div');
+        console.log('id', text, id);
+        if (id) {
+            console.log('setting id', text, id);
+            div.id = 'text' + id;
+        }
         div.className = 'no-select';
         div.style.textAlign = alignment || 'left';
         div.style.fontWeight = fontWeight || 'normal';
