@@ -5,6 +5,7 @@ import { InteractionMode } from '@app/constants';
 
 import { UIState, UIStateInStore } from './../internal';
 import { ADD_VISUAL } from './items';
+import { getClientCenter } from '../../../core/utils/canvas-helper';
 
 export const SHOW_INFO_TOAST = 'SHOW_INFO_TOAST';
 export const showInfoToast = (text: string) => {
@@ -29,10 +30,9 @@ export const SET_ZOOM = 'SET_ZOOM';
 export const setZoom = (zoomLevel: number, worldX?: number, worldY?: number, clientX?: number, clientY?: number) => {
     return (dispatch: Dispatch, getState: () => UIStateInStore) => {
         if (clientX === undefined) {
-            const editorView = document.getElementById('editor-view');
-            const rect = editorView.getBoundingClientRect();
-            clientX = rect.width / 2;
-            clientY = rect.height / 2;
+            const clientCenter = getClientCenter();
+            clientX = clientCenter.x;
+            clientY = clientCenter.y;
         }
 
         if (worldX === undefined) {
@@ -48,13 +48,28 @@ export const setZoom = (zoomLevel: number, worldX?: number, worldY?: number, cli
         const newX = clientX - worldX * zoomLevel;
         const newY = clientY - worldY * zoomLevel;
 
+        // private debounceTimeout: number;
+        // private debounceX: number;
+        // private debounceY: number;
+        
+        // private debounceMove = (wait: number) => {  
+        //     const later = () => {
+        //         this.debounceTimeout = null;
+        //         this.props.moveTo(this.debounceX, this.debounceY);
+        //         this.debounceX = null;
+        //         this.debounceY = null;
+        //     };
+    
+        //     clearTimeout(this.debounceTimeout);
+        //     this.debounceTimeout = setTimeout(later, wait);
+        // }
+    
+        // const canvas = document.getElementById('canvas');
+        // canvas.style.transform = 'translate(' + this.debounceX + 'px, ' + this.debounceY + 'px)'; 
+
+
         return dispatch({ type: SET_ZOOM, payload: { zoomLevel, x: newX, y: newY }});
     };
-};
-
-export const MOVE_TO = 'MOVE_TO';
-export const moveTo = (x: number, y: number) => {
-    return { type: MOVE_TO, payload: { x, y }};
 };
 
 export const SET_INTERACTION_MODE = 'SET_INTERACTION_MODE';
@@ -117,8 +132,6 @@ export function ui(initialState: UIState): Reducer<UIState> {
                 return { ...state, isInteractingWithItem: action.isInteracting };
             case SET_ZOOM:
                 return { ...state, zoom: action.payload.zoomLevel, x: action.payload.x, y: action.payload.y };
-            case MOVE_TO:
-                return { ...state, x: action.payload.x, y: action.payload.y };
             case SELECT_TAB:
                 return { ...state, selectedTab: action.tab };
             case SELECT_COLOR_TAB:

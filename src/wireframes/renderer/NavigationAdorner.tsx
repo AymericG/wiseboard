@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import ReactDOM = require('react-dom');
 
-import { InteractionMode, Keys, maxZoom, minZoom, ShapeType } from '@app/constants';
+import { InteractionMode, gridSize, Keys, maxZoom, minZoom, ShapeType } from '@app/constants';
 
 import {
     Diagram,
@@ -15,6 +15,7 @@ import {
 } from './interaction-service';
 
 import { isTextEditor } from '@app/core/utils/text-editing';
+import { getClientCenter } from '../../core/utils/canvas-helper';
 
 
 export interface NavigationAdornerProps {
@@ -42,9 +43,8 @@ export interface NavigationAdornerProps {
 
     // A function to select a set of items.
     selectItems: (diagram: Diagram, itemIds: string[]) => any;
-    setZoom: (zoom: number, worldX: number, worldY: number, clientX: number, clientY: number) => any;
-    moveTo: (x: number, y: number) => any;
-
+    setZoom: (zoom: number, worldX?: number, worldY?: number, clientX?: number, clientY?: number) => any;
+    
     setInteractionMode: (interactionMode: InteractionMode) => void;
 }
 
@@ -78,26 +78,16 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         addVisual(selectedDiagram.id, ShapeType.Comment, worldX, worldY);
     }
 
-    private debounceTimeout: number;
-    private debounceX: number;
-    private debounceY: number;
-    
-    private debounceMove = (wait: number) => {  
-        const later = () => {
-            this.debounceTimeout = null;
-            this.props.moveTo(this.debounceX, this.debounceY);
-            this.debounceX = null;
-            this.debounceY = null;
-        };
-
-        clearTimeout(this.debounceTimeout);
-        this.debounceTimeout = setTimeout(later, wait);
+    private moveCanvasBy = (deltaX: number, deltaY: number) => {
+        const { x, y, zoom } = this.props;
+        const clientCenter = getClientCenter();
+        const worldX = (clientCenter.x - x) / zoom;
+        const worldY = (clientCenter.y - y) / zoom;        
+        this.props.setZoom(zoom, worldX + deltaX / zoom, worldY + deltaY / zoom);
     }
 
-
-
     public onKeyDown(event: SvgEvent, next: () => void) {
-        const { interactionMode, moveTo, x, y, selectedItems } = this.props;
+        const { interactionMode, selectedItems } = this.props;
         const target: any = event.event.target;
         if (isTextEditor(target)) {
             next();
@@ -114,16 +104,16 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
 
         switch (keyCode) {
             case Keys.LEFT:
-                moveTo(x + 10, y);
+                this.moveCanvasBy(gridSize, 0);
                 break;
             case Keys.UP:
-                moveTo(x, y + 10);
+                this.moveCanvasBy(0, gridSize);
                 break;
             case Keys.RIGHT:
-                moveTo(x - 10, y);
+                this.moveCanvasBy(-gridSize, 0);
                 break;
             case Keys.DOWN:
-                moveTo(x, y - 10);
+                this.moveCanvasBy(0, -gridSize);
                 break;
             default:
                 next();
@@ -187,11 +177,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
 
         // pan
         const STEP = 50;
-        this.debounceX = (this.debounceX == null ? x : this.debounceX) - STEP * deltaX;
-        this.debounceY = (this.debounceY == null ? y : this.debounceY) - STEP * deltaY;
-        const canvas = document.getElementById('canvas');
-        canvas.style.transform = 'translate(' + this.debounceX + 'px, ' + this.debounceY + 'px)'; 
-        this.debounceMove(100);
+        this.moveCanvasBy(STEP * deltaX, STEP * deltaY);
     }
 
     public onMouseDrag(event: SvgEvent, next: () => void) {
@@ -210,10 +196,8 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
             return next();
         }
 
-        const x = this.editorStartX + (event.event as MouseEvent).pageX - this.dragStartX;
-        const y = this.editorStartY + (event.event as MouseEvent).pageY - this.dragStartY;
-
-        this.props.moveTo(x, y);
+        this.moveCanvasBy(this.dragStartX - (event.event as MouseEvent).pageX, this.dragStartY - (event.event as MouseEvent).pageY);
+        
         this.dragStartX = null;
         this.dragStartY = null;
     }

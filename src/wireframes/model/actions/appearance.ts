@@ -16,7 +16,7 @@ import {
     DiagramRef,
     ItemsRef
 } from './utils';
-import { ResizeMode, TextBehaviour } from '@app/constants';
+import { TextBehaviour } from '@app/constants';
 
 export const CHANGE_ITEMS_APPEARANCE = 'CHANGE_ITEMS_APPEARANCE';
 export const changeItemsAppearance = (diagram: DiagramRef, visuals: ItemsRef, key: string, value: any) => {

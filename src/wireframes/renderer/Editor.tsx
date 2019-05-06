@@ -24,7 +24,6 @@ import {
     getEditor,
     getSelectedItems,
     getSelectedItemsWithLocked,
-    moveTo,
     RendererService,
     selectItems,
     setInteractionMode,
@@ -90,8 +89,7 @@ export interface EditorProps {
     selectItems: (diagram: Diagram, itemIds: string[]) => any;
 
     setZoom: (zoom: number, worldX: number, worldY: number, clientX: number, clientY: number) => any;
-    moveTo: (x: number, y: number) => any;
-
+    
     // A function to change the appearance of a visual.
     changeItemsAppearance: (diagram: Diagram, visuals: DiagramVisual[], key: string, val: any) => any;
 
@@ -215,7 +213,6 @@ class Editor extends React.Component<EditorProps> {
             changeItemsAppearance,
             isEditingText,
             interationMode,
-            moveTo,
             selectedDiagram,
             selectedItems,
             selectItems,
@@ -269,7 +266,6 @@ class Editor extends React.Component<EditorProps> {
                     x={x}
                     y={y}
                     setZoom={setZoom}
-                    moveTo={moveTo}
                 />
 
                 <TransformAdorner
@@ -329,7 +325,7 @@ const mapStateToProps = (state: UIStateInStore & EditorStateInStore) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    addVisual, selectItems, changeItemsAppearance, moveTo, transformItems, setInteractionMode, setIsInteractingWithItem, setZoom, startEditing, stopEditing
+    addVisual, selectItems, changeItemsAppearance, transformItems, setInteractionMode, setIsInteractingWithItem, setZoom, startEditing, stopEditing
 }, dispatch);
 
 export const EditorContainer = connect(
