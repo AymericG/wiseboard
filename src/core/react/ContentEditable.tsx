@@ -23,6 +23,8 @@ export class ContentEditable extends React.Component<ContentEditableProps> {
     }
 
     public render() {
+        const { html } = this.props;
+        const multiLine = !html ? html : html.replace(/\n/g, '<br/>');
         return <div 
             style={this.props.style}
             className={'editable ' + this.props.className}>
@@ -33,14 +35,13 @@ export class ContentEditable extends React.Component<ContentEditableProps> {
                 onBlur={this.onBlur}
                 contentEditable 
                 className='textFitted' 
-                dangerouslySetInnerHTML = {{ __html: this.props.html }}></span>
+                dangerouslySetInnerHTML = {{ __html: multiLine }}></span>
         </div>;
     }
-                
-    public shouldComponentUpdate(nextProps: ContentEditableProps) {
-        return nextProps.html !== this.span.current.innerText;
-    }
 
+    public shouldComponentUpdate(nextProps: ContentEditableProps) {
+        return nextProps.style !== this.props.style || nextProps.html !== this.span.current.innerText;
+    }
     public componentDidMount() {
         if (this.props.autoFocus) {
             this.span.current.focus();

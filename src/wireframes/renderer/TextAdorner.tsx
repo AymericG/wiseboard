@@ -29,6 +29,9 @@ export interface TextAdornerProps {
     // The current zoom value.
     zoom: number;
 
+    x: number;
+    y: number;
+
     // The selected diagram.
     selectedDiagram: Diagram;
 
@@ -86,8 +89,8 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
 
             const transform = editingShape.transform;
 
-            const x = sizeInPx(zoom * (transform.position.x - 0.5 * transform.size.x) - 2);
-            const y = sizeInPx(zoom * (transform.position.y - 0.5 * transform.size.y) - 2);
+            const worldX = zoom * (transform.position.x - 0.5 * transform.size.x) - 2;
+            const worldY = zoom * (transform.position.y - 0.5 * transform.size.y) - 2;
 
             const w = sizeInPx((Math.max(transform.size.x, MIN_WIDTH)) + 4);
             const h = sizeInPx((Math.max(transform.size.y, MIN_HEIGHT)) + 4);
@@ -95,10 +98,15 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
             const textBehaviour = editingShape.appearance.get(DiagramShape.APPEARANCE_TEXT_BEHAVIOUR);
             this.shouldFitText = textBehaviour === TextBehaviour.Fit;    
             this.editingClassName = editingShape.appearance.get(DiagramShape.APPEARANCE_FONT_FAMILY_CLASS_NAME);
+
+            const clientX = worldX + nextProps.x;
+            const clientY = worldY + nextProps.y;
+
             this.editingStyle = {
-                top: y,
-                left: x,
-                fontSize: editingShape.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE),
+                top: sizeInPx(clientY),
+                left: sizeInPx(clientX),
+                fontSize: sizeInPx(editingShape.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE)),
+                fontWeight: editingShape.appearance.get(DiagramShape.APPEARANCE_FONT_WEIGHT),
                 padding: TEXT_PADDING,
                 backgroundColor: '#efefef',
                 transform: 'scale(' + (nextProps.zoom) + ')',
@@ -221,7 +229,7 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
         return (
             <ContentEditable
                 shouldFitText={this.shouldFitText}
-                className={'no-select ' + this.editingClassName}
+                className={'hide-on-move no-select ' + this.editingClassName}
                 onChange={this.onChange}
                 autoFocus={true}
                 html={this.state.text}
@@ -229,7 +237,7 @@ export class TextAdorner extends React.Component<TextAdornerProps, TextAdornerSt
                 ref={this.textArea}
                 onBlur={this.doSubmit}
                 onKeyDown={this.doSubmit}
-                />
+            />
         );
     }
 }

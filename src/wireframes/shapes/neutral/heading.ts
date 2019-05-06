@@ -3,7 +3,7 @@ import { ColorConfigurable, Configurable, DiagramShape, SelectionConfigurable } 
 import { AbstractContext, AbstractControl, TextSizeConstraint } from '@app/wireframes/shapes/utils/abstract-control';
 import { CommonTheme } from './_theme';
 
-import { COLOR_KEY, TextBehaviour } from '@app/constants';
+import { COLOR_KEY, TextBehaviour, TEXT_PADDING } from '@app/constants';
 
 const DEFAULT_APPEARANCE = {};
 DEFAULT_APPEARANCE[DiagramShape.APPEARANCE_FOREGROUND_COLOR] = CommonTheme.CONTROL_TEXT_COLOR;
@@ -42,7 +42,7 @@ export class Heading extends AbstractControl {
     }
 
     protected renderInternal(ctx: AbstractContext) {
-        const textItem = ctx.renderer.createSinglelineText(ctx.shape, ctx.bounds);
+        const textItem = ctx.renderer.createMultilineText(ctx.shape, ctx.bounds.deflate(TEXT_PADDING, TEXT_PADDING));
 
         ctx.renderer.setForegroundColor(textItem, ctx.shape.appearance.get(COLOR_KEY));
 

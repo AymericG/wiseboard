@@ -113,7 +113,6 @@ class Editor extends React.Component<EditorProps> {
     private shapeRefsById: { [id: string]: ShapeRef } = {};
 
     public componentDidUpdate() {
-        console.log('updated');
         this.forceRender();
     }
 
@@ -266,6 +265,7 @@ class Editor extends React.Component<EditorProps> {
                     selectedItems={selectedItemsWithLocked}
                     selectItems={selectItems}
                     zoom={zoom}
+                    isEditingText={isEditingText}
                     x={x}
                     y={y}
                     setZoom={setZoom}
@@ -300,6 +300,8 @@ class Editor extends React.Component<EditorProps> {
                     stopEditing={stopEditing}
                     isEditingText={isEditingText}
                     selectItems={selectItems}
+                    x={x}
+                    y={y}
                     zoom={zoom} />
 
 

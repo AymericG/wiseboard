@@ -25,6 +25,8 @@ export interface NavigationAdornerProps {
     // The selected diagram.
     selectedDiagram: Diagram;
 
+    isEditingText: boolean;
+
     // The selected items.
     selectedItems: DiagramItem[];
 
@@ -163,8 +165,10 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
         const deltaY = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
         const deltaX = e.deltaX > 0 ? 1 : e.deltaX < 0 ? -1 : 0;
 
-        const { setZoom, x, y, zoom } = this.props;
-
+        const { isEditingText, setZoom, x, y, zoom } = this.props;
+        if (isEditingText) {
+            return next();
+        }
         // zoom
         if (e.ctrlKey) {
             if (deltaY === 0) {

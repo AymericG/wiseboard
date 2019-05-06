@@ -1,9 +1,9 @@
 import { Color, Rect2, Vec2 } from '@app/core';
 
 import {
-    Constraint,
     DiagramShape,
-    Renderer
+    Renderer,
+    Constraint
 } from '@app/wireframes/model';
 
 import { AbstractRenderer, SVGRenderer } from './svg-renderer';
@@ -97,45 +97,57 @@ export abstract class AbstractControl implements Renderer {
 export class TextSizeConstraint implements Constraint {
     constructor(
         private readonly padding = 0,
-        private readonly lineHeight = 1.2,
         private readonly resizeWidth = false,
-        private readonly minWidth = 0
+        private readonly minWidth = 0,
+        private readonly resizeHeight = false,
+        private readonly minHeight = 0
     ) { }
 
     public updateSize(shape: DiagramShape, size: Vec2, prev: DiagramShape): Vec2 {
         const fontSize = shape.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE) || 10;
         const fontFamily = shape.appearance.get(DiagramShape.APPEARANCE_FONT_FAMILY) || 'inherit';
-
+        const fontWeight = shape.appearance.get(DiagramShape.APPEARANCE_FONT_WEIGHT) || 'normal';
         let finalWidth = size.x;
+        let finalHeight = size.y;
 
         const text = shape.appearance.get(DiagramShape.APPEARANCE_TEXT);
 
         let prevText = '';
+        let prevFontWeight = 'normal';
         let prevFontSize = 0;
         let prevFontFamily = '';
 
         if (prev) {
             prevText = prev.appearance.get(DiagramShape.APPEARANCE_TEXT);
-
             prevFontSize = prev.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE) || 10;
             prevFontFamily = prev.appearance.get(DiagramShape.APPEARANCE_FONT_FAMILY) || 'inherit';
+            prevFontWeight = prev.appearance.get(DiagramShape.APPEARANCE_FONT_WEIGHT) || 'normal';
         }
 
-        if (prevText !== text || prevFontSize !== fontSize || prevFontFamily !== fontFamily) {
-            let textWidth = RENDERER.getTextWidth(text, fontSize, fontFamily);
+        if (prevFontWeight !== fontWeight || prevText !== text || prevFontSize !== fontSize || prevFontFamily !== fontFamily) {
+            let textSize = RENDERER.getTextSize(text, fontSize, fontFamily, fontWeight);
+        
+            if (textSize.width) {
+                textSize.width += 2 * this.padding;
 
-            if (textWidth) {
-                textWidth += 2 * this.padding;
-
-                if (finalWidth < textWidth || !this.resizeWidth) {
-                    finalWidth = textWidth;
-                }
+                // if (finalWidth < textSize.width || !this.resizeWidth) {
+                    finalWidth = textSize.width;
+                // }
 
                 finalWidth = Math.max(this.minWidth, finalWidth);
             }
-        }
 
-        return new Vec2(finalWidth, fontSize * this.lineHeight + this.padding * 2).roundToMultipleOfTwo();
+            if (textSize.height) {
+                textSize.height += 2 * this.padding;
+
+                // if (finalHeight < textSize.height || !this.resizeHeight) {
+                    finalHeight = textSize.height;
+                // }
+
+                finalHeight = Math.max(this.minHeight, finalHeight);
+            }
+        }
+        return new Vec2(finalWidth, finalHeight).roundToMultipleOfTwo();
     }
 
     public calculateSizeX(): boolean {
@@ -143,6 +155,6 @@ export class TextSizeConstraint implements Constraint {
     }
 
     public calculateSizeY(): boolean {
-        return true;
+        return !this.resizeHeight;
     }
 }

@@ -66,7 +66,7 @@
     "ordered-imports": [
       false
     ],
-    "prefer-for-of": true,
+    "prefer-for-of": false,
     "quotemark": [
       true,
       "single"

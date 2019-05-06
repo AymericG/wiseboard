@@ -188,7 +188,9 @@ export class SVGRenderer implements AbstractRenderer {
             element = SVGHelper.createMultilineText(this.container,
                 config.appearance.get(DiagramShape.APPEARANCE_TEXT),
                 config.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE),
-                config.appearance.get(DiagramShape.APPEARANCE_TEXT_ALIGNMENT));
+                config.appearance.get(DiagramShape.APPEARANCE_TEXT_ALIGNMENT),
+                config.appearance.get(DiagramShape.APPEARANCE_FONT_WEIGHT)
+                );
         } else if (config) {
             element = SVGHelper.createMultilineText(this.container, config.text, config.fontSize, config.alignment);
         } else {
@@ -408,6 +410,18 @@ export class SVGRenderer implements AbstractRenderer {
         this.measureDiv.style.fontFamily = fontFamily;
 
         return this.measureDiv.clientWidth + 1;
+    }
+
+    public getTextSize(
+        text: string, 
+        fontSize: number, 
+        fontFamily: string,
+        fontWeight: string): { width: number, height: number } | undefined {
+        this.measureDiv.innerHTML = text ? text.replace(/\n/g, '<br/>') : text;
+        this.measureDiv.style.fontSize = sizeInPx(fontSize);
+        this.measureDiv.style.fontWeight = fontWeight;
+        this.measureDiv.style.fontFamily = fontFamily;
+        return { width: this.measureDiv.clientWidth, height: this.measureDiv.clientHeight };
     }
 
     private getBoundsWithStroke(bounds?: Rect2, strokeWidth = 0): Rect2 {

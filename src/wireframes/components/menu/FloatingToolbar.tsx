@@ -74,9 +74,9 @@ class FloatingToolbar extends React.Component<FloatingToolbarProps, FloatingTool
         const left = transform.position.x * zoom + x;
         const top = zoom * (transform.position.y - transform.size.y / 2 - 20) - 50 + y;
 
-        const style = { left, top };
+        const style = { left, top, display: 'flex' };
         return <div
-            className='editor-floating-toolbox'
+            className='hide-on-move editor-floating-toolbox'
             style={style}>
 
             <CustomPropertiesMenuContainer />

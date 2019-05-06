@@ -40,8 +40,8 @@ export module SVGHelper {
         return createText(container, text, fontSize, fontWeight, alignment, 'middle');
     }
 
-    export function createMultilineText(container: svg.Container, text: string, fontSize?: number, alignment?: string) {
-        return createText(container, text, fontSize, 'normal', alignment, 'top');
+    export function createMultilineText(container: svg.Container, text: string, fontSize?: number, alignment?: string, fontWeight?: string) {
+        return createText(container, text, fontSize, fontWeight, alignment, 'top');
     }
 
     export function createFittedText(container: svg.Container, bounds: Rect2, text: string, fontSize?: number, fontFamilyClassName?: string) {
@@ -80,9 +80,15 @@ export module SVGHelper {
 
         const element = container.element('foreignObject', svg.Parent);
 
-        const div = document.createElement('div');
+        // <text x="0" y="0" font-size="15">
+        //     <tspan dy="15">tspan line 1</tspan>
+        //     <tspan dy="15">tspan line 2</tspan>
+        //     <tspan dy="15">tspan line 3</tspan>
+        // </text>
+
+        const div = document.createElement('pre');
         div.className = 'no-select';
-        div.style.textAlign = alignment || 'center';
+        div.style.textAlign = alignment || 'left';
         div.style.fontWeight = fontWeight || 'normal';
         div.style.fontSize = sizeInPx(fontSize || 10);
         div.style.fontFamily = 'inherit';
