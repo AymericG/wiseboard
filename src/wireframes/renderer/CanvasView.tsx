@@ -29,7 +29,7 @@ export class CanvasView extends React.Component<CanvasViewProps> {
         this.docElement = element;
 
         if (element) {
-            this.document = svg(this.docElement);
+            this.document = svg(this.docElement).id('svg');
             if (document) {
                 this.document.style({ position: 'relative', overflow: 'visible' });
             }

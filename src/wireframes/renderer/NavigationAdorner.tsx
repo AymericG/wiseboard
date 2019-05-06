@@ -180,7 +180,7 @@ export class NavigationAdorner extends React.Component<NavigationAdornerProps> i
 
             const worldX = (e.clientX - x) / zoom;
             const worldY = (e.clientY - y) / zoom;
-
+            
             setZoom(roundedNewZoom, worldX, worldY, e.clientX, e.clientY);
             return;
         }
