@@ -1,10 +1,12 @@
 import { MathHelper, Vec2 } from '@app/core';
 
 import { DiagramShape } from './diagram-shape';
+import { ResizeMode } from '@app/constants';
 
 export interface Constraint {
     updateSize(shape: DiagramShape, size: Vec2, prev?: DiagramShape): Vec2;
 
+    resizeMode?: ResizeMode;
     calculateSizeX(): boolean;
 
     calculateSizeY(): boolean;

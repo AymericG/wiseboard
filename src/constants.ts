@@ -9,6 +9,12 @@ export enum TextBehaviour {
     Fixed
 }
 
+export enum ResizeMode {
+    LockRatio,
+    Flexible,
+    Fixed
+}
+
 export const gridSize = 20;
 export const canvasSize = 5000;
 

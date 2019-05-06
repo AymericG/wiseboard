@@ -7,6 +7,7 @@ import {
 } from '@app/wireframes/model';
 
 import { AbstractRenderer, SVGRenderer } from './svg-renderer';
+import { ResizeMode } from '@app/constants';
 
 const RENDER_BACKGROUND = 1;
 
@@ -97,10 +98,9 @@ export abstract class AbstractControl implements Renderer {
 export class TextSizeConstraint implements Constraint {
     constructor(
         private readonly padding = 0,
-        private readonly resizeWidth = false,
         private readonly minWidth = 0,
-        private readonly resizeHeight = false,
-        private readonly minHeight = 0
+        private readonly minHeight = 0,
+        public readonly resizeMode = ResizeMode.LockRatio
     ) { }
 
     public updateSize(shape: DiagramShape, size: Vec2, prev: DiagramShape): Vec2 {
@@ -129,32 +129,22 @@ export class TextSizeConstraint implements Constraint {
         
             if (textSize.width) {
                 textSize.width += 2 * this.padding;
-
-                // if (finalWidth < textSize.width || !this.resizeWidth) {
-                    finalWidth = textSize.width;
-                // }
-
-                finalWidth = Math.max(this.minWidth, finalWidth);
+                finalWidth = Math.max(this.minWidth, textSize.width);
             }
 
             if (textSize.height) {
                 textSize.height += 2 * this.padding;
-
-                // if (finalHeight < textSize.height || !this.resizeHeight) {
-                    finalHeight = textSize.height;
-                // }
-
-                finalHeight = Math.max(this.minHeight, finalHeight);
+                finalHeight = Math.max(this.minHeight, textSize.height);
             }
         }
         return new Vec2(finalWidth, finalHeight).roundToMultipleOfTwo();
     }
 
     public calculateSizeX(): boolean {
-        return !this.resizeWidth;
+        return this.resizeMode === ResizeMode.Fixed;
     }
 
     public calculateSizeY(): boolean {
-        return !this.resizeHeight;
+        return this.resizeMode === ResizeMode.Fixed;
     }
 }

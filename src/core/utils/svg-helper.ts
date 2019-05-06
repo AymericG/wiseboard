@@ -104,9 +104,7 @@ export module SVGHelper {
         // </text>
 
         const div = document.createElement('div');
-        console.log('id', text, id);
         if (id) {
-            console.log('setting id', text, id);
             div.id = 'text' + id;
         }
         div.className = 'no-select';

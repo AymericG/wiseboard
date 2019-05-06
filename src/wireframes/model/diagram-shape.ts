@@ -102,7 +102,6 @@ export class DiagramShape extends DiagramVisual {
     protected afterClone(prev: DiagramShape) {
         if (this.constraint) {
             const size = this.constraint.updateSize(this, this.transform.size, prev);
-
             this.transform = this.transform.resizeTopLeft(size).round();
         }
     }

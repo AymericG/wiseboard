@@ -7,7 +7,8 @@ import {
     DiagramShape,
     EditorState,
     RendererService,
-    Transform
+    Transform,
+    DiagramVisual
 } from './../internal';
 
 import {
@@ -15,6 +16,7 @@ import {
     DiagramRef,
     ItemsRef
 } from './utils';
+import { ResizeMode, TextBehaviour } from '@app/constants';
 
 export const CHANGE_ITEMS_APPEARANCE = 'CHANGE_ITEMS_APPEARANCE';
 export const changeItemsAppearance = (diagram: DiagramRef, visuals: ItemsRef, key: string, value: any) => {
@@ -59,7 +61,19 @@ export function appearance(rendererService: RendererService): Reducer<EditorStat
                     const set = DiagramItemSet.createFromDiagram(action.itemIds, diagram);
 
                     for (let item of set!.allItems) {
-                        diagram = diagram.updateItem(item.id, i => i.transformByBounds(oldBounds, newBounds));
+                        diagram = diagram.updateItem(item.id, i => { 
+                
+                            i =  i.transformByBounds(oldBounds, newBounds); 
+                         
+                            if (i instanceof DiagramVisual) {
+                                if ((i as DiagramVisual).appearance.get(DiagramShape.APPEARANCE_TEXT_BEHAVIOUR) === TextBehaviour.Grow) {
+                                    const oldFontSize = i.appearance.get(DiagramShape.APPEARANCE_FONT_SIZE);
+                                    const newFontSize = Math.round(oldFontSize * (newBounds.size.x / oldBounds.size.x));
+                                    i = i.setAppearance(DiagramShape.APPEARANCE_FONT_SIZE, newFontSize);
+                                }
+                            }
+                            return i;
+                        });
                     }
 
                     return diagram;

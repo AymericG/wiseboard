@@ -21,7 +21,7 @@ import {
 
 import { SVGRenderer } from '@app/wireframes/shapes/utils/svg-renderer';
 
-import { gridSize, Keys } from '@app/constants';
+import { gridSize, Keys, ResizeMode } from '@app/constants';
 import { isTextEditor } from '../../core/utils/text-editing';
 
 const MODE_RESIZE = 2;
@@ -66,6 +66,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     private overlays: InteractionOverlays;
     private canResizeX: boolean;
     private canResizeY: boolean;
+    private shouldKeepSizeRatio: boolean;
     private manipulated = false;
     private manipulationMode = 0;
     private moveShape: any;
@@ -129,25 +130,45 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     }
 
     private calculateResizeRestrictions(selectedItems: DiagramItem[]) {
-        this.canResizeX = false;
-        this.canResizeY = false;
+        this.canResizeX = null;
+        this.canResizeY = null;
+        this.shouldKeepSizeRatio = null;
 
         for (let item of selectedItems) {
-            if (item instanceof DiagramShape) {
-                if (item.constraint) {
-                    if (!item.constraint.calculateSizeX()) {
-                        this.canResizeX = true;
-                    }
+            if (!(item instanceof DiagramShape) || !item.constraint) {
+                if (this.canResizeX === null) {
+                    this.canResizeX = true;
+                }
+                if (this.canResizeY === null) {
+                    this.canResizeY = true;
+                }
+                continue;
+            }
+            if ((this.shouldKeepSizeRatio === null || this.shouldKeepSizeRatio) && item.constraint.resizeMode !== ResizeMode.LockRatio) {
+                this.shouldKeepSizeRatio = false;
+            }
+            if (this.shouldKeepSizeRatio == null && item.constraint.resizeMode === ResizeMode.LockRatio) {
+                this.shouldKeepSizeRatio = true;
+            }
 
-                    if (!item.constraint.calculateSizeY()) {
-                        this.canResizeY = true;
-                    }
-                    continue;
+            if (item.constraint.calculateSizeX()) {
+                this.canResizeX = false;
+            } else {
+                if (this.canResizeX === null) {
+                    this.canResizeX = true;
                 }
             }
-            this.canResizeX = true;
-            this.canResizeY = true;
+            if (item.constraint.calculateSizeY()) {
+                this.canResizeY = false;
+            } else {
+                if (this.canResizeY === null) {
+                    this.canResizeY = true;
+                }
+            }
         }
+        this.shouldKeepSizeRatio = this.shouldKeepSizeRatio || false;
+        this.canResizeX = this.canResizeX || false;
+        this.canResizeY = this.canResizeY || false;
     }
 
     public onMouseDown(event: SvgEvent, next: () => void) {
@@ -229,7 +250,7 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
         } else if (this.manipulationMode === MODE_ROTATE) {
             this.rotate(event, event.event.shiftKey);
         } else {
-            this.resize(delta, event.event.shiftKey);
+            this.resize(delta, event.event.shiftKey || this.shouldKeepSizeRatio);
         }
 
         this.layoutShapes();
@@ -324,7 +345,8 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
     private resize(delta: Vec2, shiftKey: boolean) {
         const startRotation = this.startTransform.rotation;
         if (shiftKey) {
-            delta = new Vec2(delta.x, delta.x);
+            const ratio = (this.startTransform.size.x + delta.x) / this.startTransform.size.x;
+            delta = new Vec2(delta.x, this.startTransform.size.y * ratio - this.startTransform.size.y);
         }
 
         const deltaSize = this.getResizeDeltaSize(startRotation, delta, !shiftKey /* snap to grid by default */);
@@ -412,10 +434,15 @@ export class TransformAdorner extends React.Component<TransformAdornerProps> imp
                 ry: position.y,
                 rotation
             });
+            if (this.shouldKeepSizeRatio) {
+                this.renderer.setVisibility(resizeShape,
+                    (offset.x === .5 && offset.y === .5));
+            } else {
+                this.renderer.setVisibility(resizeShape,
 
-            this.renderer.setVisibility(resizeShape,
-                (offset.x === 0 || this.canResizeX) &&
-                (offset.y === 0 || this.canResizeY));
+                    (offset.x === 0 || this.canResizeX) &&
+                    (offset.y === 0 || this.canResizeY));
+            }
         }
 
         this.renderer.setVisibility(this.rotateShape, true);
